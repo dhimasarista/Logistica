@@ -1,5 +1,5 @@
-<div class="container-fluid">
 
+<div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Unggah Surat</h1>
@@ -16,87 +16,63 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="name-label" for="name">Name</label>
-                                    <input type="text" name="name" id="name" placeholder="Enter your name" class="form-control" required>
+                                    <label id="judul-surat-label" for="judul-surat">Judul Surat</label>
+                                    <input type="text" name="judul-surat" id="judul-surat" placeholder="Masukkan judul surat" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="email-label" for="email">Email</label>
-                                    <input type="email" name="email" id="email" placeholder="Enter your email" class="form-control" required>
+                                    <label id="nomor-surat-label" for="nomor-surat">Nomor Surat</label>
+                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="Masukkan nomor surat" class="form-control" required>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="number-label" for="number">Age <small>(optional)</small></label>
-                                    <input type="number" name="age" id="number" min="10" max="99" class="form-control" placeholder="Age" >
+                                    <label id="number-label" for="number">Tanggal Surat Dibuat </label>
+                                    <input class="form-control" id="tanggal_surat" name="tanggal_surat" type="date" pattern="\d{1,2}/\d {1,2}/\d{4}"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>current role</label>
+                                    <label>Jenis Surat</label>
                                     <select id="dropdown" name="role" class="form-control" required>
                                         <option disabled selected value>Select</option>
-                                        <option value="student">Student</option>
-                                        <option value="job">Full Time Job</option>
-                                        <option value="learner">Full Time Learner</option>
-                                        <option value="preferNo">Prefer not to say</option>
-                                        <option value="other">Other</option>
+                                        <option value="masuk">Surat Masuk</option>
+                                        <option value="keluar">Surat Keluar</option>
+                                        <option value="lainnya">Lainnya</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Would you recommend survey to a friend?</label>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline1" value="Definitely" name="customRadioInline1" class="custom-control-input" checked="">
-                                        <label class="custom-control-label" for="customRadioInline1">Definitely</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline2" value="Maybe" name="customRadioInline1" class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadioInline2">Maybe</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline3" value="Not sure" name="customRadioInline1" class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadioInline3">Not sure</label>
-                                    </div>
+                                    <label id="pengirim-label" for="pengirim">Pengirim</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Masukkan pengirim"/>
                                 </div>
                             </div>
-
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>This survey useful yes or no?</label>
-                                    <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" name="yes" value="yes" id="yes" checked="">
-                                        <label class="custom-control-label" for="yes">Yes</label>
+                                    <label>Unggah Berkas</label>
+                                    <input type="file" class="form-control" name="berkas-surat" id="berkas-surat">
                                     </div>
-                                    <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" name="no" value="no" id="no">
-                                        <label class="custom-control-label" for="no">No</label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Leave Message</label>
-                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Enter your comment here..."></textarea>
+                                    <label>Catatan <small>(optional)</small></label>
+                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Masukkan keterangan..."></textarea>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Submit Survey</button>
+                            <div class="col-md-2">
+                                <button type="submit" id="submit" class="btn btn-primary btn-block">Unggah</button>
                             </div>
                         </div>
 
