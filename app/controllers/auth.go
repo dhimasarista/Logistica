@@ -1,6 +1,8 @@
 package controllers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 func LoginRender(c *fiber.Ctx) error {
 

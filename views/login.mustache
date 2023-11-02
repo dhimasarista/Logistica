@@ -246,6 +246,12 @@
                                 <span>Password</span></label>
                             <input name="password" class="input" type="password" name="password"  placeholder="Enter your Password" required>
                         </div>
+                        {{#error}}
+                            <div style="color: red;">
+                                <span>{{message}}</span>
+                            </div>
+                            <br>
+                        {{/error}}
                         {{! <% if (errors.length > 0) { %>
                             <div style="color: red;">
                               <% errors.forEach((error) => { %>
