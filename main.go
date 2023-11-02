@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"logistica/routes"
+	"logistica/app/routes"
 	"os"
 	"os/exec"
 	"runtime"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
-	"logistica/config"
+	"logistica/app/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )

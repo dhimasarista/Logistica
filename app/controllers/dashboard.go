@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"logistica/models"
+	"logistica/app/models"
 
 	"github.com/gofiber/fiber/v2"
 )

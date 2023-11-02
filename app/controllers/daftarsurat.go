@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"log"
-	"logistica/models"
+	"logistica/app/models"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
