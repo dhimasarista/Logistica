@@ -7,7 +7,10 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
-func AuthRoutes(store *session.Session, app *fiber.App) {
+func AuthRoutes(app *fiber.App) {
+
+	store := session.New()
+
 	var username string = "admin"
 	var password string = "210401010174"
 	app.Get("/login", func(c *fiber.Ctx) error {
