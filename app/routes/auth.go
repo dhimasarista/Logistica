@@ -9,11 +9,8 @@ import (
 )
 
 func AuthRoutes(app *fiber.App) {
-
 	store := session.New()
 
-	var username string = "admin"
-	var password string = "vancouver"
 	app.Get("/login", func(c *fiber.Ctx) error {
 
 		return c.Render("login", fiber.Map{
@@ -25,6 +22,7 @@ func AuthRoutes(app *fiber.App) {
 		session, err := store.Get(c)
 		if err != nil {
 			log.Println(err)
+			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
 		usernameForm := c.FormValue("username")
@@ -32,27 +30,24 @@ func AuthRoutes(app *fiber.App) {
 
 		log.Println(usernameForm, passwordForm)
 
-		if username == usernameForm && password == passwordForm {
+		if isAuthenticated(usernameForm, passwordForm) {
 			session.Set("username", usernameForm)
 			session.SetExpiry(time.Second * 36000)
+
 			if err := session.Save(); err != nil {
 				log.Println(err)
+				return c.SendStatus(fiber.StatusInternalServerError)
 			}
+
 			log.Println("Berhasil Login")
 			return c.Redirect("/dashboard")
-		} else if username != usernameForm || password != passwordForm {
-			log.Println("Gagal Login")
-			return c.Render("login", fiber.Map{
-				"error":   true,
-				"message": "Login Gagal. Silahkan Coba Lagi",
-			})
-		} else {
-			log.Println("Error")
-			return c.Render("login", fiber.Map{
-				"error":   true,
-				"message": "Terjadi kesalahan internal server.",
-			})
 		}
+
+		log.Println("Gagal Login")
+		return c.Render("login", fiber.Map{
+			"error":   true,
+			"message": "Login Gagal. Silahkan Coba Lagi",
+		})
 	})
 
 	app.Get("/logout", func(c *fiber.Ctx) error {
@@ -60,4 +55,10 @@ func AuthRoutes(app *fiber.App) {
 
 		return c.Redirect("login")
 	})
+}
+
+func isAuthenticated(username, password string) bool {
+	// Gantilah logika autentikasi sesuai dengan kebutuhan Anda.
+	// Ini adalah contoh sederhana. Anda harus memeriksa username dan password dalam basis data, biasanya.
+	return username == "admin" && password == "vancouver"
 }

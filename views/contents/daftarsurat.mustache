@@ -11,7 +11,7 @@
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm text-dark"><i>Add Order</i></a>
     </div>
     <!-- DataTales Example -->
-    <div class="card shadow mb-4">
+    <div class="card shadow mb-4" id="card-order">
         <div class="card">
             <div class="card-header py-3">
                 <ul class="nav nav-pills">
@@ -52,8 +52,6 @@
                 </div>
             </div>
             <div class="card-body" id="surat-keluar" style="display: none;">
-                <!-- Isi konten Surat Keluar -->
-                Ini adalah konten untuk Surat Keluar.
             </div>
         </div>
         
@@ -81,4 +79,110 @@
         </script>      
     </div>
 
+    <div class="card shadow mb-4" id="card-add-order" hidden>
+        <div class="card">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Input Surat</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-wrap">	
+                    <form id="survey-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="judul-surat-label" for="judul-surat">Judul Surat</label>
+                                    <input type="text" name="judul-surat" id="judul-surat" placeholder="Masukkan judul surat" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="nomor-surat-label" for="nomor-surat">Nomor Surat</label>
+                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="Masukkan nomor surat" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="number-label" for="number">Tanggal Surat Dibuat </label>
+                                    <input class="form-control" id="tanggal_surat" name="tanggal_surat" type="date" pattern="\d{1,2}/\d {1,2}/\d{4}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Jenis Surat</label>
+                                    <select id="dropdown" name="role" class="form-control" required>
+                                        <option disabled selected value>Select</option>
+                                        <option value="masuk">Surat Masuk</option>
+                                        <option value="keluar">Surat Keluar</option>
+                                        <option value="lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="pengirim-label" for="pengirim">Pengirim</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Masukkan pengirim"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Unggah Berkas</label>
+                                    <input type="file" class="form-control" name="berkas-surat" id="berkas-surat">
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Catatan <small>(optional)</small></label>
+                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Masukkan keterangan..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button type="submit" id="submit" class="btn btn-primary btn-block">Unggah</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>	
+            </div>
+        </div>
+        
+        <script>
+            function showTab(tabId) {
+                // Sembunyikan semua card body
+                var cardBodies = document.getElementsByClassName('card-body');
+                for (var i = 0; i < cardBodies.length; i++) {
+                    cardBodies[i].style.display = 'none';
+                }
+        
+                // Hapus kelas "active" dari semua tautan
+                var navLinks = document.getElementsByClassName('nav-link');
+                for (var j = 0; j < navLinks.length; j++) {
+                    navLinks[j].classList.remove('active');
+                }
+        
+                // Tampilkan card body dengan id yang sesuai
+                document.getElementById(tabId).style.display = 'block';
+        
+                // Tambahkan kelas "active" pada tautan yang diklik
+                var clickedLink = event.currentTarget;
+                clickedLink.classList.add('active');
+            }
+        </script>      
+    </div>
+
+
 </div>
+
+<script>
+    const cardOrder = document.getElementById("card-order");
+    const cardAddOrder = document.getElementById("card-add-order");
+</script>
