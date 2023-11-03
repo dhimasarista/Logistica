@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"logistica/app/middlewares"
 	"logistica/app/routes"
 	"os"
 	"os/exec"
@@ -26,6 +27,7 @@ func main() {
 	routes.DashboardRoutes(app)
 	routes.DaftarSuratRoutes(app)
 	routes.UnggahSuratRoutes(app)
+	middlewares.UserAuthorization(app)
 
 	// Menjalankan server pada port 3000
 	log.Fatal(app.Listen(":3000"))
