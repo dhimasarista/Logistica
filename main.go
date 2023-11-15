@@ -21,16 +21,23 @@ func main() {
 	})
 	app.Static("/", "./public")
 
+	// Middleware global untuk menonaktifkan caching
+	app.Use(func(c *fiber.Ctx) error {
+		// Mengatur header Cache-Control untuk menonaktifkan caching
+		c.Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+		return c.Next()
+	})
+
 	// Rute untuk menampilkan halaman HTML
 	routes.IndexRoutes(app)
 	routes.AuthRoutes(app)
 	routes.DashboardRoutes(app)
-	routes.DaftarSuratRoutes(app)
 	routes.UnggahSuratRoutes(app)
+	routes.OrdersRoutes(app)
 	middlewares.UserAuthorization(app)
 
 	// Menjalankan server pada port 3000
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":4500"))
 }
 
 func clearScreen() {

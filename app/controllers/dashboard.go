@@ -1,11 +1,9 @@
 package controllers
 
 import (
-	"log"
 	"logistica/app/models"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
 func DashboardRender(c *fiber.Ctx) error {
@@ -14,15 +12,12 @@ func DashboardRender(c *fiber.Ctx) error {
 	var suratMasuk int = surat.CountSurat("masuk")
 	suratKeluar := surat.CountSurat("keluar")
 
-	store := session.New()
+	// store := session.New()
 
-	sess, err := store.Get(c)
-	if err != nil {
-		panic(err)
-	}
-
-	log.Println(sess.Keys())
-	log.Println(sess.Get("authenticated"))
+	// sess, err := store.Get(c)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// Mengirimkan halaman HTML yang dihasilkan ke browser
 	return c.Render("dashboard", fiber.Map{
