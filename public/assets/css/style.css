@@ -1,0 +1,14 @@
+.text-blue{
+    color: #0d6efd;
+}
+
+.text-black{
+    color: #000;
+}
+
+.border-left-black {
+    border-left: 4px solid #000; /* Warna hitam (#000) di sini */
+}
+.border-left-blue {
+    border-left: 4px solid #0d6efd; /* Warna hitam (#000) di sini */
+}
