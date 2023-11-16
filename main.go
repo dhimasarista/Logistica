@@ -9,6 +9,7 @@ import (
 	"runtime"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/template/mustache/v2"
 )
 
@@ -28,6 +29,7 @@ func main() {
 	routes.DaftarSuratRoutes(app)
 	routes.UnggahSuratRoutes(app)
 	middlewares.UserAuthorization(app)
+	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000
 	log.Fatal(app.Listen(":3000"))

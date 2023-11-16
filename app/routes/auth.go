@@ -51,7 +51,19 @@ func AuthRoutes(app *fiber.App) {
 	})
 
 	app.Get("/logout", func(c *fiber.Ctx) error {
-		store.Delete("authenticated")
+		sess, err := store.Get(c)
+		if err != nil {
+			panic(err)
+		}
+
+		store.Delete("username")
+
+		// Destroy session
+		if err := sess.Destroy(); err != nil {
+			log.Println(err)
+		}
+
+		log.Println("Session End.")
 
 		return c.Redirect("login")
 	})
