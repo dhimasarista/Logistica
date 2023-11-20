@@ -35,6 +35,7 @@ func main() {
 	routes.DashboardRoutes(app)
 	routes.UnggahSuratRoutes(app)
 	routes.OrdersRoutes(app)
+	routes.InventoryRoutes(app)
 	middlewares.UserAuthorization(app)
 	app.Get("/metrics", monitor.New())
 
