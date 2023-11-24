@@ -30,13 +30,8 @@ func main() {
 	})
 
 	// Rute untuk menampilkan halaman HTML
-	routes.IndexRoutes(app)
-	routes.AuthRoutes(app)
-	routes.DashboardRoutes(app)
-	routes.UnggahSuratRoutes(app)
-	routes.OrdersRoutes(app)
-	routes.InventoryRoutes(app)
-	middlewares.UserAuthorization(app)
+	routes.SetupRoutes(app)
+	middlewares.UserAuthorization(app) // Menangani autorisasi user
 	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000
