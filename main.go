@@ -31,12 +31,12 @@ func main() {
 			return c.Query("noCache") == "true"
 		},
 		Expiration:   0 * time.Minute,
-		CacheControl: true,
+		CacheControl: false,
 	}))
 
 	// Middlewares harus sebelum (Routes)
-	app.Use(middlewares.PathHandler(&store))
 	app.Use(middlewares.UserAuthorization(&store))
+	app.Use(middlewares.PathHandler(&store))
 
 	// Routes
 	routes.SetupRoutes(app, &store)

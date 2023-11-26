@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"fmt"
 	"log"
-	"logistica/app/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -15,21 +13,15 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 		session, err := store.Get(c)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 		username := session.Get("username")
 		defer session.Save()
-		fmt.Println("/dashboard:", username)
-
-		var surat *models.Surat = &models.Surat{}
-		var suratMasuk int = surat.CountSurat("masuk")
-		suratKeluar := surat.CountSurat("keluar")
 
 		// Mengirimkan halaman HTML yang dihasilkan ke browser
 		return c.Render("dashboard", fiber.Map{
-			"path":               path,
-			"user":               username,
-			"total_surat_masuk":  suratMasuk,
-			"total_surat_keluar": suratKeluar,
+			"path": path,
+			"user": username,
 		})
 	},
 	)

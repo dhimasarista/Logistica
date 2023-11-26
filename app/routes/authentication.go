@@ -36,16 +36,12 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		if user.Username != username {
 			log.Println("Username Not Found")
 			return c.Render("login", fiber.Map{
-				"errors": fiber.Map{
-					"message": "Username Not Found.",
-				},
+				"error": "Username Not Found.",
 			})
 		} else if user.Password != password {
 			log.Println("Password Incorrect")
 			return c.Render("login", fiber.Map{
-				"errors": fiber.Map{
-					"message": "Password Incorrect.",
-				},
+				"error": "Password Incorrect.",
 			})
 		}
 		session, err := store.Get(c)
@@ -66,6 +62,7 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		usernameSession := session.Get("username")
 		keys := session.Keys()
 		if err := session.Save(); err != nil {
+			log.Println(err)
 			return err
 		}
 
@@ -78,7 +75,12 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 
 func DeauthenticationRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/logout", func(c *fiber.Ctx) error {
-		session, _ := store.Get(c)
+		session, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		session.Delete("username")
 		session.Destroy()
 		return c.Redirect("/login")
 	})

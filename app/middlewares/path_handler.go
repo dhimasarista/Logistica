@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,12 +25,14 @@ func PathHandler(store *session.Store) fiber.Handler {
 			return err
 		}
 
-		fmt.Println("USername dari Path Handler", username)
-
 		// Jika pengguna sudah login dan mengakses path /login
 		// Alihkan ke path / atau /dashboard
 		if c.OriginalURL() == "/login" && username != nil {
 			return c.Redirect("/")
+		}
+
+		if c.OriginalURL() == "/" && username == nil {
+			return c.Redirect("/login")
 		}
 
 		return c.Next()

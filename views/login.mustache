@@ -246,6 +246,10 @@
                                 <span>Password</span></label>
                             <input name="password" class="input" type="password" name="password"  placeholder="Enter your Password" required>
                         </div>
+                        <div style="color: red;">
+                            <span>{{error}}</span>
+                        </div>
+                        <br>
                         {{#error}}
                             <div style="color: red;">
                                 <span>{{message}}</span>

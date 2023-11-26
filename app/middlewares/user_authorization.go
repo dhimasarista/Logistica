@@ -17,6 +17,7 @@ func UserAuthorization(store *session.Store) fiber.Handler {
 		session, err := store.Get(c)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 
 		// Mendapatkan nilai "username" dari sesi
@@ -25,6 +26,7 @@ func UserAuthorization(store *session.Store) fiber.Handler {
 		// Menyimpan sesi setelah mendapatkan nilai "username"
 		if err := session.Save(); err != nil {
 			log.Println(err)
+			return err
 		}
 
 		// Jika pengguna sudah login, lanjutkan ke handler berikutnya
