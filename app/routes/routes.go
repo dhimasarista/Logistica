@@ -6,7 +6,9 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 	IndexRoutes(app)
-	AuthRoutes(app)
+	// AuthRoutes(app)
+	AuthenticationRoutes(app)
+	DeauthenticationRoutes(app)
 	DashboardRoutes(app)
 	UnggahSuratRoutes(app)
 	OrdersRoutes(app)

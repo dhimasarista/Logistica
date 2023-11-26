@@ -7,8 +7,10 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/template/mustache/v2"
 )
@@ -20,14 +22,16 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
-	app.Static("/", "./public")
 
+	app.Static("/", "./public")
 	// Middleware global untuk menonaktifkan caching
-	app.Use(func(c *fiber.Ctx) error {
-		// Mengatur header Cache-Control untuk menonaktifkan caching
-		c.Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-		return c.Next()
-	})
+	app.Use(cache.New(cache.Config{
+		Next: func(c *fiber.Ctx) bool {
+			return c.Query("noCache") == "true"
+		},
+		Expiration:   0 * time.Minute,
+		CacheControl: true,
+	}))
 
 	// Rute untuk menampilkan halaman HTML
 	routes.SetupRoutes(app)
@@ -35,7 +39,7 @@ func main() {
 	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000
-	log.Fatal(app.Listen(":4500"))
+	log.Fatal(app.Listen(":1500"))
 }
 
 func clearScreen() {

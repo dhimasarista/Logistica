@@ -1,76 +1,92 @@
 package routes
 
-import (
-	"log"
-	"time"
+// import (
+// 	"log"
+// 	"logistica/app/models"
+// 	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
-)
+// 	"github.com/gofiber/fiber/v2"
+// 	"github.com/gofiber/fiber/v2/middleware/session"
+// )
 
-func AuthRoutes(app *fiber.App) {
-	store := session.New()
+// var store *session.Store = session.New()
 
-	app.Get("/login", func(c *fiber.Ctx) error {
+// func AuthenticationRoutes(app *fiber.App) {
+// 	// Middleware untuk session
 
-		return c.Render("login", fiber.Map{
-			"Title": "LOGISTICA",
-		})
-	})
+// 	app.Get("/login", func(c *fiber.Ctx) error {
 
-	app.Post("/login", func(c *fiber.Ctx) error {
-		session, err := store.Get(c)
-		if err != nil {
-			log.Println(err)
-			return c.SendStatus(fiber.StatusInternalServerError)
-		}
+// 		return c.Render("login", fiber.Map{
+// 			"Title": "LOGISTICA",
+// 		})
+// 	})
 
-		usernameForm := c.FormValue("username")
-		passwordForm := c.FormValue("password")
+// 	app.Post("/login", func(c *fiber.Ctx) error {
+// 		username := c.FormValue("username")
+// 		password := c.FormValue("password")
+// 		stayLoggedIn := c.FormValue("stay")
+// 		var loggedIn bool = false
 
-		log.Println(usernameForm, passwordForm)
+// 		users := models.User{}
+// 		user := users.FindAll()[0]
 
-		if isAuthenticated(usernameForm, passwordForm) {
-			session.Set("username", usernameForm)
-			session.SetExpiry(time.Second * 36000)
+// 		if user.Username != username {
+// 			log.Println("Username Not Found")
+// 			return c.Render("login", fiber.Map{
+// 				"errors": []fiber.Map{
+// 					{
+// 						"message": "Username Not Found.",
+// 					},
+// 				},
+// 			})
+// 		} else if user.Password != password {
+// 			log.Println("Password Incorrect")
+// 			return c.Render("login", fiber.Map{
+// 				"errors": []fiber.Map{
+// 					{
+// 						"message": "Password Incorrect.",
+// 					},
+// 				},
+// 			})
+// 		}
+// 		session, err := store.Get(c)
+// 		if err != nil {
+// 			return c.Redirect("/505")
+// 		}
 
-			if err := session.Save(); err != nil {
-				log.Println(err)
-				return c.SendStatus(fiber.StatusInternalServerError)
-			}
+// 		if stayLoggedIn == "true" {
+// 			loggedIn = true
+// 		}
 
-			log.Println("Berhasil Login")
-			return c.Redirect("/dashboard")
-		}
+// 		session.Set("Username", user.Username)
+// 		session.Set("UserId", user.Password)
+// 		session.Set("LoggedIn", loggedIn)
+// 		session.SetExpiry(time.Minute * 60)
+// 		store.CookieHTTPOnly = true
+// 		store.CookieSecure = true
+// 		session.Save()
+// 		log.Println("Berhasil Loggin")
+// 		return c.Redirect("/dashboard")
+// 	})
+// }
 
-		log.Println("Gagal Login")
-		return c.Render("login", fiber.Map{
-			"error":   true,
-			"message": "Login Gagal. Silahkan Coba Lagi",
-		})
-	})
+// func DeauthenticationRoutes(app *fiber.App) {
+// 	app.Get("/logout", func(c *fiber.Ctx) error {
+// 		session, _ := store.Get(c)
+// 		session.Destroy()
+// 		return c.Redirect("/login")
+// 	})
 
-	app.Get("/logout", func(c *fiber.Ctx) error {
-		sess, err := store.Get(c)
-		if err != nil {
-			panic(err)
-		}
+// }
 
-		store.Delete("username")
+// // func IsAuthenticated(c *fiber.Ctx) error {
+// // 	session, err := store.Get(c)
+// // 	if err != nil {
+// // 		return c.Redirect("/500")
+// // 	}
 
-		// Destroy session
-		if err := sess.Destroy(); err != nil {
-			log.Println(err)
-		}
+// // 	username := session.Get("Username")
+// // 	if username == "" {
 
-		log.Println("Session End.")
-
-		return c.Redirect("login")
-	})
-}
-
-func isAuthenticated(username, password string) bool {
-	// Gantilah logika autentikasi sesuai dengan kebutuhan Anda.
-	// Ini adalah contoh sederhana. Anda harus memeriksa username dan password dalam basis data, biasanya.
-	return username == "admin" && password == "vancouver"
-}
+// // 	}
+// // }
