@@ -1,21 +1,31 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"logistica/app/models"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
-func AuthenticationRoutes(app *fiber.App) {
+// var store *session.Store = session.New()
+
+func AuthenticationRoutes(app *fiber.App, store *session.Store) {
+	// Middleware untuk session
+
+	app.Get("/login", func(c *fiber.Ctx) error {
+
+		return c.Render("login", fiber.Map{
+			"Title": "LOGISTICA",
+		})
+	})
 
 	app.Post("/login", func(c *fiber.Ctx) error {
 		username := c.FormValue("username")
 		password := c.FormValue("password")
 		stayLoggedIn := c.FormValue("stay")
-		var loggedIn time.Time = time.Now().Add(time.Minute * 60)
+		var loggedIn bool = false
 
 		users := models.User{}
 		user := users.FindAll()[0]
@@ -23,46 +33,53 @@ func AuthenticationRoutes(app *fiber.App) {
 		if user.Username != username {
 			log.Println("Username Not Found")
 			return c.Render("login", fiber.Map{
-				"errors": []fiber.Map{
-					{
-						"message": "Username Not Found.",
-					},
+				"errors": fiber.Map{
+					"message": "Username Not Found.",
 				},
 			})
 		} else if user.Password != password {
 			log.Println("Password Incorrect")
 			return c.Render("login", fiber.Map{
-				"errors": []fiber.Map{
-					{
-						"message": "Password Incorrect.",
-					},
+				"errors": fiber.Map{
+					"message": "Password Incorrect.",
 				},
 			})
 		}
-
-		if stayLoggedIn == "true" {
-			loggedIn = time.Now().Add(time.Hour * 24 * 7)
+		session, err := store.Get(c)
+		if err != nil {
+			return c.Redirect("/505")
 		}
 
-		c.Cookie(&fiber.Cookie{
-			Name:     "user",
-			Value:    user.Username,
-			Expires:  loggedIn,
-			HTTPOnly: true,
-			Secure:   true,
-		})
-		fmt.Println("Berhasil Login")
+		if stayLoggedIn == "true" {
+			loggedIn = true
+		}
 
+		session.Set("username", user.Username)
+		session.Set("user_id", user.Password)
+		session.Set("logged_in", loggedIn)
+		session.SetExpiry(time.Minute * 60)
+		store.CookieHTTPOnly = true
+		store.CookieSecure = true
+		usernameSession := session.Get("username")
+		keys := session.Keys()
+		if err := session.Save(); err != nil {
+			return err
+		}
+
+		log.Println("Berhasil Loggin")
+		log.Println(usernameSession)
+		log.Println(keys)
 		return c.Redirect("/dashboard")
 	})
-
 }
 
-func DeauthenticationRoutes(app *fiber.App) {
+func DeauthenticationRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/logout", func(c *fiber.Ctx) error {
-		c.ClearCookie()
+		session, _ := store.Get(c)
+		session.Destroy()
 		return c.Redirect("/login")
 	})
+
 }
 
 // func IsAuthenticated(c *fiber.Ctx) error {

@@ -4,19 +4,20 @@ import (
 	"log"
 	"logistica/app/middlewares"
 	"logistica/app/routes"
-	"os"
-	"os/exec"
-	"runtime"
+	"logistica/app/utility"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/mustache/v2"
 )
 
+var store = *session.New()
+
 func main() {
-	clearScreen()
+	utility.ClearScreen()
 
 	engine := mustache.New("./views", ".mustache")
 	app := fiber.New(fiber.Config{
@@ -33,24 +34,13 @@ func main() {
 		CacheControl: true,
 	}))
 
-	// Rute untuk menampilkan halaman HTML
-	routes.SetupRoutes(app)
-	middlewares.UserAuthorization(app) // Menangani autorisasi user
+	// Routes
+	routes.SetupRoutes(app, &store)
 	app.Get("/metrics", monitor.New())
+
+	// Middlewares
+	middlewares.UserAuthorization(app, &store) // Menangani autorisasi user
 
 	// Menjalankan server pada port 3000
 	log.Fatal(app.Listen(":1500"))
-}
-
-func clearScreen() {
-	// Menentukan perintah untuk membersihkan layar sesuai dengan sistem operasi yang digunakan
-	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/c", "cls")
-	} else {
-		cmd = exec.Command("clear")
-	}
-
-	cmd.Stdout = os.Stdout
-	cmd.Run()
 }
