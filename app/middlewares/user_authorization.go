@@ -1,28 +1,43 @@
 package middlewares
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
-func UserAuthorization(app *fiber.App, store *session.Store) {
-	app.Use(func(c *fiber.Ctx) error {
+// Menangani autorisasi user
+func UserAuthorization(store *session.Store) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// Mengalami alamat path
+		var path string = c.OriginalURL()
+
+		// Mengambil data sesi yang tersimpan
 		session, err := store.Get(c)
 		if err != nil {
-			return err
+			log.Println(err)
 		}
-		username := session.Get("username")
-		session.Save()
 
-		// Check if the user is not logged in
+		// Mendapatkan nilai "username" dari sesi
+		username := session.Get("username")
+
+		// Menyimpan sesi setelah mendapatkan nilai "username"
+		if err := session.Save(); err != nil {
+			log.Println(err)
+		}
+
+		// Jika pengguna sudah login, lanjutkan ke handler berikutnya
 		if username != nil {
-			fmt.Println("UserAuth != nil:", username)
 			return c.Next()
 		}
-		fmt.Println("UserAuth:", username)
 
+		// Pengecualian path yang bisa diakses tanpa login
+		if path == "/" || path == "/login" {
+			return c.Next()
+		}
+
+		// Jika pengguna belum login, arahkan ke halaman login
 		return c.Redirect("/login")
-	})
+	}
 }

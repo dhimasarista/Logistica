@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"log"
 	"logistica/app/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,10 @@ import (
 func DashboardRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/dashboard", func(c *fiber.Ctx) error {
 		var path string = c.Path()
-		session, _ := store.Get(c)
+		session, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+		}
 		username := session.Get("username")
 		defer session.Save()
 		fmt.Println("/dashboard:", username)

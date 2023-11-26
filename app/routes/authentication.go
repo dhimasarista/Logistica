@@ -12,10 +12,13 @@ import (
 // var store *session.Store = session.New()
 
 func AuthenticationRoutes(app *fiber.App, store *session.Store) {
-	// Middleware untuk session
-
 	app.Get("/login", func(c *fiber.Ctx) error {
+		// session, _ := store.Get(c)
 
+		// username := session.Get("username")
+		// if username != nil {
+		// 	return c.Redirect("/")
+		// }
 		return c.Render("login", fiber.Map{
 			"Title": "LOGISTICA",
 		})

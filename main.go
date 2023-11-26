@@ -34,13 +34,14 @@ func main() {
 		CacheControl: true,
 	}))
 
+	// Middlewares harus sebelum (Routes)
+	app.Use(middlewares.PathHandler(&store))
+	app.Use(middlewares.UserAuthorization(&store))
+
 	// Routes
 	routes.SetupRoutes(app, &store)
 	app.Get("/metrics", monitor.New())
 
-	// Middlewares
-	middlewares.UserAuthorization(app, &store) // Menangani autorisasi user
-
 	// Menjalankan server pada port 3000
-	log.Fatal(app.Listen(":1500"))
+	log.Fatal(app.Listen(":2500"))
 }
