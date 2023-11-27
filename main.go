@@ -7,6 +7,7 @@ import (
 	"logistica/app/utility"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
@@ -15,6 +16,7 @@ import (
 )
 
 var store = *session.New()
+var client = *resty.New()
 
 func main() {
 	utility.ClearScreen()
@@ -42,7 +44,7 @@ func main() {
 	app.Use(middlewares.PathHandler(&store))
 
 	// Routes
-	routes.SetupRoutes(app, &store)
+	routes.SetupRoutes(app, &store, &client)
 	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000

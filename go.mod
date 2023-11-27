@@ -10,8 +10,10 @@ require (
 
 require (
 	github.com/alexedwards/scs/v2 v2.7.0 // indirect
+	github.com/go-resty/resty/v2 v2.10.0 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
+	golang.org/x/net v0.17.0 // indirect
 )
 
 require (
