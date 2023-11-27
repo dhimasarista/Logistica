@@ -10,10 +10,9 @@ func SetupRoutes(app *fiber.App, store *session.Store, client *resty.Client) {
 	IndexRoutes(app)
 	AuthenticationRoutes(app, store)
 	DeauthenticationRoutes(app, store)
-	DashboardRoutes(app, store, client)
+	DashboardRoutes(app, store)
 	UnggahSuratRoutes(app)
 	OrdersRoutes(app)
 	InventoryRoutes(app)
-	NotFoundError(app)
-	InternalServerError(app)
+	ErrorRoutes(app, store)
 }

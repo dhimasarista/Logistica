@@ -1,0 +1,36 @@
+<div class="container-fluid">
+
+    <!-- 404 Error Text -->
+    <div class="text-center">
+        <div id="error-code" class="error mx-auto" data-text=""></div>
+        <p id="error-title" class="lead text-gray-800 mb-5"></p>
+        <p class="text-gray-500 mb-0" id="error-message"></p>
+        <a href="/dashboard">&larr; Back to Dashboard</a>
+    </div>
+    <script>
+        // Query 404: ?code=404&title=Page+Not+Found&message=It+looks+like+you+found+a+glitch+in+the+matrix...
+        // Query 500: ?code=500&title=Internal+Server+Error&message=We+will+fix+it+as+soon+as+possible...
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = urlParams.get("code");
+        const errorTitle = urlParams.get("title");
+        const errorMessage = urlParams.get("message");
+
+        const errorMessageElement = document.getElementById("error-message");
+        const errorCodeElement = document.getElementById("error-code");
+        const errorTitleElement = document.getElementById("error-title");
+
+        errorCodeElement.setAttribute("data-text", errorCode);
+        errorCodeElement.innerText = errorCode;
+        errorTitleElement.innerText = errorTitle;
+        errorMessageElement.innerText = errorMessage;
+        
+
+        // if () {
+        //     errorMessageElement.innerText = errorMessage;
+        // } else if (){
+
+        // } else {
+        //     errorMessageElement.innerText = 'We Will Fix it.';
+        // }
+    </script>
+</div>

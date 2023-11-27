@@ -5,11 +5,9 @@ import (
 	"logistica/app/middlewares"
 	"logistica/app/routes"
 	"logistica/app/utility"
-	"time"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/mustache/v2"
@@ -25,23 +23,25 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			if c.Response().StatusCode() == 404 {
-				return c.Redirect("/404")
-			} else {
-				return c.Redirect("/500")
-			}
+			return c.Redirect("/error?code=404&title=Page+Not+Found&message=It+looks+like+you+found+a+glitch+in+the+matrix...")
 		},
 	})
-
+	app.Use(func(c *fiber.Ctx) error {
+		if err := c.Next(); err != nil {
+			c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			return err
+		}
+		return nil
+	})
 	app.Static("/", "./public")
 	// Middleware global untuk menonaktifkan caching
-	app.Use(cache.New(cache.Config{
-		Next: func(c *fiber.Ctx) bool {
-			return c.Query("noCache") == "true"
-		},
-		Expiration:   0 * time.Nanosecond,
-		CacheControl: true,
-	}))
+	// app.Use(cache.New(cache.Config{
+	// 	Next: func(c *fiber.Ctx) bool {
+	// 		return c.Query("noCache") == "true"
+	// 	},
+	// 	Expiration:   0 * time.Nanosecond,
+	// 	CacheControl: true,
+	// }))
 
 	// Middlewares harus sebelum (Routes)
 	app.Use(middlewares.UserAuthorization(&store))
@@ -52,5 +52,5 @@ func main() {
 	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000
-	log.Fatal(app.Listen(":2500"))
+	log.Fatal(app.Listen(":9500"))
 }

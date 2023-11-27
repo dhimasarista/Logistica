@@ -13,7 +13,7 @@ func NotFoundHandler(c *fiber.Ctx) error {
 func ISEHandler(c *fiber.Ctx) error {
 	var path string = c.Path()
 
-	return c.Render("error-500", fiber.Map{
+	return c.Render("error_page", fiber.Map{
 		"path": path,
 	})
 }
