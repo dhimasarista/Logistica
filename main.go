@@ -22,6 +22,9 @@ func main() {
 	engine := mustache.New("./views", ".mustache")
 	app := fiber.New(fiber.Config{
 		Views: engine,
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			return c.Redirect("/404")
+		},
 	})
 
 	app.Static("/", "./public")
@@ -30,8 +33,8 @@ func main() {
 		Next: func(c *fiber.Ctx) bool {
 			return c.Query("noCache") == "true"
 		},
-		Expiration:   0 * time.Minute,
-		CacheControl: false,
+		Expiration:   0 * time.Nanosecond,
+		CacheControl: true,
 	}))
 
 	// Middlewares harus sebelum (Routes)

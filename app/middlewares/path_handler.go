@@ -35,6 +35,10 @@ func PathHandler(store *session.Store) fiber.Handler {
 			return c.Redirect("/login")
 		}
 
+		if c.Response().StatusCode() == 404 {
+			return c.Redirect("/404", fiber.StatusNotFound)
+		}
+
 		return c.Next()
 	}
 }
