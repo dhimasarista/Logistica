@@ -1,0 +1,7 @@
+Menginstall Golang Migrate:
+=> go install -tags "mysql, postgresql" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+Membuat File/Table Untuk Migrate:
+=> migrate create -ext sql -dir app/database/migrations create_table_users
+Untuk Mengeksekusi Migrate:
+=> migrate -database "mysql://root@tcp(localhost:3306)/logistica" -path app/database/migrations up
+=> migrate -database "mysql://root@tcp(localhost:3306)/logistica" -path app/database/migrations down
