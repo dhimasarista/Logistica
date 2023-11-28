@@ -1,0 +1,6 @@
+CREATE TABLE users(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    username VARCHAR(255),
+    password TEXT, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE = InnoDB;
