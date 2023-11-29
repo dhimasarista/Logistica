@@ -33,7 +33,7 @@
     </li>
     <hr class="sidebar-divider my-0">
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item orders-path">
+    <li class="nav-item inventory-path">
         <a class="nav-link" href="/inventory">
             <i>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 14 14"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="6.5" height="6.5" x="5.5" y="3" rx="1"/><path d="M4 12h7.61a1 1 0 0 1 .7.29l1.19 1.21M.5.5h1a1 1 0 0 1 1 1V10M4 11.75A2.11 2.11 0 0 1 4 12a1.74 1.74 0 1 1 0-.25ZM8.5 7h1"/></g></svg>
@@ -83,6 +83,7 @@
 
     const dashboardPath = document.querySelector(".dashboard-path");
     const ordersPath = document.querySelector(".orders-path");
+    const inventoryPath = document.querySelector(".inventory-path");
     const unggahSuratPath = document.querySelector(".unggahsurat-path");
     if (path === "/dashboard") {
         dashboardPath.classList.add("active");
@@ -90,5 +91,7 @@
         ordersPath.classList.add("active");
     } else if (path === "/unggahsurat") {
         unggahSuratPath.classList.add("active");
+    } else if (path === "/inventory") {
+        inventoryPath.classList.add("active");
     }
 </script>

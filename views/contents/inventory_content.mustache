@@ -8,13 +8,14 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm text-dark"><i>Add Stocks</i></a>
+        <div id="add-stocks-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Add Stocks</i></a></div>
+        <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm hidden"><i>Return</i></a></div>
     </div>
     <!-- DataTales Example -->
-    <div class="card shadow mb-4" id="card-order">
+    <div class="card shadow mb-4" id="card-products">
         <div class="card">
             <div class="card-header py-3">
-                <h5 class="h4 mb-0 text-gray-800">Products</h5>
+                <h6 class="m-0 font-weight-bold text-primary">Products</h6>
             </div>
             <div class="card-body" id="surat-masuk">
                 <div class="table-responsive">
@@ -56,6 +57,14 @@
                                 <td>980</td>
                                 <td>4.153.000</td>
                             </tr>
+                            <tr>
+                                <td>0435843957346</td>
+                                <td>DA PSU 80W Bronze</td>
+                                <td>85043859347549</td>
+                                <td>Digital Alliance</td>
+                                <td>98</td>
+                                <td>560.000</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -88,7 +97,7 @@
         </script>      
     </div>
 
-    <div class="card shadow mb-4" id="card-add-order" hidden>
+    <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Input Surat</h6>
@@ -192,8 +201,23 @@
 </div>
 
 <script>
-    const cardOrder = document.getElementById("card-order");
-    const cardAddOrder = document.getElementById("card-add-order");
+    const cardProducts = document.getElementById("card-products");
+    const cardAddStocks = document.getElementById("card-add-stocks");
+    const addStocksButton = document.getElementById("add-stocks-button")
+    // const inventoryButton = document.getElementById("inventory-button");
+    const returnButton = document.getElementById("return-button")
 
-    
+    addStocksButton.addEventListener("click", () => {
+        cardAddStocks.removeAttribute("hidden");
+        returnButton.removeAttribute("hidden");
+        addStocksButton.setAttribute("hidden", true);
+        cardProducts.setAttribute("hidden",true)
+    });
+    returnButton.addEventListener("click", () => {
+        cardAddStocks.classList.add("hidden");
+        cardAddStocks.setAttribute("hidden", true);
+        returnButton.setAttribute("hidden", true);
+        addStocksButton.removeAttribute("hidden");
+        cardProducts.removeAttribute("hidden");
+    });
 </script>

@@ -1,11 +1,27 @@
 package routes
 
 import (
-	"logistica/app/controllers"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
-func InventoryRoutes(app *fiber.App) {
-	app.Get("/inventory", controllers.InventoryRender)
+func InventoryRoutes(app *fiber.App, store *session.Store) {
+	app.Get("/inventory", func(c *fiber.Ctx) error {
+		var path string = c.Path()
+		session, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		username := session.Get("username")
+		defer session.Save()
+
+		return c.Render("inventory_page", fiber.Map{
+			"path": path,
+			"user": username,
+		})
+	},
+	)
 }
