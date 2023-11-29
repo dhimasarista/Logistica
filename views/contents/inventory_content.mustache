@@ -98,7 +98,50 @@
     </div>
 
     <script>
-        const products = ["motor", "mobil"];
+        function checkNewProduct() {
+              var productSelect = document.getElementById('productName');
+              var existingProductDetails = document.getElementById('existingProductDetails');
+              var newProductInput = document.getElementById('newProductInput');
+
+            if (productSelect.value === 'newProduct') {
+                existingProductDetails.style.display = 'none';
+                newProductInput.style.display = 'block';
+            } else {
+                existingProductDetails.style.display = 'block';
+                newProductInput.style.display = 'none';
+
+                // Menampilkan data produk yang sudah ada
+                var serialNumber = '';  // Ganti dengan data yang sesuai
+                var manufacturer = '';   // Ganti dengan data yang sesuai
+
+                document.getElementById('serialNumber').value = serialNumber;
+                document.getElementById('manufacturer').value = manufacturer;
+            }
+        }
+
+        document.getElementById("button-cancel-new-product").addEventListener("click", (event) => {
+            event.preventDefault();
+            var productSelect = document.getElementById('productName');
+            var existingProductDetails = document.getElementById('existingProductDetails');
+            var newProductInput = document.getElementById('newProductInput');
+
+            existingProductDetails.style.display = 'block';
+            newProductInput.style.display = 'none';
+        });
+
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var productName = document.getElementById('productName').value;
+        var newProductName = document.getElementById('newProductName').value;
+
+        // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
+        if (productName === 'newProduct' && newProductName.trim() !== '') {
+            alert('Menambahkan produk baru: ' + newProductName);
+        } else {
+            alert('Memilih produk: ' + productName);
+        }
+        });
     </script>
     <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
@@ -109,57 +152,97 @@
                 <div class="form-wrap">	
                     <form id="survey-form">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="judul-surat-label" for="judul-surat"></label>
-                                    <input type="text" name="judul-surat" id="judul-surat" placeholder="Masukkan judul surat" class="form-control" required>
+                            <div class="col-md-12">
+                            <div id="existingProductDetails">
+                                    <div class="form-group">
+                                        <label id="judul-surat-label" for="product_name">Product Name</label>
+                                        <select class="form-control scrollable-menu" id="productName" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Product</option>
+                                            <option value="newProduct">Tambah Produk Baru</option>
+                                            <option value="product1">Produk 1</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="nomor-surat-label" for="nomor-surat">Nomor Surat</label>
-                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="Masukkan nomor surat" class="form-control" required>
+                        </div>
+                        <div class="row" id="newProductInput" style="display: none;">
+                            <div class="col-md-12">
+                                <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
+                                <div class="input-group mb-3">
+                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
+                                    <div class="input-group-append">
+                                      <a href="#" class="input-group-text" id="basic-addon2" id="button-cancel-new-product">cancel</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
+                            
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label id="nomor-surat-label" for="nomor-surat">Serial Number</label>
+                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: S23864872548" class="form-control" required>
+                                </div>
+                                <!-- <div class="form-group">
                                     <label id="number-label" for="number">Tanggal Surat Dibuat </label>
                                     <input class="form-control" id="tanggal_surat" name="tanggal_surat" type="date" pattern="\d{1,2}/\d {1,2}/\d{4}"/>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Jenis Surat</label>
-                                    <select id="dropdown" name="role" class="form-control" required>
-                                        <option disabled selected value>Select</option>
-                                        <option value="masuk">Surat Masuk</option>
-                                        <option value="keluar">Surat Keluar</option>
-                                        <option value="lainnya">Lainnya</option>
-                                    </select>
+                                    <label id="pengirim-label" for="manufacturer">Manufacturer</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Google Inc."/>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="pengirim-label" for="pengirim">Pengirim</label>
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Masukkan pengirim"/>
+                                    <label id="pengirim-label" for="pengirim">Stock Amount</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: 1024."/>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Unggah Berkas</label>
-                                    <input type="file" class="form-control" name="berkas-surat" id="berkas-surat">
-                                    </div>
+                                    <label id="pengirim-label" for="pengirim">Price</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: $2.240.000"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="pengirim-label" for="weight">Weight</label>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: 1024."/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="judul-surat-label" for="product_name">Select Category</label>
+                                    <select class="form-control scrollable-menu" id="productName" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                        <option value="" selected disabled>Select Category</option>
+                                        <option value="product1">Produk 1</option>
+                                        <option value="product2">Produk 2</option>
+                                        <option value="product3">Produk 3</option>
+                                      </select>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Catatan <small>(optional)</small></label>
+                                    <label>Notes <small>(optional)</small></label>
                                     <textarea  id="comments" class="form-control" name="comment" placeholder="Masukkan keterangan..."></textarea>
                                 </div>
                             </div>
@@ -167,7 +250,7 @@
                         
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Unggah</button>
+                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
                             </div>
                         </div>
 
