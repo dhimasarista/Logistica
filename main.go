@@ -44,8 +44,8 @@ func main() {
 	// }))
 
 	// Middlewares harus sebelum (Routes)
-	app.Use(middlewares.UserAuthorization(&store))
 	app.Use(middlewares.PathHandler(&store))
+	app.Use(middlewares.UserAuthorization(&store))
 
 	// Routes
 	routes.SetupRoutes(app, &store, &client)
