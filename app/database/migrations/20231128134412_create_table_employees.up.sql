@@ -8,4 +8,4 @@ CREATE TABLE employees(
     is_superuser TINYINT NOT NULL
 ) ENGINE = InnoDB;
 
--- INSERT INTO employees VALUES(1, "Administrator", "0", "0", "Administrator", 1, 1);
+INSERT INTO employees VALUES(1, "Administrator", "0", "0", "Administrator", 1, 1);

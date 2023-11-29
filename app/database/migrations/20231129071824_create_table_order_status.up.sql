@@ -1,0 +1,4 @@
+CREATE TABLE order_status(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name VARCHAR(16)
+);
