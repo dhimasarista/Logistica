@@ -119,15 +119,14 @@
             }
         }
 
-        document.getElementById("button-cancel-new-product").addEventListener("click", (event) => {
-            event.preventDefault();
+        function cancelNewProduct() {
             var productSelect = document.getElementById('productName');
             var existingProductDetails = document.getElementById('existingProductDetails');
             var newProductInput = document.getElementById('newProductInput');
 
             existingProductDetails.style.display = 'block';
-            newProductInput.style.display = 'none';
-        });
+            newProductInput.style.display = 'none';   
+        }
 
         document.getElementById('productForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -181,7 +180,7 @@
                                 <div class="input-group mb-3">
                                     <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
                                     <div class="input-group-append">
-                                      <a href="#" class="input-group-text" id="basic-addon2" id="button-cancel-new-product">cancel</a>
+                                      <a href="#" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
                                     </div>
                                 </div>
                             </div>
