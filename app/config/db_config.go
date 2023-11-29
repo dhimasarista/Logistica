@@ -5,9 +5,9 @@ import (
 	"log"
 )
 
-func GetDBConnect() *sql.DB {
+func ConnectDB() *sql.DB {
 	// Membuat koneksi database dengan database pooling
-	db, err := sql.Open("mysql", "root@tcp(localhost:3306)/sipsurat?parseTime=true")
+	db, err := sql.Open("mysql", "root@tcp(localhost:3306)/logistica_db?parseTime=true")
 	if err != nil {
 		log.Println(err)
 	}

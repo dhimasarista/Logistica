@@ -24,7 +24,7 @@ type Surat struct {
 }
 
 func (s *Surat) GetById(id int) error {
-	db := config.GetDBConnect()
+	db := config.ConnectDB()
 	query := "SELECT id, nomor_surat, judul_surat, tanggal_surat, pengirim, penerima, perihal, user_id, jenis_surat, catatan, created_at FROM surat WHERE id = ?"
 	err := db.QueryRow(query, id).Scan(
 		&s.ID,
@@ -46,7 +46,7 @@ func (s *Surat) GetById(id int) error {
 }
 
 func (s *Surat) FindAll() ([]Surat, error) {
-	db := config.GetDBConnect()
+	db := config.ConnectDB()
 
 	ctx := context.Background()
 	query := "SELECT id, nomor_surat, judul_surat, tanggal_surat, pengirim, penerima, perihal, user_id, jenis_surat, catatan, created_at FROM surat"
@@ -82,7 +82,7 @@ func (s *Surat) FindAll() ([]Surat, error) {
 }
 
 func (s *Surat) CountSurat(jenis string) int {
-	db := config.GetDBConnect()
+	db := config.ConnectDB()
 	query := "SELECT COUNT(*) AS total FROM surat WHERE jenis_surat = ?"
 	rows, err := db.Query(query, jenis)
 	if err != nil {
