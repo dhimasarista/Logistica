@@ -23,7 +23,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			return c.Redirect("/error?code=404&title=Page+Not+Found&message=It+looks+like+you+found+a+glitch+in+the+matrix...")
+			return c.Redirect("500")
 		},
 	})
 	app.Use(func(c *fiber.Ctx) error {

@@ -97,10 +97,13 @@
         </script>      
     </div>
 
+    <script>
+        const products = ["motor", "mobil"];
+    </script>
     <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Input Surat</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Add Stock</h6>
             </div>
             <div class="card-body">
                 <div class="form-wrap">	
@@ -108,7 +111,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="judul-surat-label" for="judul-surat">Judul Surat</label>
+                                    <label id="judul-surat-label" for="judul-surat"></label>
                                     <input type="text" name="judul-surat" id="judul-surat" placeholder="Masukkan judul surat" class="form-control" required>
                                 </div>
                             </div>
@@ -173,6 +176,8 @@
             </div>
         </div>
         
+    </div>
+
         <script>
             function showTab(tabId) {
                 // Sembunyikan semua card body
@@ -195,8 +200,6 @@
                 clickedLink.classList.add('active');
             }
         </script>      
-    </div>
-
 
 </div>
 
