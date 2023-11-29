@@ -7,3 +7,5 @@ CREATE TABLE employees(
     is_user TINYINT NOT NULL,
     is_superuser TINYINT NOT NULL
 ) ENGINE = InnoDB;
+
+-- INSERT INTO employees VALUES(1, "Administrator", "0", "0", "Administrator", 1, 1);
