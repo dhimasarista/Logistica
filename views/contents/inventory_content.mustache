@@ -103,9 +103,26 @@
               const existingProduct = document.getElementById('existing-product');
               const newProductInput = document.getElementById('new-product-input');
 
+              const serialNumberForm = document.getElementById('serial_number_form');
+              const manufacturerForm = document.getElementById('manufacturer_form');
+              const priceForm = document.getElementById("price-form");
+              const weightForm = document.getElementById("weight-form");
+              const stockAmountForm = document.getElementById("stock-amount-form");
+
             if (productSelect.value === 'newProduct') {
                 existingProduct.style.display = 'none';
                 newProductInput.style.display = 'block';
+
+                serialNumberForm.value = null;
+                manufacturerForm.value = null;
+                priceForm.value = null;
+                weightForm.value = null;
+                stockAmountForm.value = null;
+
+                serialNumberForm.removeAttribute("disabled");
+                manufacturerForm.removeAttribute("disabled");
+                priceForm.removeAttribute("disabled");
+                weightForm.removeAttribute("disabled");
             } else {
                 existingProduct.style.display = 'block';
                 newProductInput.style.display = 'none';
@@ -115,10 +132,6 @@
                         // Menampilkan data produk yang sudah ada
                         const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
                         const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-                        const serialNumberForm = document.getElementById('serial_number_form');
-                        const manufacturerForm = document.getElementById('manufacturer_form');
-                        const priceForm = document.getElementById("price-form");
-                        const weightForm = document.getElementById("weight-form");
 
                         serialNumberForm.value = serialNumber;
                         serialNumberForm.setAttribute("disabled", true);
@@ -138,6 +151,18 @@
             const productSelect = document.getElementById('product-name');
             const existingProduct = document.getElementById('existing-product');
             const newProductInput = document.getElementById('new-product-input');
+
+            const serialNumberForm = document.getElementById('serial_number_form');
+            const manufacturerForm = document.getElementById('manufacturer_form');
+            const priceForm = document.getElementById("price-form");
+            const weightForm = document.getElementById("weight-form");
+            const stockAmountForm = document.getElementById("stock-amount-form");
+
+            serialNumberForm.value = null;
+            manufacturerForm.value = null;
+            priceForm.value = null;
+            weightForm.value = null;
+            stockAmountForm.value = null;
 
             existingProduct.style.display = 'block';
             newProductInput.style.display = 'none';   
@@ -228,21 +253,21 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="manufacturer_label" for="manufacturer">Manufacturer</label>
-                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc."/>
+                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc"/>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="pengirim-label" for="pengirim">Stock Amount</label>
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: 1024."/>
+                                    <label id="pengirim-label" for="stock">Stock Amount</label>
+                                    <input type="stock" name="stock" id="stock-amount-form" class="form-control" placeholder="Ex: 1024"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="price_label" for="pengirim">Price</label>
-                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: $2.240.000"/>
+                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +275,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="pengirim-label" for="weight">Weight</label>
-                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024."/>
+                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -269,7 +294,7 @@
                                 <div class="form-group" id="new-category" style="display: none;">
                                     <label id="pengirim-label" for="weight">New Category</label>
                                     <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Alex."/>
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Processor"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
                                     </div>
@@ -281,7 +306,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Notes <small>(optional)</small></label>
-                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Masukkan keterangan..."></textarea>
+                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Write somethings..."></textarea>
                                 </div>
                             </div>
                         </div>
