@@ -1,15 +1,9 @@
-<script>
-    const array = [];
-    `{{#surat-masuk}}`
-    array.push(`{{judulSurat}}`)
-    `{{/surat-masuk}}`
-</script>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
         <div id="add-stocks-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Add Stocks</i></a></div>
-        <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm hidden"><i>Return</i></a></div>
+        <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Return</i></a></div>
     </div>
     <!-- DataTales Example -->
     <div class="card shadow mb-4" id="card-products">
@@ -17,28 +11,6 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Products</h6>
             </div>
-            <script>
-                function showTab(tabId) {
-                    // Sembunyikan semua card body
-                    var cardBodies = document.getElementsByClassName('card-body');
-                    for (var i = 0; i < cardBodies.length; i++) {
-                        cardBodies[i].style.display = 'none';
-                    }
-            
-                    // Hapus kelas "active" dari semua tautan
-                    var navLinks = document.getElementsByClassName('nav-link');
-                    for (var j = 0; j < navLinks.length; j++) {
-                        navLinks[j].classList.remove('active');
-                    }
-            
-                    // Tampilkan card body dengan id yang sesuai
-                    document.getElementById(tabId).style.display = 'block';
-            
-                    // Tambahkan kelas "active" pada tautan yang diklik
-                    var clickedLink = event.currentTarget;
-                    clickedLink.classList.add('active');
-                }
-            </script>  
             <div class="card-body" id="surat-masuk">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
@@ -94,11 +66,38 @@
             <div class="card-body" id="surat-keluar" style="display: none;">
             </div>
         </div>
-        
-    
     </div>
+ 
 
     <script>
+        const products = [{
+            "id": 10002,
+            "name": "Intel i5 5600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "1.640.600",
+            "weight": 240,
+            "category": "Processor",
+            "stock": 64,
+        },{
+            "id": 10004,
+            "name": "Intel i7 7600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "1.890.600",
+            "weight": 239,
+            "category": "Processor",
+            "stock": 48,
+        },{
+            "id": 10003,
+            "name": "Intel i9 9600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "2.640.600",
+            "weight": 238,
+            "category": "Processor",
+            "stock": 12,
+        }];
         function checkNewProduct() {
               const productSelect = document.getElementById('product-name');
               const existingProduct = document.getElementById('existing-product');
@@ -111,22 +110,27 @@
                 existingProduct.style.display = 'block';
                 newProductInput.style.display = 'none';
 
-                // Menampilkan data produk yang sudah ada
-                const serialNumber = 'S249857439857345';  // Ganti dengan data yang sesuai
-                const manufacturer = 'PT. Hirota Technology Indonesia';   // Ganti dengan data yang sesuai
-                const serialNumberForm = document.getElementById('serial_number_form');
-                const manufacturerForm = document.getElementById('manufacturer_form');
-                const priceForm = document.getElementById("price-form");
-                const weightForm = document.getElementById("weight-form");
+                for (let index = 0; index < products.length; index++) {
+                    if (products[index]["id"] == parseInt(productSelect.value)) {
+                        // Menampilkan data produk yang sudah ada
+                        const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
+                        const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
+                        const serialNumberForm = document.getElementById('serial_number_form');
+                        const manufacturerForm = document.getElementById('manufacturer_form');
+                        const priceForm = document.getElementById("price-form");
+                        const weightForm = document.getElementById("weight-form");
 
-                serialNumberForm.value = serialNumber;
-                serialNumberForm.setAttribute("disabled", true);
-                manufacturerForm.value = manufacturer;
-                manufacturerForm.setAttribute("disabled", true);
-                priceForm.value = "IDR 1.200.000";
-                priceForm.setAttribute("disabled", true);
-                weightForm.value = "890 Gram";
-                weightForm.setAttribute("disabled", true);
+                        serialNumberForm.value = serialNumber;
+                        serialNumberForm.setAttribute("disabled", true);
+                        manufacturerForm.value = manufacturer;
+                        manufacturerForm.setAttribute("disabled", true);
+                        priceForm.value = products[index]["price"];
+                        priceForm.setAttribute("disabled", true);
+                        weightForm.value = products[index]["weight"];
+                        weightForm.setAttribute("disabled", true);
+                    }
+                }
+                
             }
         }
 
@@ -193,17 +197,9 @@
                                         <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Product</option>
                                             <option value="newProduct">New Product</option>
-                                            <option value="product1">Produk 1</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
+                                            <option value="10002">Intel i5 5600U | stocks: 320</option>
+                                            <option value="10004">Intel i7 7600U</option>
+                                            <option value="10003">Intel i9 9600U</option>
                                         </select>
                                     </div>
                                 </div>
@@ -303,7 +299,7 @@
         
     </div>
 
-        <script>
+        <!-- <script>
             function showTab(tabId) {
                 // Sembunyikan semua card body
                 var cardBodies = document.getElementsByClassName('card-body');
@@ -324,10 +320,9 @@
                 var clickedLink = event.currentTarget;
                 clickedLink.classList.add('active');
             }
-        </script>      
+        </script>       -->
 
 </div>
-
 <script>
     const cardProducts = document.getElementById("card-products");
     const cardAddStocks = document.getElementById("card-add-stocks");
@@ -342,7 +337,6 @@
         cardProducts.setAttribute("hidden",true)
     });
     returnButton.addEventListener("click", () => {
-        cardAddStocks.classList.add("hidden");
         cardAddStocks.setAttribute("hidden", true);
         returnButton.setAttribute("hidden", true);
         addStocksButton.removeAttribute("hidden");
