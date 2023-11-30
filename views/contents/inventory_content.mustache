@@ -99,20 +99,20 @@
 
     <script>
         function checkNewProduct() {
-              var productSelect = document.getElementById('productName');
-              var existingProductDetails = document.getElementById('existingProductDetails');
-              var newProductInput = document.getElementById('newProductInput');
+              const productSelect = document.getElementById('product-name');
+              const existingProduct = document.getElementById('existing-product');
+              const newProductInput = document.getElementById('new-product-input');
 
             if (productSelect.value === 'newProduct') {
-                existingProductDetails.style.display = 'none';
+                existingProduct.style.display = 'none';
                 newProductInput.style.display = 'block';
             } else {
-                existingProductDetails.style.display = 'block';
+                existingProduct.style.display = 'block';
                 newProductInput.style.display = 'none';
 
                 // Menampilkan data produk yang sudah ada
-                var serialNumber = '';  // Ganti dengan data yang sesuai
-                var manufacturer = '';   // Ganti dengan data yang sesuai
+                const serialNumber = '';  // Ganti dengan data yang sesuai
+                const manufacturer = '';   // Ganti dengan data yang sesuai
 
                 document.getElementById('serialNumber').value = serialNumber;
                 document.getElementById('manufacturer').value = manufacturer;
@@ -120,27 +120,51 @@
         }
 
         function cancelNewProduct() {
-            var productSelect = document.getElementById('productName');
-            var existingProductDetails = document.getElementById('existingProductDetails');
-            var newProductInput = document.getElementById('newProductInput');
+            const productSelect = document.getElementById('product-name');
+            const existingProduct = document.getElementById('existing-product');
+            const newProductInput = document.getElementById('new-product-input');
 
-            existingProductDetails.style.display = 'block';
+            existingProduct.style.display = 'block';
             newProductInput.style.display = 'none';   
+            productSelect.selectedIndex = 0;
         }
 
-        document.getElementById('productForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        var productName = document.getElementById('productName').value;
-        var newProductName = document.getElementById('newProductName').value;
-
-        // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
-        if (productName === 'newProduct' && newProductName.trim() !== '') {
-            alert('Menambahkan produk baru: ' + newProductName);
-        } else {
-            alert('Memilih produk: ' + productName);
+        function newCategoryEvent() {
+            const categorySelect = document.getElementById("category-name");
+            const existingCategory = document.getElementById("existing-category");
+            const newCategory = document.getElementById("new-category");
+            if (categorySelect.value === "newCategory") {
+                existingCategory.style.display = "none";
+                newCategory.style.display = "block";
+            } else {
+                existingCategory.style.display = "block";
+                newCategory.style.display = "none";
+            }
         }
-        });
+
+        function cancelNewCategory() {
+            const categorySelect = document.getElementById("category-name");
+            const existingCategory = document.getElementById("existing-category");
+            const newCategory = document.getElementById("new-category");
+
+            categorySelect.selectedIndex = 0;
+            existingCategory.style.display = "block";
+            newCategory.style.display = "none";
+        }
+
+        // document.getElementById('productForm').addEventListener('submit', function(event) {
+        // event.preventDefault();
+
+        // var productName = document.getElementById('productName').value;
+        // var newProductName = document.getElementById('newProductName').value;
+
+        // // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
+        // if (productName === 'newProduct' && newProductName.trim() !== '') {
+        //     alert('Menambahkan produk baru: ' + newProductName);
+        // } else {
+        //     alert('Memilih produk: ' + productName);
+        // }
+        // });
     </script>
     <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
@@ -152,12 +176,12 @@
                     <form id="survey-form">
                         <div class="row">
                             <div class="col-md-12">
-                            <div id="existingProductDetails">
+                            <div id="existing-product">
                                     <div class="form-group">
                                         <label id="judul-surat-label" for="product_name">Product Name</label>
-                                        <select class="form-control scrollable-menu" id="productName" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Product</option>
-                                            <option value="newProduct">Tambah Produk Baru</option>
+                                            <option value="newProduct">New Product</option>
                                             <option value="product1">Produk 1</option>
                                             <option value="product2">Produk 2</option>
                                             <option value="product3">Produk 3</option>
@@ -174,7 +198,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="newProductInput" style="display: none;">
+                        <div class="row" id="new-product-input" style="display: none;">
                             <div class="col-md-12">
                                 <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
                                 <div class="input-group mb-3">
@@ -227,14 +251,26 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="judul-surat-label" for="product_name">Select Category</label>
-                                    <select class="form-control scrollable-menu" id="productName" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
-                                        <option value="" selected disabled>Select Category</option>
-                                        <option value="product1">Produk 1</option>
-                                        <option value="product2">Produk 2</option>
-                                        <option value="product3">Produk 3</option>
-                                      </select>
+                                <div id="existing-category">
+                                    <div class="form-group">
+                                        <label id="judul-surat-label" for="product_name">Product Category</label>
+                                        <select class="form-control scrollable-menu" id="category-name" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Category</option>
+                                            <option value="newCategory">New Category</option>
+                                            <option value="product1">Produk 1</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="new-category" style="display: none;">
+                                    <label id="pengirim-label" for="weight">New Category</label>
+                                    <div class="input-group mb-3">
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Alex."/>
+                                    <div class="input-group-append">
+                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

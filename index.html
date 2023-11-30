@@ -1,102 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Form Produk</title>
-  <!-- Tambahkan link ke Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Select</title>
 </head>
 <body>
 
-  <div class="container mt-4">
-    <h2 class="mb-4">Form Produk</h2>
+    <label for="pilihan">Pilih sesuatu:</label>
+    <select id="pilihan" name="pilihan">
+        <option value="pilihan1">Pilihan 1</option>
+        <option value="pilihan2">Pilihan 2</option>
+        <option value="pilihan3">Pilihan 3</option>
+        <option value="userInput">Masukkan Sendiri</option>
+    </select>
 
-    <form id="productForm">
-      <div class="form-group">
-        <label for="productName">Nama Produk:</label>
-        <select class="form-control scrollable-menu" id="productName" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
-          <option value="" selected disabled>Pilih Produk</option>
-          <option value="newProduct">Tambah Produk Baru</option>
-          <option value="product1">Produk 1</option>
-          <option value="product2">Produk 2</option>
-          <option value="product3">Produk 3</option>
-          <option value="product2">Produk 2</option>
-          <option value="product3">Produk 3</option>
-          <option value="product2">Produk 2</option>
-          <option value="product3">Produk 3</option>
-          <option value="product2">Produk 2</option>
-          <option value="product3">Produk 3</option>
-          <option value="product2">Produk 2</option>
-          <option value="product3">Produk 3</option>
-        </select>
-      </div>
+    <div id="userInputContainer" style="display:none;">
+        <label for="userInput">Masukkan pilihan Anda:</label>
+        <input type="text" id="userInput" name="userInput">
+    </div>
 
-      <div id="existingProductDetails" style="display: none;">
-        <div class="form-group">
-          <label for="serialNumber">Serial Number:</label>
-          <input type="text" class="form-control" id="serialNumber" name="serialNumber" disabled>
-        </div>
+    <script>
+        // Fungsi untuk menampilkan/menyembunyikan input pengguna berdasarkan pilihan
+        document.getElementById('pilihan').addEventListener('change', function() {
+            var userInputContainer = document.getElementById('userInputContainer');
+            var userInput = document.getElementById('userInput');
 
-        <div class="form-group">
-          <label for="manufacturer">Manufacturer:</label>
-          <input type="text" class="form-control" id="manufacturer" name="manufacturer" disabled>
-        </div>
-
-        <!-- Tambahkan input tambahan sesuai kebutuhan -->
-      </div>
-
-      <div id="newProductInput" class="form-group" style="display: none;">
-        <label for="newProductName">Nama Produk Baru:</label>
-        <input type="text" class="form-control" id="newProductName" name="newProductName">
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-
-  <!-- Tambahkan link ke Bootstrap JS dan Popper.js (diperlukan oleh Bootstrap) -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-  <script>
-    function checkNewProduct() {
-      var productSelect = document.getElementById('productName');
-      var existingProductDetails = document.getElementById('existingProductDetails');
-      var newProductInput = document.getElementById('newProductInput');
-
-      if (productSelect.value === 'newProduct') {
-        existingProductDetails.style.display = 'none';
-        newProductInput.style.display = 'block';
-      } else {
-        existingProductDetails.style.display = 'block';
-        newProductInput.style.display = 'none';
-
-        // Menampilkan data produk yang sudah ada
-        var serialNumber = '';  // Ganti dengan data yang sesuai
-        var manufacturer = '';   // Ganti dengan data yang sesuai
-
-        document.getElementById('serialNumber').value = serialNumber;
-        document.getElementById('manufacturer').value = manufacturer;
-      }
-    }
-
-    document.getElementById('productForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      var productName = document.getElementById('productName').value;
-      var newProductName = document.getElementById('newProductName').value;
-
-      // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
-      if (productName === 'newProduct' && newProductName.trim() !== '') {
-        alert('Menambahkan produk baru: ' + newProductName);
-      } else {
-        alert('Memilih produk: ' + productName);
-      }
-    });
-  </script>
+            if (this.value === 'userInput') {
+                userInputContainer.style.display = 'block';
+                userInput.required = true;
+            } else {
+                userInputContainer.style.display = 'none';
+                userInput.required = false;
+            }
+        });
+    </script>
 
 </body>
 </html>
