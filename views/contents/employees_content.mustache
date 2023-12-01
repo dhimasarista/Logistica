@@ -1,3 +1,6 @@
+<style>
+    
+</style>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -143,15 +146,17 @@
                                     <div class="input-group mb-3">
                                     <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Software Engineer"/>
                                     <div class="input-group-append">
-                                        <a href="#" class="input-group-text" id="button-cancel-new-position" onclick="cancelNewCategory()">cancel</a>
+                                        <a href="#" class="input-group-text" id="button-cancel-new-position" onclick="cancelNewPositionEmployee()">cancel</a>
                                     </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="price_label" for="pengirim">Price</label>
-                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
+                                    <label id="pengirim-label" for="new-position">ID Card</label>
+                                    <div class="input-group mb-3">
+                                        <input type="file">
+                                      </div>
                                 </div>
                             </div>
                         </div>
@@ -269,19 +274,6 @@
             buttonCancelCustomIdEmployee.style.display = "none";
         }
 
-        function newCategoryEvent() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-            if (categorySelect.value === "newCategory") {
-                existingCategory.style.display = "none";
-                newCategory.style.display = "block";
-            } else {
-                existingCategory.style.display = "block";
-                newCategory.style.display = "none";
-            }
-        }
-
         function cancelNewCategory() {
             const categorySelect = document.getElementById("category-name");
             const existingCategory = document.getElementById("existing-category");
@@ -303,6 +295,12 @@
                 existingPosition.style.display = "block";
                 newPosition.style.display = "none"
             }
+        }
+
+        function cancelNewPositionEmployee() {
+            positionselect.selectedIndex = 0;
+            existingPosition.style.display = "block";
+            newPosition.style.display = "none";
         }
     </script>
 
