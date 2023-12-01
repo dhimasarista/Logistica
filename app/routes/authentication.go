@@ -60,15 +60,13 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		store.CookieHTTPOnly = true
 		store.CookieSecure = true
 		usernameSession := session.Get("username")
-		keys := session.Keys()
+
 		if err := session.Save(); err != nil {
 			log.Println(err)
 			return err
 		}
 
-		log.Println("Berhasil Loggin")
-		log.Println(usernameSession)
-		log.Println(keys)
+		log.Println("Login:", usernameSession)
 		return c.Redirect("/dashboard")
 	})
 }

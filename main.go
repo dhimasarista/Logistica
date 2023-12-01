@@ -23,7 +23,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			return c.Redirect("500")
+			return c.Redirect("/404")
 		},
 	})
 	app.Use(func(c *fiber.Ctx) error {

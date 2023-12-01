@@ -12,7 +12,7 @@ func SetupRoutes(app *fiber.App, store *session.Store, client *resty.Client) {
 	DeauthenticationRoutes(app, store)
 	DashboardRoutes(app, store)
 	UnggahSuratRoutes(app)
-	OrdersRoutes(app)
+	OrdersRoutes(app, store)
 	InventoryRoutes(app, store)
 	ErrorRoutes(app, store)
 }
