@@ -1,3 +1,5 @@
+const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
+
 function checkFileSize(file) {
     const maxSize = 200 * 1024;
     if (file.files.length > 0) {
