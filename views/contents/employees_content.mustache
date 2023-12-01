@@ -9,27 +9,19 @@
     <div class="card shadow mb-4" id="card-products">
         <div class="card">
             <div class="card-header py-3">
-                <!-- <h6 class="m-0 font-weight-bold text-primary">Products</h6> -->
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="#employee-list">List</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#new-employee-form">New</a>
-                    </li>
-                  </ul>
+                <h6 class="m-0 font-weight-bold text-primary">List</h6>
             </div>
             <div class="card-body" id="employee-list">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Product ID</th>
+                                <th>ID Employee</th>
                                 <th>Name</th>
-                                <th>Serial Number</th>
-                                <th>Manufacturer</th>
-                                <th>Stocks</th>
-                                <th>Price</th>
+                                <th>Position</th>
+                                <th>No. Phone</th>
+                                <th>Address</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,7 +41,22 @@
                                 <td>85043859347549</td>
                                 <td>AMD</td>
                                 <td>1032</td>
-                                <td>3.900.000</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20"><g fill="currentColor"><circle cx="10" cy="15" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="10" cy="5" r="2"/></g></svg>
+                                        </a>
+                                
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" href="#">Edit</a>
+                                            <a class="dropdown-item" href="#">Detail</a>
+                                            <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
+                                        </div>
+                                        <a href="#">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <td>0435843957346</td>
@@ -72,6 +79,101 @@
                 </div>
             </div>
             <div class="card-body" id="new-employee-form">
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4" id="card-add-stocks" hidden>
+        <div class="card">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">New Employee</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-wrap">	
+                    <form id="survey-form">
+                        <div class="row" id="new-product-input" >
+                            <div class="col-md-6">
+                                <label id="id-employee-label" for="id-employee">ID Employee</label>
+                                <div class="input-group mb-3">
+                                    <input type="email" name="id-employee" id="id-employee-form" placeholder="EX: 1009203" value="1009203" class="form-control" disabled required>
+                                    <div class="input-group-append">
+                                      <a href="#" class="input-group-text" id="button-custom-id-employee" onclick="customIdEmployee()">custom</a>
+                                      <a href="#" class="input-group-text" id="button-cancel-custom-id-employee" onclick="cancelCustomIdEmployee()" style="display: none;">cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="name-employee-label" for="name">Full Name</label>
+                                    <input type="email" name="name" id="name-employee-form" placeholder="EX: Dhimas Arista" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="number-phone-label" for="numberPhone">Number Phone</label>
+                                    <input type="text" name="numberPhone" id="number-phone-form" placeholder="EX: 085157248841" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="address-label" for="address">Address</label>
+                                    <input type="pengirim" name="address" id="address-form" class="form-control" placeholder="Ex: 68 Main Street, Wellington, 6021, New Zealand"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="existing-position">
+                                    <div class="form-group">
+                                        <label id="position-label" for="product_name">Job Position</label>
+                                        <select class="form-control scrollable-menu" id="position-name" name="position" onchange="newPositionEmployee()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Position</option>
+                                            <option value="newPosition">New Position</option>
+                                            <option value="product1">Software Engineer</option>
+                                            <option value="product2">Data Scientiest</option>
+                                            <option value="product3">Cyber Security</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="new-position" style="display: none;">
+                                    <label id="pengirim-label" for="new-position">New Position</label>
+                                    <div class="input-group mb-3">
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Software Engineer"/>
+                                    <div class="input-group-append">
+                                        <a href="#" class="input-group-text" id="button-cancel-new-position" onclick="cancelNewCategory()">cancel</a>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="price_label" for="pengirim">Price</label>
+                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mx-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Add to be User
+                                    </label>
+                                  </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-2 my-4">
+                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>	
             </div>
         </div>
     </div>
@@ -153,26 +255,18 @@
             }
         }
 
-        function cancelNewProduct() {
-            const productSelect = document.getElementById('product-name');
-            const existingProduct = document.getElementById('existing-product');
-            const newProductInput = document.getElementById('new-product-input');
-
-            const serialNumberForm = document.getElementById('serial_number_form');
-            const manufacturerForm = document.getElementById('manufacturer_form');
-            const priceForm = document.getElementById("price-form");
-            const weightForm = document.getElementById("weight-form");
-            const stockAmountForm = document.getElementById("stock-amount-form");
-
-            serialNumberForm.value = null;
-            manufacturerForm.value = null;
-            priceForm.value = null;
-            weightForm.value = null;
-            stockAmountForm.value = null;
-
-            existingProduct.style.display = 'block';
-            newProductInput.style.display = 'none';   
-            productSelect.selectedIndex = 0;
+        const idEmployeeForm = document.getElementById("id-employee-form")
+        const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
+        const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
+        function customIdEmployee(){
+            idEmployeeForm.removeAttribute("disabled");
+            buttonCustomIdEmployee.style.display = "none";
+            buttonCancelCustomIdEmployee.style.display = "block";
+        }
+        function cancelCustomIdEmployee() {
+            idEmployeeForm.setAttribute("disabled", true);
+            buttonCustomIdEmployee.style.display = "block";
+            buttonCancelCustomIdEmployee.style.display = "none";
         }
 
         function newCategoryEvent() {
@@ -198,137 +292,19 @@
             newCategory.style.display = "none";
         }
 
-        // document.getElementById('productForm').addEventListener('submit', function(event) {
-        // event.preventDefault();
-
-        // var productName = document.getElementById('productName').value;
-        // var newProductName = document.getElementById('newProductName').value;
-
-        // // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
-        // if (productName === 'newProduct' && newProductName.trim() !== '') {
-        //     alert('Menambahkan produk baru: ' + newProductName);
-        // } else {
-        //     alert('Memilih produk: ' + productName);
-        // }
-        // });
+        const positionselect = document.getElementById("position-name");
+        const existingPosition = document.getElementById("existing-position");
+        const newPosition = document.getElementById("new-position");
+        function newPositionEmployee() {
+            if (positionselect.value = "newPosition") {
+                existingPosition.style.display = "none";
+                newPosition.style.display = "block"
+            } else {
+                existingPosition.style.display = "block";
+                newPosition.style.display = "none"
+            }
+        }
     </script>
-    <div class="card shadow mb-4" id="card-add-stocks" hidden>
-        <div class="card">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Add Stock</h6>
-            </div>
-            <div class="card-body">
-                <div class="form-wrap">	
-                    <form id="survey-form">
-                        <div class="row">
-                            <div class="col-md-12">
-                            <div id="existing-product">
-                                    <div class="form-group">
-                                        <label id="judul-surat-label" for="product_name">Product Name</label>
-                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
-                                            <option value="" selected disabled>Select Product</option>
-                                            <option value="newProduct">New Product</option>
-                                            <option value="10002">Intel i5 5600U | stocks: 320</option>
-                                            <option value="10004">Intel i7 7600U</option>
-                                            <option value="10003">Intel i9 9600U</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="new-product-input" style="display: none;">
-                            <div class="col-md-12">
-                                <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
-                                <div class="input-group mb-3">
-                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="serial_number_label" for="serialNumber">Serial Number</label>
-                                    <input type="email" name="serialNumber" id="serial_number_form" placeholder="EX: S23864872548" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="manufacturer_label" for="manufacturer">Manufacturer</label>
-                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="pengirim-label" for="stock">Stock Amount</label>
-                                    <input type="stock" name="stock" id="stock-amount-form" class="form-control" placeholder="Ex: 1024"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="price_label" for="pengirim">Price</label>
-                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="pengirim-label" for="weight">Weight</label>
-                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="existing-category">
-                                    <div class="form-group">
-                                        <label id="judul-surat-label" for="product_name">Product Category</label>
-                                        <select class="form-control scrollable-menu" id="category-name" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
-                                            <option value="" selected disabled>Select Category</option>
-                                            <option value="newCategory">New Category</option>
-                                            <option value="product1">Produk 1</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group" id="new-category" style="display: none;">
-                                    <label id="pengirim-label" for="weight">New Category</label>
-                                    <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Processor"/>
-                                    <div class="input-group-append">
-                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Notes <small>(optional)</small></label>
-                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Write somethings..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-2">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>	
-            </div>
-        </div>
-        
-    </div>
 
         <!-- <script>
             function showTab(tabId) {
