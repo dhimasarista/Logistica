@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"log"
+	"logistica/app/controllers"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -10,13 +10,7 @@ import (
 func DashboardRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/dashboard", func(c *fiber.Ctx) error {
 		var path string = c.Path()
-		session, err := store.Get(c)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		username := session.Get("username")
-		defer session.Save()
+		var username string = controllers.GetSessionUsername(c, store)
 
 		// Mengirimkan halaman HTML yang dihasilkan ke browser
 		return c.Render("dashboard", fiber.Map{

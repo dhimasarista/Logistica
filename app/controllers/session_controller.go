@@ -15,7 +15,7 @@ func GetSessionUsername(c *fiber.Ctx, store *session.Store) string {
 	}
 
 	username := session.Get("username")
-	defer session.Save()
+	// defer session.Save()
 
 	return username.(string)
 }

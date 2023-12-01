@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"logistica/app/controllers"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
@@ -8,9 +10,7 @@ import (
 func ErrorRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/error", func(c *fiber.Ctx) error {
 		var path string = c.Path()
-		session, _ := store.Get(c)
-
-		username := session.Get("username")
+		var username string = controllers.GetSessionUsername(c, store)
 
 		return c.Render("error_page", fiber.Map{
 			"path": path,
