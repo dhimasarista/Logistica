@@ -97,7 +97,7 @@
                             <div class="col-md-6">
                                 <label id="id-employee-label" for="id-employee">ID Employee</label>
                                 <div class="input-group mb-3">
-                                    <input type="email" name="id-employee" id="id-employee-form" placeholder="EX: 1009203" value="1009203" class="form-control" disabled required>
+                                    <input type="email" name="id-employee" id="id-employee-form" class="form-control" disabled required>
                                     <div class="input-group-append">
                                       <a href="#" class="input-group-text" id="button-custom-id-employee" onclick="customIdEmployee()">custom</a>
                                       <a href="#" class="input-group-text" id="button-cancel-custom-id-employee" onclick="cancelCustomIdEmployee()" style="display: none;">cancel</a>
@@ -153,12 +153,18 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="pengirim-label" for="new-position">ID Card</label>
+                                    <label id="pengirim-label" for="new-position">ID Card (Max: 200kb)</label>
                                     <div class="input-group mb-3">
-                                        <input type="file">
+                                        <input type="file" id="id-card-form">
                                       </div>
                                 </div>
                             </div>
+                            <script>
+                                const idCardForm = document.getElementById("id-card-form");
+                                idCardForm.addEventListener("change", () => {
+                                    checkFileSize(idCardForm); // script.js
+                                })
+                            </script>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -183,106 +189,25 @@
         </div>
     </div>
     <script>
-        const products = [{
-            "id": 10002,
-            "name": "Intel i5 5600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.640.600",
-            "weight": 240,
-            "category": "Processor",
-            "stock": 64,
-        },{
-            "id": 10004,
-            "name": "Intel i7 7600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.890.600",
-            "weight": 239,
-            "category": "Processor",
-            "stock": 48,
-        },{
-            "id": 10003,
-            "name": "Intel i9 9600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "2.640.600",
-            "weight": 238,
-            "category": "Processor",
-            "stock": 12,
-        }];
-        function checkNewProduct() {
-              const productSelect = document.getElementById('product-name');
-              const existingProduct = document.getElementById('existing-product');
-              const newProductInput = document.getElementById('new-product-input');
+        const lastIdEmploye = 100293;
+        const newIdEmployee = lastIdEmploye + 1;
 
-              const serialNumberForm = document.getElementById('serial_number_form');
-              const manufacturerForm = document.getElementById('manufacturer_form');
-              const priceForm = document.getElementById("price-form");
-              const weightForm = document.getElementById("weight-form");
-              const stockAmountForm = document.getElementById("stock-amount-form");
-
-            if (productSelect.value === 'newProduct') {
-                existingProduct.style.display = 'none';
-                newProductInput.style.display = 'block';
-
-                serialNumberForm.value = null;
-                manufacturerForm.value = null;
-                priceForm.value = null;
-                weightForm.value = null;
-                stockAmountForm.value = null;
-
-                serialNumberForm.removeAttribute("disabled");
-                manufacturerForm.removeAttribute("disabled");
-                priceForm.removeAttribute("disabled");
-                weightForm.removeAttribute("disabled");
-            } else {
-                existingProduct.style.display = 'block';
-                newProductInput.style.display = 'none';
-
-                for (let index = 0; index < products.length; index++) {
-                    if (products[index]["id"] == parseInt(productSelect.value)) {
-                        // Menampilkan data produk yang sudah ada
-                        const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
-                        const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-
-                        serialNumberForm.value = serialNumber;
-                        serialNumberForm.setAttribute("disabled", true);
-                        manufacturerForm.value = manufacturer;
-                        manufacturerForm.setAttribute("disabled", true);
-                        priceForm.value = products[index]["price"];
-                        priceForm.setAttribute("disabled", true);
-                        weightForm.value = products[index]["weight"];
-                        weightForm.setAttribute("disabled", true);
-                    }
-                }
-                
-            }
-        }
-
-        const idEmployeeForm = document.getElementById("id-employee-form")
+        const idEmployeeForm = document.getElementById("id-employee-form"); idEmployeeForm.value = newIdEmployee;
         const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
         const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
         function customIdEmployee(){
+            idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.removeAttribute("disabled");
             buttonCustomIdEmployee.style.display = "none";
             buttonCancelCustomIdEmployee.style.display = "block";
         }
         function cancelCustomIdEmployee() {
+            idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.setAttribute("disabled", true);
             buttonCustomIdEmployee.style.display = "block";
             buttonCancelCustomIdEmployee.style.display = "none";
         }
 
-        function cancelNewCategory() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-
-            categorySelect.selectedIndex = 0;
-            existingCategory.style.display = "block";
-            newCategory.style.display = "none";
-        }
 
         const positionselect = document.getElementById("position-name");
         const existingPosition = document.getElementById("existing-position");
