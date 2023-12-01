@@ -1,5 +1,3 @@
-const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
-
 function checkFileSize(file) {
     const maxSize = 200 * 1024;
     if (file.files.length > 0) {
@@ -10,4 +8,12 @@ function checkFileSize(file) {
             file.value = "";
         }
     }                                   
+}
+
+function checkFileType(file, expectedTypes, errorMsg, toDelete) {
+    if (!expectedTypes.includes(file.type)) {
+        alert(errorMsg);
+        toDelete.value = null;
+        return;
+    }
 }
