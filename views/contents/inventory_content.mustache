@@ -90,128 +90,6 @@
 
 
     <script>
-        const products = [{
-            "id": 10002,
-            "name": "Intel i5 5600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.640.600",
-            "weight": 240,
-            "category": "Processor",
-            "stock": 64,
-        },{
-            "id": 10004,
-            "name": "Intel i7 7600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.890.600",
-            "weight": 239,
-            "category": "Processor",
-            "stock": 48,
-        },{
-            "id": 10003,
-            "name": "Intel i9 9600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "2.640.600",
-            "weight": 238,
-            "category": "Processor",
-            "stock": 12,
-        }];
-        function checkNewProduct() {
-              const productSelect = document.getElementById('product-name');
-              const existingProduct = document.getElementById('existing-product');
-              const newProductInput = document.getElementById('new-product-input');
-
-              const serialNumberForm = document.getElementById('serial_number_form');
-              const manufacturerForm = document.getElementById('manufacturer_form');
-              const priceForm = document.getElementById("price-form");
-              const weightForm = document.getElementById("weight-form");
-              const stockAmountForm = document.getElementById("stock-amount-form");
-
-            if (productSelect.value === 'newProduct') {
-                existingProduct.style.display = 'none';
-                newProductInput.style.display = 'block';
-
-                serialNumberForm.value = null;
-                manufacturerForm.value = null;
-                priceForm.value = null;
-                weightForm.value = null;
-                stockAmountForm.value = null;
-
-                serialNumberForm.removeAttribute("disabled");
-                manufacturerForm.removeAttribute("disabled");
-                priceForm.removeAttribute("disabled");
-                weightForm.removeAttribute("disabled");
-            } else {
-                existingProduct.style.display = 'block';
-                newProductInput.style.display = 'none';
-
-                for (let index = 0; index < products.length; index++) {
-                    if (products[index]["id"] == parseInt(productSelect.value)) {
-                        // Menampilkan data produk yang sudah ada
-                        const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
-                        const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-
-                        serialNumberForm.value = serialNumber;
-                        serialNumberForm.setAttribute("disabled", true);
-                        manufacturerForm.value = manufacturer;
-                        manufacturerForm.setAttribute("disabled", true);
-                        priceForm.value = products[index]["price"];
-                        priceForm.setAttribute("disabled", true);
-                        weightForm.value = products[index]["weight"];
-                        weightForm.setAttribute("disabled", true);
-                    }
-                }
-                
-            }
-        }
-
-        function cancelNewProduct() {
-            const productSelect = document.getElementById('product-name');
-            const existingProduct = document.getElementById('existing-product');
-            const newProductInput = document.getElementById('new-product-input');
-
-            const serialNumberForm = document.getElementById('serial_number_form');
-            const manufacturerForm = document.getElementById('manufacturer_form');
-            const priceForm = document.getElementById("price-form");
-            const weightForm = document.getElementById("weight-form");
-            const stockAmountForm = document.getElementById("stock-amount-form");
-
-            serialNumberForm.value = null;
-            manufacturerForm.value = null;
-            priceForm.value = null;
-            weightForm.value = null;
-            stockAmountForm.value = null;
-
-            existingProduct.style.display = 'block';
-            newProductInput.style.display = 'none';   
-            productSelect.selectedIndex = 0;
-        }
-
-        function newCategoryEvent() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-            if (categorySelect.value === "newCategory") {
-                existingCategory.style.display = "none";
-                newCategory.style.display = "block";
-            } else {
-                existingCategory.style.display = "block";
-                newCategory.style.display = "none";
-            }
-        }
-
-        function cancelNewCategory() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-
-            categorySelect.selectedIndex = 0;
-            existingCategory.style.display = "block";
-            newCategory.style.display = "none";
-        }
-
         // document.getElementById('productForm').addEventListener('submit', function(event) {
         // event.preventDefault();
 
@@ -233,7 +111,7 @@
             </div>
             <div class="card-body">
                 <div class="form-wrap">	
-                    <form id="survey-form">
+                    <form id="inventory-form">
                         <div class="row">
                             <div class="col-md-12">
                             <div id="existing-product">
@@ -250,20 +128,131 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="new-product-input" style="display: none;">
+                        <div class="row" id="new-product" style="display: none;">
                             <div class="col-md-12">
-                                <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
+                                <label id="new-product-ilabel" for="new-product-input">Product Name</label>
                                 <div class="input-group mb-3">
-                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
+                                    <input type="email" name="new-product" id="new-product-form" placeholder="EX: Intel i5 5600U" class="form-control" required>
                                     <div class="input-group-append">
                                       <a href="#" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <script>
+                                    const products = [{
+                                    "id": 10002,
+                                    "name": "Intel i5 5600U",
+                                    "serial_number": "S320482057454534",
+                                    "manufacturer": "100022",
+                                    "price": "1.640.600",
+                                    "weight": 240,
+                                    "category": "Processor",
+                                    "stock": 64,
+                                },{
+                                    "id": 10004,
+                                    "name": "Intel i7 7600U",
+                                    "serial_number": "S320482057454534",
+                                    "manufacturer": "100022",
+                                    "price": "1.890.600",
+                                    "weight": 239,
+                                    "category": "Processor",
+                                    "stock": 48,
+                                },{
+                                    "id": 10003,
+                                    "name": "Intel i9 9600U",
+                                    "serial_number": "S320482057454534",
+                                    "manufacturer": "100022",
+                                    "price": "2.640.600",
+                                    "weight": 238,
+                                    "category": "Processor",
+                                    "stock": 12,
+                                }];
+                                function checkNewProduct() {
+                                    const existingProduct = document.getElementById('existing-product');
+                                    const newProduct = document.getElementById('new-product');
+                                    
+                                    // Input Form
+                                    const productSelect = document.getElementById('product-name');
+                                    const manufacturerForm = document.getElementById('manufacturer-form');
+                                    const serialNumberForm = document.getElementById('serial_number_form');
+                                    const priceForm = document.getElementById("price-form");
+                                    const weightForm = document.getElementById("weight-form");
+                                    const stockAmountForm = document.getElementById("stock-amount-form");
 
+                                    // Mengambil semua opsi di manufacturer form
+                                    const optionsManufacturer = manufacturerForm.options;
+
+                                    if (productSelect.value === 'newProduct') {
+                                        existingProduct.style.display = 'none';
+                                        newProduct.style.display = 'block';
+
+                                        serialNumberForm.value = null;
+                                        manufacturerForm.selectedIndex = 0;
+                                        priceForm.value = null;
+                                        weightForm.value = null;
+                                        stockAmountForm.value = null;
+
+                                        serialNumberForm.removeAttribute("disabled");
+                                        manufacturerForm.removeAttribute("disabled");
+                                        priceForm.removeAttribute("disabled");
+                                        weightForm.removeAttribute("disabled");
+                                    } else {
+                                        existingProduct.style.display = 'block';
+                                        newProduct.style.display = 'none';
+
+                                        for (let index = 0; index < products.length; index++) {
+                                            if (products[index]["id"] == parseInt(productSelect.value)) {
+                                                // Menampilkan data produk yang sudah ada
+                                                const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
+                                                const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
+
+                                                serialNumberForm.value = serialNumber;
+                                                serialNumberForm.setAttribute("disabled", true);
+                                                priceForm.value = products[index]["price"];
+                                                priceForm.setAttribute("disabled", true);
+                                                weightForm.value = products[index]["weight"];
+                                                weightForm.setAttribute("disabled", true);
+
+                                                for (let index2 = 0; index2 < optionsManufacturer.length; index2++) {
+                                                    if (manufacturer === optionsManufacturer[index2].value) {
+                                                        manufacturerForm.selectedIndex = 2;
+                                                        manufacturerForm.setAttribute("disabled", true);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+
+                                function cancelNewProduct() {
+                                    const productSelect = document.getElementById('product-name');
+                                    const existingProduct = document.getElementById('existing-product');
+                                    const newProduct = document.getElementById("new-product");
+                                    const newProductForm = document.getElementById('new-product-form');
+
+                                    const serialNumberForm = document.getElementById('serial_number_form');
+                                    const manufacturerForm = document.getElementById('manufacturer_form');
+                                    const priceForm = document.getElementById("price-form");
+                                    const weightForm = document.getElementById("weight-form");
+                                    const stockAmountForm = document.getElementById("stock-amount-form");
+
+                                    serialNumberForm.value = null;
+                                    // manufacturerForm.selectedIndex = 0;
+                                    priceForm.value = null;
+                                    weightForm.value = null;
+                                    stockAmountForm.value = null;
+
+                                    existingProduct.style.display = 'block';
+                                    newProduct.style.display = 'none';   
+                                    productSelect.selectedIndex = 0;
+
+                                    // Menghapus form menjadi empty
+                                    newProductForm.value = null;
+                                }
+                        </script>
                         <div class="row">
-                            
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="serial_number_label" for="serialNumber">Serial Number</label>
@@ -271,10 +260,49 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="manufacturer_label" for="manufacturer">Manufacturer</label>
-                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc"/>
+                                <div id="existing-manufacturer">
+                                    <div class="form-group">
+                                        <label id="manufacturer" for="manufacturer">Manufacturer</label>
+                                        <select class="form-control scrollable-menu" id="manufacturer-form" name="manufacturer" onchange="newManufacturerEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Manufacturer</option>
+                                            <option value="newManufacturer">New Manufacturer</option>
+                                            <option value="100022">Intel Corporation</option>
+                                            <option value="100023">Google Inc.</option>
+                                            <option value="100024">Samsung ELectronics</option>
+                                        </select>
+                                    </div>
                                 </div>
+                                <div class="form-group" id="new-manufacturer" style="display: none;">
+                                    <label id="new-manufacturer-label" for="weight">New Manufacturer</label>
+                                    <div class="input-group mb-3">
+                                    <input type="new-manufacturer" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation"/>
+                                    <div class="input-group-append">
+                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturer()">cancel</a>
+                                    </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    const newManufacturer = document.getElementById("new-manufacturer");
+                                    const newManufacturerForm = document.getElementById("new-manufacturer-form");
+                                    const existinManufacturer = document.getElementById("existing-manufacturer");
+                                    const manufacturerForm = document.getElementById("manufacturer-form");
+                                    function newManufacturerEvent() {
+                                        if (manufacturerForm.value === "newManufacturer") {
+                                            newManufacturer.style.display = "block";
+                                            existinManufacturer.style.display = "none";
+                                        }
+                                        newManufacturer.style.display = "block";
+                                        existinManufacturer.style.display = "none";
+                                    }
+
+                                    function cancelNewManufacturer() {
+                                        newManufacturerForm.value = null;
+                                        newManufacturer.style.display = "none";
+                                        existinManufacturer.style.display = "block";
+                                        manufacturerForm.selectedIndex = 0;
+
+                                    }
+                                </script>
                             </div>
                         </div>
                         <div class="row">
@@ -312,14 +340,36 @@
                                     </div>
                                 </div>
                                 <div class="form-group" id="new-category" style="display: none;">
-                                    <label id="pengirim-label" for="weight">New Category</label>
+                                    <label id="new-category-label" for="weight">New Category</label>
                                     <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Processor"/>
+                                    <input type="new-category" name="new-category" id="new-category-form" class="form-control" placeholder="Ex: Processor"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
                                     </div>
                                     </div>
                                 </div>
+                                <script>
+                                    const categorySelect = document.getElementById("category-name");
+                                    const existingCategory = document.getElementById("existing-category");
+                                    const newCategory = document.getElementById("new-category");
+                                    const newCategoryForm = document.getElementById("new-category-form");
+                                    function newCategoryEvent() {
+                                        if (categorySelect.value === "newCategory") {
+                                            existingCategory.style.display = "none";
+                                            newCategory.style.display = "block";
+                                        } else {
+                                            existingCategory.style.display = "block";
+                                            newCategory.style.display = "none";
+                                        }
+                                    }   
+
+                                    function cancelNewCategory() {
+                                        newCategoryForm.value = null;
+                                        categorySelect.selectedIndex = 0;
+                                        existingCategory.style.display = "block";
+                                        newCategory.style.display = "none";
+                                    }
+                                </script>
                             </div>
                         </div>
                         <div class="row">
