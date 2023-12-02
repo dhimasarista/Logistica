@@ -23,8 +23,8 @@
             buttonSearch.addEventListener("click", () => {
                 let key = `${searchForm.value}`;
                 let keyToSearch = key.replace(/\s/g, "+");
-                window.location.href = `/search?key=${keyToSearch}`
-                // console.log(`/search?key=${keyToSearch}`);
+                // window.location.href = `/search?key=${keyToSearch}`
+                alert(`/search?key=${keyToSearch}`)
             })
         </script>
     </form> 

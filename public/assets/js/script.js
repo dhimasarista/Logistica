@@ -17,3 +17,27 @@ function checkFileType(file, expectedTypes, errorMsg, toDelete) {
         return;
     }
 }
+
+// let sidebarIsToggled = localStorage.getItem("toggle-mode") === "true";
+// const sidebarClass = document.querySelector(".sidebar");
+
+// function sidebarToggledEvent() {
+//     if (!sidebarIsToggled) {
+//         localStorage.setItem("toggle-mode", "true");
+//         sidebarIsToggled = true;
+//         sidebarClass.classList.add("toggled");
+//     } else {
+//         localStorage.setItem("toggle-mode", "false");
+//         sidebarIsToggled = false;
+//         sidebarClass.classList.remove("toggled");
+//     }
+// }
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     const isToggled = localStorage.getItem("toggle-mode")
+//     if (isToggled) {
+//         sidebarClass.classList.add("toggled")
+//     } else if (!isToggled) {
+//         sidebarClass.classList.remove("toggled")
+//     }
+// })
