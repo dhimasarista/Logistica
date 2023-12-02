@@ -144,7 +144,7 @@
                                 <div class="form-group" id="new-position" style="display: none;">
                                     <label id="pengirim-label" for="new-position">New Position</label>
                                     <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Software Engineer"/>
+                                    <input type="pengirim" name="pengirim" id="new-position-form" class="form-control" placeholder="Ex: Software Engineer"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-position" onclick="cancelNewPositionEmployee()">cancel</a>
                                     </div>
@@ -156,32 +156,45 @@
                                     <label id="pengirim-label" for="new-position">ID Card | Max: 200kb Type: JPG/JPEG/PNG</label>
                                     <div class="input-group mb-3">
                                         <input type="file" id="id-card-form">
-                                        <div class="col-md-1 mt-2">
-                                            <a href="#" id="button-delete-idcardform" class="px-1 badge badge-danger" style="display: none;">
-                                                <i>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg>
-                                                </i>
-                                              </a>
+                                        <div class="col-md-6 mt-2">
+                                            <div id="delete-idcardform" style="display: none;">
+                                                <a href="#"  class="px-1 badge badge-danger" id="button-delete-idcard" onclick="buttonDeleteIdCardFile()">
+                                                    <i>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/></svg>
+                                                    </i>
+                                                </a>
+                                                <span id="idcard-filename"></span>
+                                            </div>
                                         </div>
                                       </div>
                                     </div>
                             </div>
                             <script>
-                                const idCardForm = document.getElementById("id-card-form");
-                                const buttonDeleteIdCardForm = document.getElementById("button-delete-idcardform");
+                                const idCardForm = document.getElementById("id-card-form");  // Part of 7 Input Form
+                                const deleteIdCardForm = document.getElementById("delete-idcardform");
+                                const buttonDeleteIdCard = document.getElementById("button-delete-idcard");
+                                const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
                                 idCardForm.addEventListener("change", () => {
                                     // checkFileType(idCardForm, imagesTypes, "Change the Image format", idCardForm); // script.js
                                     // checkFileSize(idCardForm); // script.js
-                                    buttonDeleteIdCardForm.style.display = "block";
-                                    idCardForm.style.display = "none"
-                                })
+                                    idCardFilename.textContent = idCardForm.files[0]["name"]
+                                    deleteIdCardForm.style.display = "block";
+                                    idCardForm.style.display = "none";
+                                });
+                                function buttonDeleteIdCardFile() {
+                                    toastr.success("File Deleted.", "success");
+                                    deleteIdCardForm.style.display = "none";
+                                    idCardForm.style.display = "block";
+                                    idCardFilename.textContent = null;
+                                    idCardForm.value = "";
+                                }
                             </script>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-check mx-4">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <input id="add-tobe-user-form" type="checkbox" value="" id="flexCheckDefault">
                                     <label class="form-check-label" for="flexCheckDefault">
                                       Add to be User
                                     </label>
@@ -201,10 +214,19 @@
         </div>
     </div>
     <script>
-        const lastIdEmploye = 100293;
-        const newIdEmployee = lastIdEmploye + 1;
+        // 7 Input Form
+        const idEmployeeForm = document.getElementById("id-employee-form");
+        const nameEmployeeForm = document.getElementById("name-employee-form");
+        const numberPhoneForm = document.getElementById("number-phone-form");
+        const addressForm = document.getElementById("address-form");
+        const positionselect = document.getElementById("position-name");
+        const addToBeUserForm = document.getElementById("add-tobe-user-form");
 
-        const idEmployeeForm = document.getElementById("id-employee-form"); idEmployeeForm.value = newIdEmployee;
+        // Mengambil id employee terakhir di db
+        const lastIdEmploye = 100293;
+        const newIdEmployee = lastIdEmploye + 1; 
+        idEmployeeForm.value = newIdEmployee; // Menambahkan id dengan kalkulasi id terakhir + 1
+
         const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
         const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
         function customIdEmployee(){
@@ -220,10 +242,9 @@
             buttonCancelCustomIdEmployee.style.display = "none";
         }
 
-
-        const positionselect = document.getElementById("position-name");
         const existingPosition = document.getElementById("existing-position");
         const newPosition = document.getElementById("new-position");
+        const newPositionForm = document.getElementById("new-position-form");
         function newPositionEmployee() {
             if (positionselect.value = "newPosition") {
                 existingPosition.style.display = "none";
@@ -238,6 +259,7 @@
             positionselect.selectedIndex = 0;
             existingPosition.style.display = "block";
             newPosition.style.display = "none";
+            newPositionForm.value = null;
         }
     </script>
 
@@ -266,6 +288,7 @@
 
 </div>
 <script>
+    // Card Body Handlers
     const cardProducts = document.getElementById("card-products");
     const cardAddStocks = document.getElementById("card-add-stocks");
     const addStocksButton = document.getElementById("add-stocks-button")
@@ -278,8 +301,21 @@
         addStocksButton.setAttribute("hidden", true);
         cardProducts.setAttribute("hidden",true)
     });
+    /*
+        7 Input Form
+        - idEmployeeForm 
+        - nameEmployeeForm 
+        - numberPhoneForm 
+        - addressForm
+        - positionselect
+        - idCardForm
+        - addToBeUserForm
+    */ 
+    
+    // Event akan di panggil ketika form tidak kosong
     returnButton.addEventListener("click", () => {
-        Swal.fire({
+        if (nameEmployeeForm !== "" || numberPhoneForm !== "" || addressForm !== "") {
+            Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -289,16 +325,21 @@
             confirmButtonText: "Yes, cancel it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Swal.fire({
-                // title: "Deleted!",
-                // text: "Your file has been deleted.",
-                // icon: "success"
-                // });
                 cardAddStocks.setAttribute("hidden", true);
                 returnButton.setAttribute("hidden", true);
                 addStocksButton.removeAttribute("hidden");
                 cardProducts.removeAttribute("hidden");
+
+                // Mengosongkan 7 Input Form
+                cancelCustomIdEmployee(); // ID Employee Form
+                nameEmployeeForm.value = null;
+                numberPhoneForm.value = null;
+                addressForm.value = null;
+                cancelNewPositionEmployee(); // Position Form
+                buttonDeleteIdCardFile(); // ID Card File
+                addToBeUserForm.checked = false;
             }
         });
+        }
     });
 </script>
