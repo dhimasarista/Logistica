@@ -5,11 +5,11 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Employees</h1>
-        <div id="add-stocks-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>New Employee</i></a></div>
+        <div id="new-employee-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>New Employee</i></a></div>
         <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Return</i></a></div>
     </div>
     <!-- DataTales Example -->
-    <div class="card shadow mb-4" id="card-products">
+    <div class="card shadow mb-4" id="card-employee-list">
         <div class="card">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">List</h6>
@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="card shadow mb-4" id="card-add-stocks" hidden>
+    <div class="card shadow mb-4" id="card-new-employee" hidden>
         <div class="card">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">New Employee</h6>
@@ -156,7 +156,7 @@
                                     <label id="pengirim-label" for="new-position">ID Card | Max: 200kb Type: JPG/JPEG/PNG</label>
                                     <div class="input-group mb-3">
                                         <input type="file" id="id-card-form">
-                                        <div class="col-md-6 mt-2">
+                                        <div class="col-md-6 mt-1">
                                             <div id="delete-idcardform" style="display: none;">
                                                 <a href="#"  class="px-1 badge badge-danger" id="button-delete-idcard" onclick="buttonDeleteIdCardFile()">
                                                     <i>
@@ -176,18 +176,21 @@
                                 const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
                                 idCardForm.addEventListener("change", () => {
-                                    // checkFileType(idCardForm, imagesTypes, "Change the Image format", idCardForm); // script.js
-                                    // checkFileSize(idCardForm); // script.js
+                                    checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm); // script.js
+                                    checkFileSize(idCardForm); // script.js
                                     idCardFilename.textContent = idCardForm.files[0]["name"]
                                     deleteIdCardForm.style.display = "block";
                                     idCardForm.style.display = "none";
                                 });
                                 function buttonDeleteIdCardFile() {
-                                    toastr.success("File Deleted.", "success");
-                                    deleteIdCardForm.style.display = "none";
-                                    idCardForm.style.display = "block";
-                                    idCardFilename.textContent = null;
-                                    idCardForm.value = "";
+                                    if (idCardForm.files["length"] > 0) {
+                                        toastr.success("File Deleted.", "success");
+                                        deleteIdCardForm.style.display = "none";
+                                        idCardForm.style.display = "block";
+                                        idCardFilename.textContent = null;
+                                        idCardForm.value = "";
+                                    }
+                                    return 0;
                                 }
                             </script>
                         </div>
@@ -289,17 +292,16 @@
 </div>
 <script>
     // Card Body Handlers
-    const cardProducts = document.getElementById("card-products");
-    const cardAddStocks = document.getElementById("card-add-stocks");
-    const addStocksButton = document.getElementById("add-stocks-button")
-    // const inventoryButton = document.getElementById("inventory-button");
-    const returnButton = document.getElementById("return-button")
+    const cardEmployeeList = document.getElementById("card-employee-list");
+    const cardNewEmployee = document.getElementById("card-new-employee");
+    const newEmployeeButton = document.getElementById("new-employee-button")
+    const returnButton = document.getElementById("return-button");
 
-    addStocksButton.addEventListener("click", () => {
-        cardAddStocks.removeAttribute("hidden");
+    newEmployeeButton.addEventListener("click", () => {
+        cardNewEmployee.removeAttribute("hidden");
         returnButton.removeAttribute("hidden");
-        addStocksButton.setAttribute("hidden", true);
-        cardProducts.setAttribute("hidden",true)
+        newEmployeeButton.setAttribute("hidden", true);
+        cardEmployeeList.setAttribute("hidden",true)
     });
     /*
         7 Input Form
@@ -311,35 +313,43 @@
         - idCardForm
         - addToBeUserForm
     */ 
-    
+
+    function showEmployeeList() {
+        cardNewEmployee.setAttribute("hidden", true);
+        returnButton.setAttribute("hidden", true);
+        newEmployeeButton.removeAttribute("hidden");
+        cardEmployeeList.removeAttribute("hidden");
+    }
     // Event akan di panggil ketika form tidak kosong
     returnButton.addEventListener("click", () => {
-        if (nameEmployeeForm !== "" || numberPhoneForm !== "" || addressForm !== "") {
+        // Jika input file == 1 hapus file dari input dan server /uploads
+        if (idCardForm.files["length"] > 0) {
             Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, cancel it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                cardAddStocks.setAttribute("hidden", true);
-                returnButton.setAttribute("hidden", true);
-                addStocksButton.removeAttribute("hidden");
-                cardProducts.removeAttribute("hidden");
-
-                // Mengosongkan 7 Input Form
-                cancelCustomIdEmployee(); // ID Employee Form
-                nameEmployeeForm.value = null;
-                numberPhoneForm.value = null;
-                addressForm.value = null;
-                cancelNewPositionEmployee(); // Position Form
-                buttonDeleteIdCardFile(); // ID Card File
-                addToBeUserForm.checked = false;
-            }
-        });
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, cancel it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Mengosongkan 7 Input Form
+                    cancelCustomIdEmployee(); // ID Employee Form
+                    nameEmployeeForm.value = null;
+                    numberPhoneForm.value = null;
+                    addressForm.value = null;
+                    cancelNewPositionEmployee(); // Position Form
+                    buttonDeleteIdCardFile(); // ID Card File
+                    addToBeUserForm.checked = false;
+                    showEmployeeList();
+                    return 0;
+                }
+            });
         }
-    });
+        if (idCardForm.files["length"] === 0) {
+            showEmployeeList();
+        }
+    }
+    )
 </script>
