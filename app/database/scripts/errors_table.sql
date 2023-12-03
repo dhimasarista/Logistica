@@ -1,0 +1,1 @@
+INSERT INTO errors VALUES(98923, "Internal Server Error", "Cannot Connect DB logistica", 1);
