@@ -8,3 +8,26 @@ Untuk Mengeksekusi Migrate:
 
 Cara Ekspor folder /go/bin dilinux:
 => export PATH=$PATH:/home/dhimasarista/go/bin
+
+Jika Anda menggunakan Bash sebagai shell, Anda dapat mengikuti langkah-langkah berikut untuk membuat perubahan PATH menjadi permanen:
+
+1. Buka terminal.
+
+2. Gunakan editor teks untuk membuka file `.bashrc`:
+
+   nano ~/.bashrc
+
+3. Pindah ke bagian paling bawah file.
+
+4. Tambahkan baris berikut (gantilah `/path/to/your/go` dengan jalur lengkap ke direktori Go di dalam `~/Documents`):
+
+   export PATH=$PATH:/path/to/your/go/bin
+
+   Pastikan untuk menggunakan jalur yang benar.
+
+5. Simpan perubahan dan keluar dari editor.
+
+6. Jalankan perintah berikut untuk mengaktifkan perubahan di sesi terminal saat inibash
+   source ~/.bashrc
+
+Dengan langkah-langkah ini, setiap kali Anda membuka terminal baru, perubahan PATH yang Anda tambahkan ke dalam file `.bashrc` akan diterapkan secara otomatis, membuatnya permanen. Pastikan bahwa baris tersebut ada di akhir file untuk menghindari konflik dengan perintah lain yang mungkin ada dalam file tersebut.
