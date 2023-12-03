@@ -9,7 +9,7 @@
         <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Return</i></a></div>
     </div>
     <!-- DataTales Example -->
-    <div class="card shadow mb-4" id="card-employee-list">
+    <div class="card shadow mb-4" id="card-employee-list" hidden>
         <div class="card">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">List</h6>
@@ -216,7 +216,7 @@
             </div>
         </div>
     </div>
-    <div class="card shadow mb-4" id="card-spinners" hidden>
+    <div class="card shadow mb-4" id="card-spinners">
         <div class="card">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Loading...</h6>
@@ -308,15 +308,20 @@
     const cardNewEmployee = document.getElementById("card-new-employee");
     const newEmployeeButton = document.getElementById("new-employee-button")
     const returnButton = document.getElementById("return-button");
+    const cardSpinner = document.getElementById("card-spinners");
+
+    setTimeout(() => {
+        cardEmployeeList.removeAttribute("hidden");
+        cardSpinner.setAttribute("hidden", true);
+    }, 1000);
 
     newEmployeeButton.addEventListener("click", () => {
-        const cardSpinner = document.getElementById("card-spinners");
         cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
         cardEmployeeList.setAttribute("hidden",true);
-        returnButton.removeAttribute("hidden");
-
+        
         setTimeout(() => {
+            returnButton.removeAttribute("hidden");
             cardNewEmployee.removeAttribute("hidden");
             cardSpinner.setAttribute("hidden", true);
         }, 1000);
