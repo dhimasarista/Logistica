@@ -1,6 +1,3 @@
-<style>
-    
-</style>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -28,22 +25,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{#surat-masuk}}
-                                <tr>
-                                    <td>{{tanggalSurat}}</td>
-                                    <td>{{judulSurat}}</td>
-                                    <td>{{penerima}}</td>
-                                    <td>{{pengirim}}</td>
-                                    <td>{{perihal}}</td>
-                                    <td>{{jenisSurat}}</td>
-                                </tr>
-                                {{/surat-masuk}}
+                            {{#employees}}
                             <tr>
-                                <td>0435843957346</td>
-                                <td>Ryzen 5 5000X</td>
-                                <td>85043859347549</td>
-                                <td>AMD</td>
-                                <td>1032</td>
+                                <td>{{id}}</td>
+                                <td>{{name}}</td>
+                                <td>{{position}}</td>
+                                <td>{{numberPhone}}</td>
+                                <td>{{address}}</td>    
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,22 +49,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>Intel i5 5460U</td>
-                                <td>85043859347549</td>
-                                <td>Intel</td>
-                                <td>980</td>
-                                <td>4.153.000</td>
-                            </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>DA PSU 80W Bronze</td>
-                                <td>85043859347549</td>
-                                <td>Digital Alliance</td>
-                                <td>98</td>
-                                <td>560.000</td>
-                            </tr>
+                            {{/employees}}
                         </tbody>
                     </table>
                 </div>
@@ -310,10 +283,31 @@
     const returnButton = document.getElementById("return-button");
     const cardSpinner = document.getElementById("card-spinners");
 
-    setTimeout(() => {
+    // const employee = `{{employees}}`;
+    const responseStatus = `{{responseStatus}}`
+    if (responseStatus === "200") {
         cardEmployeeList.removeAttribute("hidden");
         cardSpinner.setAttribute("hidden", true);
-    }, 1000);
+    }
+
+    // let table = new DataTable(document.getElementById("employee-list"),{
+    //   deferLoading: 10,
+        
+    //     // Animasi jika file belum sepenuhnya dimuat
+    //     initComplete: function(settings, json) {
+    //         if (cardSpinner) {
+    //             cardSpinner.setAttribute("hidden", true);
+    //         }
+    //         if (cardEmployeeList) {
+    //             cardEmployeeList.removeAttribute("hidden");
+    //         }
+    //     }
+    // });
+
+    // setTimeout(() => {
+    //     cardEmployeeList.removeAttribute("hidden");
+    //     cardSpinner.setAttribute("hidden", true);
+    // }, 1000);
 
     newEmployeeButton.addEventListener("click", () => {
         cardSpinner.removeAttribute("hidden");
