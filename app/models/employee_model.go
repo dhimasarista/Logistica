@@ -16,5 +16,18 @@ type Employee struct {
 func (e *Employee) GetById(id int) error {
 	db := config.ConnectDB()
 	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser WHERE id = ?"
-	
+	err := db.QueryRow(query, id).scan(
+		&e.ID,
+		&e.Name,
+		&e.Address,
+		&e.NumberPhone,
+		&e.Position,
+		&e.IsUser,
+		&e.IsSuperuser,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

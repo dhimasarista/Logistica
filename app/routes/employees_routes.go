@@ -12,6 +12,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
 
+		var data = models.Employee{}
+		fmt.Println(data.GetById(1))
+
 		return c.Render("employees_page", fiber.Map{
 			"path": path,
 			"user": username,
