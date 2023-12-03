@@ -17,9 +17,8 @@ type Employee struct {
 	IsSuperuser sql.NullBool   `json:"is_superuser"`
 }
 
-var db = config.ConnectDB()
-
 func (e *Employee) GetById(id int) error {
+	var db = config.ConnectDB()
 	defer db.Close()
 
 	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser FROM employees WHERE id = ?"
@@ -35,18 +34,19 @@ func (e *Employee) GetById(id int) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func (e *Employee) FindAll() ([]map[string]any, error) {
+	var db = config.ConnectDB()
 	defer db.Close()
 
-	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser FROM employees"
+	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser FROM employees WHERE id > 1"
 	ctx := context.Background()
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -66,12 +66,14 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 
 		if err != nil {
 			log.Println(err)
+			return nil, err
 		}
 
 		var employee = map[string]any{
 			"id":          e.ID.Int64,
 			"name":        e.Name.String,
 			"address":     e.Address.String,
+			"position":    e.Position.String,
 			"numberPhone": e.NumberPhone.String,
 			"isUser":      e.IsUser.Bool,
 			"isSuperuser": e.IsSuperuser.Bool,
@@ -79,6 +81,5 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 
 		employees = append(employees, employee)
 	}
-
 	return employees, nil
 }

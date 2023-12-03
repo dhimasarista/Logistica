@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"log"
 	"logistica/app/models"
 	"testing"
@@ -26,5 +25,6 @@ func TestFindAllEmployee(t *testing.T) {
 		panic(err)
 	}
 
-	fmt.Println(data[1]["name"])
+	assert.Nil(t, err)
+	assert.Equal(t, "muhammad dhimas arista", data[1]["name"])
 }
