@@ -1,7 +1,7 @@
 CREATE TABLE products(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    name VARCHAR(128) NOT NULL,
-    serial_number BIGINT,
+    name VARCHAR(255) NOT NULL,
+    serial_number VARCHAR(255),
     manufacturer_id int,
     FOREIGN KEY(manufacturer_id) REFERENCES manufacturer(id),
     stocks BIGINT,
