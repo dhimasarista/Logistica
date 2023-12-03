@@ -147,7 +147,7 @@
                                     "manufacturer": "100022",
                                     "price": "1.640.600",
                                     "weight": 240,
-                                    "category": "Processor",
+                                    "category": "9922",
                                     "stock": 64,
                                 },{
                                     "id": 10004,
@@ -156,7 +156,7 @@
                                     "manufacturer": "100022",
                                     "price": "1.890.600",
                                     "weight": 239,
-                                    "category": "Processor",
+                                    "category": "9922",
                                     "stock": 48,
                                 },{
                                     "id": 10003,
@@ -165,7 +165,7 @@
                                     "manufacturer": "100022",
                                     "price": "2.640.600",
                                     "weight": 238,
-                                    "category": "Processor",
+                                    "category": "9922",
                                     "stock": 12,
                                 }];
                                 function checkNewProduct() {
@@ -175,13 +175,15 @@
                                     // Input Form
                                     const productSelect = document.getElementById('product-name');
                                     const manufacturerForm = document.getElementById('manufacturer-form');
-                                    const serialNumberForm = document.getElementById('serial_number_form');
+                                    const serialNumberForm = document.getElementById('serial-number-form');
                                     const priceForm = document.getElementById("price-form");
                                     const weightForm = document.getElementById("weight-form");
                                     const stockAmountForm = document.getElementById("stock-amount-form");
+                                    const categoryForm = document.getElementById("category-form");
 
                                     // Mengambil semua opsi di manufacturer form
                                     const optionsManufacturer = manufacturerForm.options;
+                                    const optionsCategory = categoryForm.options;
 
                                     if (productSelect.value === 'newProduct') {
                                         existingProduct.style.display = 'none';
@@ -189,15 +191,22 @@
 
                                         serialNumberForm.value = null;
                                         manufacturerForm.selectedIndex = 0;
+                                        categoryForm.selectedIndex = 0;
+
                                         priceForm.value = null;
                                         weightForm.value = null;
                                         stockAmountForm.value = null;
 
                                         serialNumberForm.removeAttribute("disabled");
                                         manufacturerForm.removeAttribute("disabled");
+                                        categoryForm.removeAttribute("disabled");
                                         priceForm.removeAttribute("disabled");
                                         weightForm.removeAttribute("disabled");
                                     } else {
+                                        // Membatalkan form new 
+                                        cancelNewManufacturer(); 
+                                        cancelNewCategory();
+                                        
                                         existingProduct.style.display = 'block';
                                         newProduct.style.display = 'none';
 
@@ -206,6 +215,7 @@
                                                 // Menampilkan data produk yang sudah ada
                                                 const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
                                                 const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
+                                                const categoryValue = products[index]["category"];
 
                                                 serialNumberForm.value = serialNumber;
                                                 serialNumberForm.setAttribute("disabled", true);
@@ -213,11 +223,17 @@
                                                 priceForm.setAttribute("disabled", true);
                                                 weightForm.value = products[index]["weight"];
                                                 weightForm.setAttribute("disabled", true);
-
+                                                
                                                 for (let index2 = 0; index2 < optionsManufacturer.length; index2++) {
                                                     if (manufacturer === optionsManufacturer[index2].value) {
-                                                        manufacturerForm.selectedIndex = 2;
+                                                        manufacturerForm.selectedIndex = index2;
                                                         manufacturerForm.setAttribute("disabled", true);
+                                                    }
+                                                }
+                                                for (let index3 = 0; index3 < optionsCategory.length; index3++) {
+                                                    if (categoryValue === optionsCategory[index3].value) {
+                                                        categoryForm.selectedIndex = index3;
+                                                        categoryForm.setAttribute("disabled", true);
                                                     }
                                                 }
                                             }
@@ -232,7 +248,7 @@
                                     const newProduct = document.getElementById("new-product");
                                     const newProductForm = document.getElementById('new-product-form');
 
-                                    const serialNumberForm = document.getElementById('serial_number_form');
+                                    const serialNumberForm = document.getElementById('serial-number-form');
                                     const manufacturerForm = document.getElementById('manufacturer_form');
                                     const priceForm = document.getElementById("price-form");
                                     const weightForm = document.getElementById("weight-form");
@@ -250,13 +266,14 @@
 
                                     // Menghapus form menjadi empty
                                     newProductForm.value = null;
+                                    cancelNewManufacturer(); // Membatalkan form new manufacturer
                                 }
                         </script>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="serial_number_label" for="serialNumber">Serial Number</label>
-                                    <input type="email" name="serialNumber" id="serial_number_form" placeholder="EX: S23864872548" class="form-control" required>
+                                    <input type="email" name="serialNumber" id="serial-number-form" placeholder="EX: S23864872548" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -275,7 +292,7 @@
                                 <div class="form-group" id="new-manufacturer" style="display: none;">
                                     <label id="new-manufacturer-label" for="weight">New Manufacturer</label>
                                     <div class="input-group mb-3">
-                                    <input type="new-manufacturer" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation"/>
+                                    <input type="new-manufacturer" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation" onclick="newManufacturerEvent()"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturer()">cancel</a>
                                     </div>
@@ -290,9 +307,10 @@
                                         if (manufacturerForm.value === "newManufacturer") {
                                             newManufacturer.style.display = "block";
                                             existinManufacturer.style.display = "none";
+                                            return;
                                         }
-                                        newManufacturer.style.display = "block";
-                                        existinManufacturer.style.display = "none";
+                                        newManufacturer.style.display = "none";
+                                        existinManufacturer.style.display = "block";
                                     }
 
                                     function cancelNewManufacturer() {
@@ -330,12 +348,12 @@
                                 <div id="existing-category">
                                     <div class="form-group">
                                         <label id="judul-surat-label" for="product_name">Product Category</label>
-                                        <select class="form-control scrollable-menu" id="category-name" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                        <select class="form-control scrollable-menu" id="category-form" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Category</option>
                                             <option value="newCategory">New Category</option>
-                                            <option value="product1">Produk 1</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
+                                            <option value="9922">Processor</option>
+                                            <option value="9923">Harddisk</option>
+                                            <option value="9924">Motherboard</option>
                                         </select>
                                     </div>
                                 </div>
@@ -349,7 +367,7 @@
                                     </div>
                                 </div>
                                 <script>
-                                    const categorySelect = document.getElementById("category-name");
+                                    const categorySelect = document.getElementById("category-form");
                                     const existingCategory = document.getElementById("existing-category");
                                     const newCategory = document.getElementById("new-category");
                                     const newCategoryForm = document.getElementById("new-category-form");
@@ -391,32 +409,7 @@
                 </div>	
             </div>
         </div>
-        
     </div>
-
-        <!-- <script>
-            function showTab(tabId) {
-                // Sembunyikan semua card body
-                var cardBodies = document.getElementsByClassName('card-body');
-                for (var i = 0; i < cardBodies.length; i++) {
-                    cardBodies[i].style.display = 'none';
-                }
-        
-                // Hapus kelas "active" dari semua tautan
-                var navLinks = document.getElementsByClassName('nav-link');
-                for (var j = 0; j < navLinks.length; j++) {
-                    navLinks[j].classList.remove('active');
-                }
-        
-                // Tampilkan card body dengan id yang sesuai
-                document.getElementById(tabId).style.display = 'block';
-        
-                // Tambahkan kelas "active" pada tautan yang diklik
-                var clickedLink = event.currentTarget;
-                clickedLink.classList.add('active');
-            }
-        </script>       -->
-
 </div>
 <script>
     const cardProducts = document.getElementById("card-products");
