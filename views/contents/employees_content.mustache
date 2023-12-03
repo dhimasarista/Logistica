@@ -216,6 +216,18 @@
             </div>
         </div>
     </div>
+    <div class="card shadow mb-4" id="card-spinners" hidden>
+        <div class="card">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Loading...</h6>
+            </div>
+            <div class="card-body text-center">
+                <div class="spinner-border m-5" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+            </div>
+        </div>
+    </div>
     <script>
         // 7 Input Form
         const idEmployeeForm = document.getElementById("id-employee-form");
@@ -298,10 +310,16 @@
     const returnButton = document.getElementById("return-button");
 
     newEmployeeButton.addEventListener("click", () => {
-        cardNewEmployee.removeAttribute("hidden");
-        returnButton.removeAttribute("hidden");
+        const cardSpinner = document.getElementById("card-spinners");
+        cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
-        cardEmployeeList.setAttribute("hidden",true)
+        cardEmployeeList.setAttribute("hidden",true);
+        returnButton.removeAttribute("hidden");
+
+        setTimeout(() => {
+            cardNewEmployee.removeAttribute("hidden");
+            cardSpinner.setAttribute("hidden", true);
+        }, 1000);
     });
     /*
         7 Input Form
@@ -315,10 +333,11 @@
     */ 
 
     function showEmployeeList() {
-        cardNewEmployee.setAttribute("hidden", true);
-        returnButton.setAttribute("hidden", true);
         newEmployeeButton.removeAttribute("hidden");
         cardEmployeeList.removeAttribute("hidden");
+        
+        returnButton.setAttribute("hidden", true);
+        cardNewEmployee.setAttribute("hidden", true);
     }
     // Event akan di panggil ketika form tidak kosong
     returnButton.addEventListener("click", () => {
@@ -349,6 +368,7 @@
         }
         if (idCardForm.files["length"] === 0) {
             showEmployeeList();
+            return 0;
         }
     }
     )
