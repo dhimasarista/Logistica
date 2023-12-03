@@ -6,6 +6,7 @@ function checkFileSize(file) {
             alert("File Tidak Boleh Lebih Dari 200kb");
 
             file.value = "";
+            return 0;
         }
     }                                   
 }
@@ -14,7 +15,7 @@ function checkFileType(file, expectedTypes, errorMsg, toDelete) {
     if (!expectedTypes.includes(file.type)) {
         alert(errorMsg);
         toDelete.value = null;
-        return;
+        return 0;
     }
 }
 
