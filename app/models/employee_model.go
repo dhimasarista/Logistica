@@ -1,22 +1,29 @@
 package models
 
-"database/sql"
+import (
+	"context"
+	"database/sql"
+	"log"
+	"logistica/app/config"
+)
 
 type Employee struct {
-	ID          sql.NullInt64    `json:id`
-	Name        sql.NullString `json:name`
-	Address     sql.NullString `json:address`
-	NumberPhone sql.NullString `json:number_phone`
-	Position    sql.NullString `json:position`
-	IsUser      sql.NullBool `json:is_user`
-	IsSuperuser sql.NullBool   `json:is_superuser`
+	ID          sql.NullInt64  `json:"id"`
+	Name        sql.NullString `json:"name"`
+	Address     sql.NullString `json:"address"`
+	NumberPhone sql.NullString `json:"number_phone"`
+	Position    sql.NullString `json:"position"`
+	IsUser      sql.NullBool   `json:"is_user"`
+	IsSuperuser sql.NullBool   `json:"is_superuser"`
 }
 
+var db = config.ConnectDB()
 
 func (e *Employee) GetById(id int) error {
-	db := config.ConnectDB()
-	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser WHERE id = ?"
-	err := db.QueryRow(query, id).scan(
+	defer db.Close()
+
+	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser FROM employees WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(
 		&e.ID,
 		&e.Name,
 		&e.Address,
@@ -30,4 +37,48 @@ func (e *Employee) GetById(id int) error {
 	}
 
 	return nil
+}
+
+func (e *Employee) FindAll() ([]map[string]any, error) {
+	defer db.Close()
+
+	var query string = "SELECT id, name, address, number_phone, position, is_user, is_superuser FROM employees"
+	ctx := context.Background()
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer rows.Close()
+
+	var employees []map[string]any
+
+	for rows.Next() {
+		err := rows.Scan(
+			&e.ID,
+			&e.Name,
+			&e.Address,
+			&e.NumberPhone,
+			&e.Position,
+			&e.IsUser,
+			&e.IsSuperuser,
+		)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		var employee = map[string]any{
+			"id":          e.ID.Int64,
+			"name":        e.Name.String,
+			"address":     e.Address.String,
+			"numberPhone": e.NumberPhone.String,
+			"isUser":      e.IsUser.Bool,
+			"isSuperuser": e.IsSuperuser.Bool,
+		}
+
+		employees = append(employees, employee)
+	}
+
+	return employees, nil
 }

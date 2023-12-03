@@ -1,0 +1,9 @@
+Berikut adalah singkatan singkat untuk beberapa metode penggunaan database MySQL dalam Go (Golang):
+
+1. Query: Menjalankan query SQL untuk mendapatkan beberapa baris hasil, digunakan ketika hasil query akan diiterasi.
+2. QueryRow: Menjalankan query SQL untuk mendapatkan satu baris hasil, cocok untuk ekstraksi data tanpa iterasi.
+3. QueryContext: Menjalankan query SQL untuk mendapatkan beberapa baris hasil dengan manajemen waktu eksekusi dan pembatalan menggunakan context.
+4. Exec: Menjalankan query SQL tanpa hasil kembalian (seperti INSERT, UPDATE, DELETE) untuk memodifikasi data di database.
+5. Prepare dan Stmt: Mempersiapkan dan mengeksekusi pernyataan SQL secara berulang, berguna untuk mengoptimalkan eksekusi query yang sama.
+6. Begin, Commit, dan Rollback: Mengelola transaksi database. Begin untuk memulai transaksi, Commit untuk mengonfirmasi perubahan, dan Rollback untuk membatalkan perubahan.
+7. Ping: Menguji koneksi database untuk memastikan ketersediaan sebelum memulai operasi database.

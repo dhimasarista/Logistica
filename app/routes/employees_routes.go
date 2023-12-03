@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"fmt"
 	"logistica/app/controllers"
+	"logistica/app/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -12,7 +14,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
 
-		var data = models.Employee{}
+		var data = *&models.Employee{}
 		fmt.Println(data.GetById(1))
 
 		return c.Render("employees_page", fiber.Map{
