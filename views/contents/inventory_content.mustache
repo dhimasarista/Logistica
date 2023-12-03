@@ -117,7 +117,7 @@
                             <div id="existing-product">
                                     <div class="form-group">
                                         <label id="judul-surat-label" for="product_name">Product Name</label>
-                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;' required>
                                             <option value="" selected disabled>Select Product</option>
                                             <option value="newProduct">New Product</option>
                                             <option value="10002">Intel i5 5600U | stocks: 320</option>
@@ -206,7 +206,7 @@
                                         // Membatalkan form new 
                                         cancelNewManufacturer(); 
                                         cancelNewCategory();
-                                        
+
                                         existingProduct.style.display = 'block';
                                         newProduct.style.display = 'none';
 
