@@ -88,7 +88,7 @@ func (e *Employee) LastId() error {
 	var db = config.ConnectDB()
 	defer db.Close()
 
-	var query string = "SELECT MAX(id) as maxId FROM employees"
+	var query string = "SELECT MAX(id) FROM employees"
 	err := db.QueryRow(query).Scan(
 		&e.ID,
 	)

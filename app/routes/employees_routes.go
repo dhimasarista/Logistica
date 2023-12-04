@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"strconv"
@@ -34,15 +36,20 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		var id string = c.Params("id")
 		employee := models.Employee{}
 
-		idInteger, _ := strconv.Atoi(id) // Konversi string ke integer
+		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
+		if err != nil {
+			log.Println(err)
+		}
 		employee.GetById(idInteger)
 
-		var isIdExists bool = false
+		var isIdExists bool
 		if employee.ID.Int64 == int64(idInteger) {
 			isIdExists = true
-		} else {
-			isIdExists = false
 		}
+
+		fmt.Println(employee.ID.Int64)
+		fmt.Println(int64(idInteger))
+		fmt.Println(employee)
 
 		return c.JSON(fiber.Map{
 			"isIdExists":     isIdExists,
