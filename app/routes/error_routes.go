@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"log"
 	"logistica/app/controllers"
 	"strings"
 
@@ -31,6 +32,7 @@ func ErrorRoutes(app *fiber.App, store *session.Store) {
 }
 
 func InternalServerError(c *fiber.Ctx, message string) error {
+	log.Println(message)
 	var messageFormatted = strings.Replace(message, " ", "+", -1)
 	var path = fmt.Sprintf("/error?code=500&title=Internal+Server+Error&message=%s", messageFormatted)
 	return c.Redirect(path)

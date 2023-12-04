@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -18,7 +18,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 		employees, err := employee.FindAll()
 		if err != nil {
-			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
 
@@ -26,6 +25,40 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"path":           path,
 			"user":           username,
 			"employees":      employees,
+			"responseStatus": c.Response().StatusCode(),
+		})
+	})
+
+	// Memeriksa ketersedian ID
+	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
+		var id string = c.Params("id")
+		employee := models.Employee{}
+
+		idInteger, _ := strconv.Atoi(id) // Konversi string ke integer
+		employee.GetById(idInteger)
+
+		var isIdExists bool = false
+		if employee.ID.Int64 == int64(idInteger) {
+			isIdExists = true
+		} else {
+			isIdExists = false
+		}
+
+		return c.JSON(fiber.Map{
+			"isIdExists":     isIdExists,
+			"responseStatus": c.Response().StatusCode(),
+		})
+	})
+	// Mengirim ID baru
+	app.Get("/employee/newId", func(c *fiber.Ctx) error {
+		employee := models.Employee{}
+		err := employee.LastId()
+		if err != nil {
+			InternalServerError(c, err.Error())
+		}
+
+		return c.JSON(fiber.Map{
+			"newId":          employee.ID.Int64 + 1,
 			"responseStatus": c.Response().StatusCode(),
 		})
 	})

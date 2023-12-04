@@ -70,7 +70,7 @@
                             <div class="col-md-6">
                                 <label id="id-employee-label" for="id-employee">ID Employee</label>
                                 <div class="input-group mb-3">
-                                    <input type="email" name="id-employee" id="id-employee-form" class="form-control" disabled required>
+                                    <input type="number" name="id-employee" id="id-employee-form" class="form-control" disabled required>
                                     <div class="input-group-append">
                                       <a href="#" class="input-group-text" id="button-custom-id-employee" onclick="customIdEmployee()">custom</a>
                                       <a href="#" class="input-group-text" id="button-cancel-custom-id-employee" onclick="cancelCustomIdEmployee()" style="display: none;">cancel</a>
@@ -80,7 +80,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="name-employee-label" for="name">Full Name</label>
-                                    <input type="email" name="name" id="name-employee-form" placeholder="EX: Dhimas Arista" class="form-control" required>
+                                    <input type="text" name="name" id="name-employee-form" placeholder="EX: Dhimas Arista" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="address-label" for="address">Address</label>
-                                    <input type="pengirim" name="address" id="address-form" class="form-control" placeholder="Ex: 68 Main Street, Wellington, 6021, New Zealand"/>
+                                    <input type="text" name="address" id="address-form" class="form-control" placeholder="Ex: 68 Main Street, Wellington, 6021, New Zealand"/>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                                 <div class="form-group" id="new-position" style="display: none;">
                                     <label id="pengirim-label" for="new-position">New Position</label>
                                     <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="new-position-form" class="form-control" placeholder="Ex: Software Engineer"/>
+                                    <input type="text" name="pengirim" id="new-position-form" class="form-control" placeholder="Ex: Software Engineer"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-position" onclick="cancelNewPositionEmployee()">cancel</a>
                                     </div>
@@ -180,7 +180,7 @@
                         
                         <div class="row">
                             <div class="col-md-2 my-4">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
+                                <button type="submit" id="submit-new-employee" class="btn btn-primary btn-block">Upload</button>
                             </div>
                         </div>
 
@@ -211,18 +211,19 @@
         const addToBeUserForm = document.getElementById("add-tobe-user-form");
 
         // Mengambil id employee terakhir di db
-        const lastIdEmploye = 100293;
-        const newIdEmployee = lastIdEmploye + 1; 
-        idEmployeeForm.value = newIdEmployee; // Menambahkan id dengan kalkulasi id terakhir + 1
+        // const lastIdEmploye = 100293;
+        let newIdEmployee; 
+        // idEmployeeForm.value = newIdEmployee; // Menambahkan id dengan kalkulasi id terakhir + 1
 
         const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
         const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
         function customIdEmployee(){
-            idEmployeeForm.value = newIdEmployee;
+            // idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.removeAttribute("disabled");
             buttonCustomIdEmployee.style.display = "none";
             buttonCancelCustomIdEmployee.style.display = "block";
         }
+
         function cancelCustomIdEmployee() {
             idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.setAttribute("disabled", true);
@@ -251,29 +252,6 @@
         }
     </script>
 
-        <!-- <script>
-            function showTab(tabId) {
-                // Sembunyikan semua card body
-                var cardBodies = document.getElementsByClassName('card-body');
-                for (var i = 0; i < cardBodies.length; i++) {
-                    cardBodies[i].style.display = 'none';
-                }
-        
-                // Hapus kelas "active" dari semua tautan
-                var navLinks = document.getElementsByClassName('nav-link');
-                for (var j = 0; j < navLinks.length; j++) {
-                    navLinks[j].classList.remove('active');
-                }
-        
-                // Tampilkan card body dengan id yang sesuai
-                document.getElementById(tabId).style.display = 'block';
-        
-                // Tambahkan kelas "active" pada tautan yang diklik
-                var clickedLink = event.currentTarget;
-                clickedLink.classList.add('active');
-            }
-        </script>       -->
-
 </div>
 <script>
     // Card Body Handlers
@@ -290,35 +268,22 @@
         cardSpinner.setAttribute("hidden", true);
     }
 
-    // let table = new DataTable(document.getElementById("employee-list"),{
-    //   deferLoading: 10,
-        
-    //     // Animasi jika file belum sepenuhnya dimuat
-    //     initComplete: function(settings, json) {
-    //         if (cardSpinner) {
-    //             cardSpinner.setAttribute("hidden", true);
-    //         }
-    //         if (cardEmployeeList) {
-    //             cardEmployeeList.removeAttribute("hidden");
-    //         }
-    //     }
-    // });
-
-    // setTimeout(() => {
-    //     cardEmployeeList.removeAttribute("hidden");
-    //     cardSpinner.setAttribute("hidden", true);
-    // }, 1000);
-
     newEmployeeButton.addEventListener("click", () => {
         cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
         cardEmployeeList.setAttribute("hidden",true);
-        
-        setTimeout(() => {
-            returnButton.removeAttribute("hidden");
-            cardNewEmployee.removeAttribute("hidden");
-            cardSpinner.setAttribute("hidden", true);
-        }, 1000);
+        fetch("/employee/newId")
+        .then(response => response.json())
+        .then(result => {
+            if (result.responseStatus === 200) {
+                returnButton.removeAttribute("hidden");
+                cardNewEmployee.removeAttribute("hidden");
+                cardSpinner.setAttribute("hidden", true);
+
+                newIdEmployee = result.newId;
+                idEmployeeForm.value = result.newId; // Menambahkan id dengan kalkulasi id terakhir + 1
+            }
+        })
     });
     /*
         7 Input Form
@@ -370,5 +335,24 @@
             return 0;
         }
     }
-    )
+    );
+
+    // Submit New Employee
+    document.getElementById("submit-new-employee").addEventListener("click", () => {
+        if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
+            alert("Masukkan Dalam bentuk Number")
+            return 0;
+        }
+        fetch(`/employee/check/${idEmployeeForm}`)
+        .then(response => response.json())
+        .then(results => {
+            console.log(results.isIdExists);
+            if (results.isIdExists) {
+                alert("ID Tidak Dapat Digunakan");
+            } else {
+                alert("Employee ditambahkan");
+                window.location.reload;
+            }
+        })
+    });
 </script>

@@ -1,10 +1,14 @@
 package test
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"logistica/app/models"
+	"net/http/httptest"
 	"testing"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,4 +31,31 @@ func TestFindAllEmployee(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, "muhammad dhimas arista", data[1]["name"])
+}
+
+func TestGetEmployeeLastId(t *testing.T) {
+	var data = models.Employee{}
+	err := data.LastId()
+	if err != nil {
+		log.Println(err)
+	}
+
+	assert.Nil(t, err)
+	fmt.Println(data.ID.Int64)
+}
+
+func TestCheckId(t *testing.T) {
+	app := fiber.New()
+
+	request := httptest.NewRequest("GET", "localhost:1500/employee/check/100011", nil)
+	response, err := app.Test(request)
+
+	assert.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
+
+	bytes, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	// assert.Contains(t, bytes, )
+
+	fmt.Println(string(bytes))
 }
