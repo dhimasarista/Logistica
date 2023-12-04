@@ -1,20 +1,18 @@
-CREATE TABLE position(
+CREATE TABLE positions (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL
-)
+);
 
 CREATE TABLE employees(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     number_phone VARCHAR(32) NOT NULL,
-    position_id INT NOT NULL,
-    FOREIGN KEY (position_id) REFERENCES position(id),  
-    is_user TINYINT NOT NULL,
-    is_superuser TINYINT NOT NULL
+    position_id INT,
+    is_user TINYINT(1) NOT NULL,
+    is_superuser TINYINT(1) NOT NULL,
+    FOREIGN KEY (position_id) REFERENCES positions(id)
 );
-
-INSERT INTO employees VALUES(1, "Administrator", "0", "0", "Administrator", 1, 1);
 
 CREATE TABLE product_category(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -34,8 +32,6 @@ CREATE TABLE users(
     FOREIGN KEY (employee_id) REFERENCES employees(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO users(id, username, password, employee_id) VALUES(1, "0x0002", "$2a$12$jb.qLEDHWmvFptryo8J/e.LnxhxNu9N5mmH.IEmHkjMvNYbb9f.iq", 1);
 
 CREATE TABLE products(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
