@@ -1,9 +1,15 @@
+CREATE TABLE position(
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL
+)
+
 CREATE TABLE employees(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     number_phone VARCHAR(32) NOT NULL,
-    position VARCHAR(32) NOT NULL,
+    position_id INT NOT NULL,
+    FOREIGN KEY (position_id) REFERENCES position(id),  
     is_user TINYINT NOT NULL,
     is_superuser TINYINT NOT NULL
 );
