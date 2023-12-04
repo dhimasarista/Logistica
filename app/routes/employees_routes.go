@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
@@ -34,22 +33,18 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	// Memeriksa ketersedian ID
 	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
 		var id string = c.Params("id")
-		employee := models.Employee{}
+		employee := &models.Employee{}
 
 		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
 		if err != nil {
 			log.Println(err)
 		}
-		employee.GetById(idInteger)
+		employee.GetById(int64(idInteger)) // Mengambil ID
 
-		var isIdExists bool
+		var isIdExists bool = false
 		if employee.ID.Int64 == int64(idInteger) {
 			isIdExists = true
 		}
-
-		fmt.Println(employee.ID.Int64)
-		fmt.Println(int64(idInteger))
-		fmt.Println(employee)
 
 		return c.JSON(fiber.Map{
 			"isIdExists":     isIdExists,

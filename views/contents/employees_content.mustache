@@ -343,12 +343,16 @@
             alert("Masukkan Dalam bentuk Number")
             return 0;
         }
-        fetch(`/employee/check/${idEmployeeForm}`)
+        fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
         .then(results => {
             console.log(results.isIdExists);
             if (results.isIdExists) {
-                alert("ID Tidak Dapat Digunakan");
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "ID has been used!",
+                });
             } else {
                 alert("Employee ditambahkan");
                 window.location.reload;

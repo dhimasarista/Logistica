@@ -17,7 +17,7 @@ type Employee struct {
 	IsSuperuser sql.NullBool   `json:"is_superuser"`
 }
 
-func (e *Employee) GetById(id int) error {
+func (e *Employee) GetById(id int64) error {
 	var db = config.ConnectDB()
 	defer db.Close()
 
