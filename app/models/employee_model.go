@@ -38,6 +38,19 @@ func (e *Employee) GetById(id int64) error {
 	return nil
 }
 
+func (e *Employee) NewEmployee(id int, name, address, numberPhone string, position, isUser int) (sql.Result, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "INSERT INTO employees VALUES(?, ?, ?, ?, ?, ?, 0)"
+	result, err := db.Exec(query, id, name, address, numberPhone, position, isUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func (e *Employee) FindAll() ([]map[string]any, error) {
 	var db = config.ConnectDB()
 	defer db.Close()
@@ -87,20 +100,21 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 	return employees, nil
 }
 
-func (e *Employee) LastId() error {
+func (e *Employee) LastId() (int, error) {
 	var db = config.ConnectDB()
 	defer db.Close()
 
+	var lastId int
 	var query string = "SELECT MAX(id) FROM employees"
 	err := db.QueryRow(query).Scan(
-		&e.ID,
+		&lastId,
 	)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return lastId, nil
 }
 
 func (e *Employee) Count() (int, error) {
