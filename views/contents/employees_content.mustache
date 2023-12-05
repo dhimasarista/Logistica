@@ -108,9 +108,9 @@
                                         <select class="form-control scrollable-menu" id="position-name" name="position" onchange="newPositionEmployee()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Position</option>
                                             <option value="newPosition">New Position</option>
-                                            <option value="product1">Software Engineer</option>
-                                            <option value="product2">Data Scientiest</option>
-                                            <option value="product3">Cyber Security</option>
+                                            {{#positions}}
+                                                <option value="{{id}}">{{name}}</option>
+                                            {{/positions}}
                                         </select>
                                     </div>
                                 </div>
@@ -235,7 +235,7 @@
         const newPosition = document.getElementById("new-position");
         const newPositionForm = document.getElementById("new-position-form");
         function newPositionEmployee() {
-            if (positionselect.value = "newPosition") {
+            if (positionselect.value == "newPosition") {
                 existingPosition.style.display = "none";
                 newPosition.style.display = "block"
             } else {
@@ -363,7 +363,19 @@
                 confirmButtonText: "Yes"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.reload();
+                    console.log(idEmployeeForm.value)
+                    console.log(nameEmployeeForm.value);
+                    console.log(numberPhoneForm.value);
+                    console.log(addressForm.value);
+                    console.log(positionselect.value);
+                    console.log(addToBeUserForm.checked);
+                    // fetch("/employee/new", {
+                    //     method: "POST",
+                    //     headers: {
+                    //         "Content-Type": "application/json"
+                    //     },
+                    //     body: JSON.stringify()
+                    // })
                 }
                 return 0;
             });
