@@ -35,13 +35,13 @@ func TestFindAllEmployee(t *testing.T) {
 
 func TestGetEmployeeLastId(t *testing.T) {
 	var data = models.Employee{}
-	err := data.LastId()
+	lastId, err := data.LastId()
 	if err != nil {
 		log.Println(err)
 	}
 
 	assert.Nil(t, err)
-	fmt.Println(data.ID.Int64)
+	fmt.Println(lastId)
 }
 
 func TestCheckId(t *testing.T) {
@@ -69,4 +69,16 @@ func TestTotal(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, 2, total)
+}
+
+func TestNewEmployee(t *testing.T) {
+	var employee = models.Employee{}
+	lastId, _ := employee.LastId()
+
+	_, err := employee.NewEmployee(lastId+1, "Test New Employee", "Unknown", "+628000000000", 2224, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Nil(t, err)
 }
