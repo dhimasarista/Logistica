@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
@@ -73,7 +74,22 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
+		var formData map[string]interface{}
+		err := c.BodyParser(&formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": c.Response().StatusCode(),
+			})
+		}
 
-		return c.Next()
+		fmt.Println(formData)
+
+		return c.JSON(fiber.Map{
+			"error":  nil,
+			"status": c.Response().StatusCode(),
+			"data":   formData,
+		})
 	})
 }

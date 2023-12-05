@@ -369,13 +369,30 @@
                     console.log(addressForm.value);
                     console.log(positionselect.value);
                     console.log(addToBeUserForm.checked);
-                    // fetch("/employee/new", {
-                    //     method: "POST",
-                    //     headers: {
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     body: JSON.stringify()
-                    // })
+
+                    const newEmployee = {
+                        id: idEmployeeForm.value,
+                        name: nameEmployeeForm.value,
+                        numberPhone: numberPhoneForm.value,
+                        address: addressForm.value,
+                        position: positionselect.value,
+                        isUser: addToBeUserForm.checked
+                    };
+
+                    fetch("/employee/new", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(newEmployee)
+                    })
+                    .then(response => response.json())
+                    .then(results => {
+                        console.log(results);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
                 }
                 return 0;
             });
