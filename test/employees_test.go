@@ -59,3 +59,14 @@ func TestCheckId(t *testing.T) {
 
 	fmt.Println(string(bytes))
 }
+
+func TestTotal(t *testing.T) {
+	var employee = models.Employee{}
+	total, err := employee.Count()
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Nil(t, err)
+	assert.Equal(t, 2, total)
+}
