@@ -102,3 +102,17 @@ func (e *Employee) LastId() error {
 
 	return nil
 }
+
+func (e *Employee) Count() (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var totalEmployee int
+	var query = "SELECT COUNT(*) AS total FROM employees WHERE id > 1"
+	err := db.QueryRow(query).Scan(&totalEmployee)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalEmployee, nil
+}
