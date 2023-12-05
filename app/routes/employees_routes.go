@@ -16,8 +16,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		var username string = controllers.GetSessionUsername(c, store)
 
 		employee := models.Employee{}
+		position := models.Position{}
 
 		employees, err := employee.FindAll()
+		if err != nil {
+			InternalServerError(c, err.Error())
+		}
+
+		positions, err := position.FindAll()
 		if err != nil {
 			InternalServerError(c, err.Error())
 		}
@@ -26,6 +32,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"path":           path,
 			"user":           username,
 			"employees":      employees,
+			"positions":      positions,
 			"responseStatus": c.Response().StatusCode(),
 		})
 	})
@@ -54,14 +61,19 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	// Mengirim ID baru
 	app.Get("/employee/newId", func(c *fiber.Ctx) error {
 		employee := models.Employee{}
-		err := employee.LastId()
+		lastId, err := employee.LastId()
 		if err != nil {
 			InternalServerError(c, err.Error())
 		}
 
 		return c.JSON(fiber.Map{
-			"newId":          employee.ID.Int64 + 1,
+			"newId":          lastId + 1,
 			"responseStatus": c.Response().StatusCode(),
 		})
+	})
+
+	app.Post("/employee/new", func(c *fiber.Ctx) error {
+
+		return c.Next()
 	})
 }
