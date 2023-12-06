@@ -222,6 +222,8 @@
             idEmployeeForm.setAttribute("disabled", true);
             buttonCustomIdEmployee.style.display = "block";
             buttonCancelCustomIdEmployee.style.display = "none";
+
+            getNewId();
         }
     </script>
 
@@ -233,8 +235,23 @@
     const newEmployeeButton = document.getElementById("new-employee-button")
     const returnButton = document.getElementById("return-button");
     const cardSpinner = document.getElementById("card-spinners");
-
     const msgLoadingCard = document.getElementById("message-loading-card")
+
+    // Fungsi-fungsi yang  berisi http-get
+    function getNewId() {
+        fetch("/employee/newId")
+        .then(response => response.json())
+        .then(result => {
+            if (result.responseStatus === 200) {
+                returnButton.removeAttribute("hidden");
+                cardNewEmployee.removeAttribute("hidden");
+                cardSpinner.setAttribute("hidden", true);
+
+                newIdEmployee = result.newId;
+                idEmployeeForm.value = result.newId; // Menambahkan id dengan kalkulasi id terakhir + 1
+            }
+        });
+    }
 
     // const employee = `{{employees}}`;
     const responseStatus = `{{responseStatus}}`
@@ -247,18 +264,8 @@
         cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
         cardEmployeeList.setAttribute("hidden",true);
-        fetch("/employee/newId")
-        .then(response => response.json())
-        .then(result => {
-            if (result.responseStatus === 200) {
-                returnButton.removeAttribute("hidden");
-                cardNewEmployee.removeAttribute("hidden");
-                cardSpinner.setAttribute("hidden", true);
 
-                newIdEmployee = result.newId;
-                idEmployeeForm.value = result.newId; // Menambahkan id dengan kalkulasi id terakhir + 1
-            }
-        })
+        getNewId();
     });
     /*
         7 Input Form
