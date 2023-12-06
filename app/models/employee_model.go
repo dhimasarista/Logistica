@@ -51,6 +51,19 @@ func (e *Employee) NewEmployee(id int, name, address, numberPhone string, positi
 	return result, nil
 }
 
+func (e *Employee) DeleteEmployee(id int) error {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "DELETE FROM employees WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (e *Employee) FindAll() ([]map[string]any, error) {
 	var db = config.ConnectDB()
 	defer db.Close()

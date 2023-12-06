@@ -26,7 +26,7 @@
                         </thead>
                         <tbody>
                             {{#employees}}
-                            <tr>
+                            <tr id="employee-{{id}}">
                                 <td>{{id}}</td>
                                 <td>{{name}}</td>
                                 <td>{{positionName}}</td>
@@ -43,7 +43,7 @@
                                 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item" href="javascript:void(0);">Detail</a>
-                                            <a class="dropdown-item" href="javascript:void(0);">Remove</a>
+                                            <a class="dropdown-item" href="#" onclick="deleteEmployee('{{id}}')">Remove</a>
                                             <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
                                         </div>
                                     </div>
@@ -241,16 +241,45 @@
     function getNewId() {
         fetch("/employee/newId")
         .then(response => response.json())
-        .then(result => {
-            if (result.responseStatus === 200) {
+        .then(results => {
+            if (results.responseStatus === 200) {
                 returnButton.removeAttribute("hidden");
                 cardNewEmployee.removeAttribute("hidden");
                 cardSpinner.setAttribute("hidden", true);
 
-                newIdEmployee = result.newId;
-                idEmployeeForm.value = result.newId; // Menambahkan id dengan kalkulasi id terakhir + 1
+                newIdEmployee = results.newId;
+                idEmployeeForm.value = results.newId; // Menambahkan id dengan kalkulasi id terakhir + 1
             }
         });
+    }
+
+    function deleteEmployee(id) {
+        fetch(`/employee/delete/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+        .then(response => response.json())
+        .then(results => {
+            if (results.responseStatus !== 200){
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: results.error,
+                });
+                return 0
+            }
+            toastr.success("Employee Deleted.", "success");
+            document.getElementById(`employee-${id}`).remove();
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error,
+            });
+        })
     }
 
     // const employee = `{{employees}}`;

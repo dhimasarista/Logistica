@@ -58,6 +58,30 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"responseStatus": c.Response().StatusCode(),
 		})
 	})
+
+	app.Delete("/employee/delete/:id", func(c *fiber.Ctx) error {
+		var id string = c.Params("id")
+		employee := models.Employee{}
+
+		idInteger, err := strconv.Atoi(id)
+		if err != nil {
+			log.Println(err)
+		}
+
+		err = employee.DeleteEmployee(idInteger)
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"error":          err.Error(),
+				"responseStatus": 500,
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"responseStatus": c.Response().StatusCode(),
+		})
+
+	})
+
 	// Mengirim ID baru
 	app.Get("/employee/newId", func(c *fiber.Ctx) error {
 		employee := models.Employee{}
@@ -165,4 +189,5 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 
 	})
+
 }
