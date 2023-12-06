@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
@@ -122,6 +123,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		if formData["isUser"].(bool) {
 			isUser = 1
 		}
+
+		fmt.Println(formData)
 		newEmpResult, err := employee.NewEmployee(
 			idToInt,
 			formData["name"].(string),
