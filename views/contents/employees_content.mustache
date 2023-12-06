@@ -357,10 +357,9 @@
     // Submit New Employee
     document.getElementById("submit-new-employee").addEventListener("click", (e) => {
         // if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
-        //     alert("Masukkan Dalam bentuk Number")
         //     return 0;
         // }
-        e.preventDefault();
+        // e.preventDefault();
         checkSession(); // checking session to server
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
