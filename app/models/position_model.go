@@ -42,3 +42,33 @@ func (p *Position) FindAll() ([]map[string]any, error) {
 	}
 	return positions, nil
 }
+
+func (p *Position) NewPosition(id int, name string) (sql.Result, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "INSERT INTO positions VALUES(?, ?)"
+	result, err := db.Exec(query, id, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (p *Position) LastId() (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var lastId int
+	var query string = "SELECT MAX(id) FROM positions"
+	err := db.QueryRow(query).Scan(
+		&lastId,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
+}

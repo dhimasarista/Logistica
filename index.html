@@ -2,39 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Select</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyRrBh5r6S8sF2GoEeGo2FuwbuTaOaxD+P" crossorigin="anonymous">
+    <title>Bootstrap Modal with Spinner</title>
 </head>
 <body>
 
-    <label for="pilihan">Pilih sesuatu:</label>
-    <select id="pilihan" name="pilihan">
-        <option value="pilihan1">Pilihan 1</option>
-        <option value="pilihan2">Pilihan 2</option>
-        <option value="pilihan3">Pilihan 3</option>
-        <option value="userInput">Masukkan Sendiri</option>
-    </select>
+<!-- Button to toggle modal -->
+<button type="button" class="btn btn-primary" id="toggleModalBtn">
+    Toggle Modal
+</button>
 
-    <div id="userInputContainer" style="display:none;">
-        <label for="userInput">Masukkan pilihan Anda:</label>
-        <input type="text" id="userInput" name="userInput">
+<!-- Modal -->
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loadingModalLabel">Loading...</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script>
-        // Fungsi untuk menampilkan/menyembunyikan input pengguna berdasarkan pilihan
-        document.getElementById('pilihan').addEventListener('change', function() {
-            var userInputContainer = document.getElementById('userInputContainer');
-            var userInput = document.getElementById('userInput');
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-d2h0Wk5sE8d+nd+5YbAnwD4vzCBK7MFf5nE7C6Y5x1HUMqTb1N8F65l5Pmd2Z02D" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyRrBh5r6S8sF2GoEeGo2FuwbuTaOaxD+P" crossorigin="anonymous"></script>
 
-            if (this.value === 'userInput') {
-                userInputContainer.style.display = 'block';
-                userInput.required = true;
-            } else {
-                userInputContainer.style.display = 'none';
-                userInput.required = false;
-            }
-        });
-    </script>
+<script>
+    // Mendapatkan elemen tombol toggle
+    var toggleModalBtn = document.getElementById("toggleModalBtn");
+
+    // Mendapatkan elemen modal
+    var loadingModal = document.getElementById("loadingModal");
+
+    // Menambahkan event listener untuk mengganti atribut data-toggle modal
+    toggleModalBtn.addEventListener("click", function() {
+        if (loadingModal.getAttribute("data-toggle") === "modal") {
+            // Jika data-toggle bernilai "modal", ganti menjadi null
+            loadingModal.removeAttribute("data-toggle");
+        } else {
+            // Jika data-toggle tidak ada, tambahkan dengan nilai "modal"
+            loadingModal.setAttribute("data-toggle", "modal");
+        }
+    });
+</script>
 
 </body>
 </html>

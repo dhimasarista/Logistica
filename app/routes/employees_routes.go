@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
@@ -75,21 +74,95 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
 		var formData map[string]interface{}
+		var employee = models.Employee{}
+
 		err := c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
-				"status": c.Response().StatusCode(),
+				"status": 500,
 			})
 		}
 
-		fmt.Println(formData)
+		if formData["id"] == "" || formData["name"] == "" || formData["numberPhone"] == "" || formData["position"] == "" {
+			return c.JSON(fiber.Map{
+				"error":  "Form is Empty",
+				"status": 400,
+			})
+		}
+
+		idToInt, _ := strconv.Atoi(formData["id"].(string))
+		positionToInt, _ := strconv.Atoi(formData["position"].(string))
+		var isUser int = 0
+		if formData["isUser"].(bool) {
+			isUser = 1
+		}
+		newEmpResult, err := employee.NewEmployee(
+			idToInt,
+			formData["name"].(string),
+			formData["address"].(string),
+			formData["numberPhone"].(string),
+			positionToInt,
+			isUser,
+		)
+
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
 
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": c.Response().StatusCode(),
 			"data":   formData,
+			"result": newEmpResult,
 		})
+	})
+
+	app.Post("/employee/position/new", func(c *fiber.Ctx) error {
+		var position = models.Position{}
+		var formData map[string]any
+
+		err := c.BodyParser(&formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
+
+		if formData["name"].(string) == "" {
+			return c.JSON(fiber.Map{
+				"error":  "Position Filed is Empty!",
+				"status": 400,
+			})
+		}
+
+		lastId, err := position.LastId()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		result, err := position.NewPosition(lastId+1, formData["name"].(string))
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"error":  nil,
+			"status": c.Response().StatusCode(),
+			"data":   formData,
+			"result": result,
+		})
+
 	})
 }

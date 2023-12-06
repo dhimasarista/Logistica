@@ -2,6 +2,7 @@ package utility
 
 import (
 	"strings"
+	"unicode"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -28,4 +29,18 @@ func toPascalCaseWithSpace(input string) string {
 	result := strings.Join(words, " ")
 
 	return result
+}
+
+func ToLowerCase(str string) string {
+	var result strings.Builder
+
+	for _, char := range str {
+		// Mengabaikan spasi dan hanya mengonversi huruf
+		if unicode.IsLetter(char) {
+			charLower := unicode.ToLower(char)
+			result.WriteRune(charLower)
+		}
+	}
+
+	return result.String()
 }
