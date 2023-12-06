@@ -13,7 +13,7 @@ import (
 	"github.com/gofiber/template/mustache/v2"
 )
 
-var store = *session.New()
+var store = *session.New(session.ConfigDefault)
 var client = *resty.New()
 
 func main() {

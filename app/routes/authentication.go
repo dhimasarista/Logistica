@@ -3,7 +3,6 @@ package routes
 import (
 	"log"
 	"logistica/app/models"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -56,7 +55,6 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		session.Set("username", user.Username)
 		session.Set("user_id", user.Password)
 		session.Set("logged_in", loggedIn)
-		session.SetExpiry(time.Minute * 60)
 		store.CookieHTTPOnly = true
 		store.CookieSecure = true
 		usernameSession := session.Get("username")
