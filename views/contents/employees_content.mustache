@@ -211,7 +211,8 @@
         const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
         const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
         function customIdEmployee(){
-            // idEmployeeForm.value = newIdEmployee;
+            checkSession(); // checking session to server
+            idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.removeAttribute("disabled");
             buttonCustomIdEmployee.style.display = "none";
             buttonCancelCustomIdEmployee.style.display = "block";
@@ -239,6 +240,7 @@
 
     // Fungsi-fungsi yang  berisi http-get
     function getNewId() {
+        checkSession(); // checking session to server
         fetch("/employee/newId")
         .then(response => response.json())
         .then(results => {
@@ -254,6 +256,8 @@
     }
 
     function deleteEmployee(id) {
+        checkSession(); // checking session to server
+
         fetch(`/employee/delete/${id}`, {
             method: "DELETE",
             headers: {
@@ -290,6 +294,7 @@
     }
 
     newEmployeeButton.addEventListener("click", () => {
+        checkSession(); // checking session to server
         cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
         cardEmployeeList.setAttribute("hidden",true);
@@ -308,6 +313,7 @@
     */ 
 
     function showEmployeeList() {
+        checkSession(); // checking session to server
         newEmployeeButton.removeAttribute("hidden");
         cardEmployeeList.removeAttribute("hidden");
         
@@ -316,6 +322,7 @@
     }
     // Event akan di panggil ketika form tidak kosong
     returnButton.addEventListener("click", () => {
+        checkSession(); // checking session to server
         // Jika input file == 1 hapus file dari input dan server /uploads
         if (idCardForm.files["length"] > 0) {
             Swal.fire({
@@ -348,11 +355,13 @@
     );
 
     // Submit New Employee
-    document.getElementById("submit-new-employee").addEventListener("click", () => {
-        if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
-            alert("Masukkan Dalam bentuk Number")
-            return 0;
-        }
+    document.getElementById("submit-new-employee").addEventListener("click", (e) => {
+        // if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
+        //     alert("Masukkan Dalam bentuk Number")
+        //     return 0;
+        // }
+        e.preventDefault();
+        checkSession(); // checking session to server
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
         .then(results => {
@@ -373,7 +382,7 @@
                     confirmButtonText: "Yes"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const newEmployee = {
+                        const newEmployeeData = {
                             id: idEmployeeForm.value,
                             name: nameEmployeeForm.value,
                             numberPhone: numberPhoneForm.value,
@@ -381,35 +390,36 @@
                             position: positionselect.value,
                             isUser: addToBeUserForm.checked,
                         };
-
                         fetch("/employee/new", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify(newEmployee)
+                            body: JSON.stringify(newEmployeeData)
                         })
                         .then(response => response.json())
-                        .then(results => {
+                        .then( results => {
+                            console.log(results);
                             if (results.status !== 200) {
                                 Swal.fire({
                                     icon: "error",
                                     title: "Oops...",
-                                    text: `(${results.status}) ${results.error}`,
+                                    text: `${results.error}`,
                                 });
-                            } else {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "Success",
-                                    text: `New Employee: ${results.data["name"]}`,
-                                })
-                                .then((result) => {
-                                    // Mereload halaman setelah tombol OK diklik
-                                    if (result.isConfirmed || result.isDismissed) {
-                                        window.location.reload();
-                                    }
-                                });
-                            }
+                                return 0;
+                            } 
+
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: `New Employee: ${results.data["name"]}`,
+                            })
+                            .then((result) => {
+                                // Mereload halaman setelah tombol OK diklik
+                                if (result.isConfirmed || result.isDismissed) {
+                                    window.location.reload();
+                                }
+                            });
                         })
                         .catch(error => {
                             console.error(error);
@@ -418,6 +428,9 @@
                     return 0;
                 });
             }
+        })
+        .catch(error => {
+            console.error(error);
         })
     });
 </script>

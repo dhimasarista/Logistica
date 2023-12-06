@@ -106,25 +106,32 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
-				"status": 500,
+				"status": fiber.StatusInternalServerError,
 			})
 		}
 
 		if formData["id"] == "" || formData["name"] == "" || formData["numberPhone"] == "" || formData["position"] == "" {
 			return c.JSON(fiber.Map{
 				"error":  "Form is Empty",
-				"status": 400,
+				"status": fiber.StatusBadRequest,
 			})
 		}
 
-		idToInt, _ := strconv.Atoi(formData["id"].(string))
-		positionToInt, _ := strconv.Atoi(formData["position"].(string))
+		idToInt, err := strconv.Atoi(formData["id"].(string))
+		if err != nil {
+			panic(err)
+		}
+
+		positionToInt, err := strconv.Atoi(formData["position"].(string))
+		if err != nil {
+			panic(err)
+		}
+
 		var isUser int = 0
 		if formData["isUser"].(bool) {
 			isUser = 1
 		}
 
-		fmt.Println(formData)
 		newEmpResult, err := employee.NewEmployee(
 			idToInt,
 			formData["name"].(string),
@@ -138,9 +145,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
-				"status": 500,
+				"status": fiber.StatusInternalServerError,
 			})
 		}
+		fmt.Println(formData)
+		fmt.Println(c.Response().StatusCode())
 
 		return c.JSON(fiber.Map{
 			"error":  nil,
@@ -159,14 +168,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
-				"status": 500,
+				"status": fiber.StatusInternalServerError,
 			})
 		}
 
 		if formData["name"].(string) == "" {
 			return c.JSON(fiber.Map{
 				"error":  "Position Filed is Empty!",
-				"status": 400,
+				"status": fiber.StatusInternalServerError,
 			})
 		}
 
@@ -180,7 +189,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
-				"status": 500,
+				"status": fiber.StatusInternalServerError,
 			})
 		}
 

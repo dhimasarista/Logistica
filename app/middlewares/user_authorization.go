@@ -41,6 +41,9 @@ func UserAuthorization(store *session.Store) fiber.Handler {
 		if path == "/login" {
 			return c.Next()
 		}
+		if path == "/check-session" {
+			return c.Next()
+		}
 
 		// Jika pengguna belum login, arahkan ke halaman login
 		return c.Redirect("/login")

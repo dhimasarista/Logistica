@@ -11,6 +11,18 @@ import (
 // var store *session.Store = session.New()
 
 func AuthenticationRoutes(app *fiber.App, store *session.Store) {
+	app.Get("/check-session", func(c *fiber.Ctx) error {
+		session, _ := store.Get(c)
+		user := session.Get("username")
+		if user != nil {
+			return c.JSON(fiber.Map{
+				"sessionExists": true,
+			})
+		}
+		return c.JSON(fiber.Map{
+			"sessionExists": false,
+		})
+	})
 	app.Get("/login", func(c *fiber.Ctx) error {
 		// session, _ := store.Get(c)
 

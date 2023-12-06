@@ -52,5 +52,5 @@ func main() {
 	app.Get("/metrics", monitor.New())
 
 	// Menjalankan server pada port 3000
-	log.Fatal(app.Listen(":6500"))
+	log.Fatal(app.Listen(":5500"))
 }

@@ -19,6 +19,43 @@ function checkFileType(file, expectedTypes, errorMsg, toDelete) {
     }
 }
 
+function checkSession() {
+    fetch("/check-session", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sessionExists) {
+            console.log("Sesi ada, pengguna dapat melanjutkan.");
+        } else {
+            return 0;
+            Swal.fire({
+                icon: "warning",
+                title: "Session Ended",
+                text: "Please, login again.",
+                showCancelButton: false,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK",
+            }).then((result) => {
+                if (result.isConfirmed || result.isDismissed) {
+                    window.location.href = "/login";
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    checkSession();
+});
+
+
 // let sidebarIsToggled = localStorage.getItem("toggle-mode") === "true";
 // const sidebarClass = document.querySelector(".sidebar");
 
