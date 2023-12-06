@@ -47,7 +47,7 @@ func TestGetEmployeeLastId(t *testing.T) {
 func TestCheckId(t *testing.T) {
 	app := fiber.New()
 
-	request := httptest.NewRequest("GET", "localhost:6500/employee/check/100011", nil)
+	request := httptest.NewRequest("GET", "localhost:5500/employee/check/100011", nil)
 	response, err := app.Test(request)
 
 	assert.Nil(t, err)
