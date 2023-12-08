@@ -11,7 +11,12 @@ import (
 )
 
 func EmployeesRoutes(app *fiber.App, store *session.Store) {
-	employee := models.Employee{}
+	/* 
+		Inisialisasi variabel employee sebagai pointer ke struct models.Employee.
+		Dengan menggunakan pointer, kita dapat memanfaatkan referensi ke data Employee yang sudah ada
+		dan menghindari pembuatan salinan nilai data, yang dapat menghemat memori. 
+	*/
+	var employee *models.Employee  = &models.Employee{} 
 	position := models.Position{}
 
 	// Merender halaman /employees
