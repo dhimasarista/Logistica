@@ -6,7 +6,10 @@ import (
 	"log"
 	"logistica/app/config"
 	"logistica/app/utility"
+	"sync"
 )
+
+var mutex sync.Mutex
 
 type Employee struct {
 	ID          sql.NullInt64  `json:"id"`
@@ -39,6 +42,9 @@ func (e *Employee) GetById(id int64) error {
 }
 
 func (e *Employee) NewEmployee(id int, name, address, numberPhone string, position, isUser int) (sql.Result, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	var db = config.ConnectDB()
 	defer db.Close()
 
@@ -52,6 +58,9 @@ func (e *Employee) NewEmployee(id int, name, address, numberPhone string, positi
 }
 
 func (e *Employee) DeleteEmployee(id int) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	var db = config.ConnectDB()
 	defer db.Close()
 
@@ -117,6 +126,9 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 }
 
 func (e *Employee) LastId() (int, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	var db = config.ConnectDB()
 	defer db.Close()
 

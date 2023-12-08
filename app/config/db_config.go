@@ -7,7 +7,7 @@ import (
 
 func ConnectDB() *sql.DB {
 	// Membuat koneksi database dengan database pooling
-	var dsn string = "root@tcp(localhost:3306)/logistica?parseTime=true"
+	var dsn string = "user_dev:vancouver@tcp(localhost:3306)/logistica?parseTime=true"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Println(err)

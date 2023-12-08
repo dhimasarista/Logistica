@@ -7,3 +7,43 @@ Berikut adalah singkatan singkat untuk beberapa metode penggunaan database MySQL
 5. Prepare dan Stmt: Mempersiapkan dan mengeksekusi pernyataan SQL secara berulang, berguna untuk mengoptimalkan eksekusi query yang sama.
 6. Begin, Commit, dan Rollback: Mengelola transaksi database. Begin untuk memulai transaksi, Commit untuk mengonfirmasi perubahan, dan Rollback untuk membatalkan perubahan.
 7. Ping: Menguji koneksi database untuk memastikan ketersediaan sebelum memulai operasi database.
+
+Set User Dev untuk Logistica:
+Untuk membuat dan memberikan izin kepada pengguna baru (misalnya, `user_dev`) di MySQL untuk database `logistica`, Anda dapat mengikuti langkah-langkah berikut:
+
+1. **Login ke MySQL:**
+   Gunakan perintah berikut di terminal atau command prompt untuk login ke MySQL sebagai pengguna dengan hak akses administratif, seperti `root`:
+   ```bash
+   mysql -u root -p
+   ```
+
+2. **Buat Pengguna Baru:**
+   Setelah masuk, gunakan perintah berikut untuk membuat pengguna baru (`user_dev`) dan atur kata sandi:
+   ```sql
+   CREATE USER 'user_dev'@'localhost' IDENTIFIED BY 'password';
+   ```
+
+   Gantilah `'password'` dengan kata sandi yang aman.
+
+3. **Buat Database Jika Belum Ada:**
+   Jika database `logistica` belum ada, Anda dapat membuatnya dengan perintah berikut:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS logistica;
+   ```
+
+4. **Berikan Izin pada Database:**
+   Berikan izin kepada pengguna baru (`user_dev`) untuk database `logistica`. Di sini, pengguna akan diberi izin untuk melakukan semua operasi (`ALL PRIVILEGES`). Sesuaikan sesuai kebutuhan Anda.
+   ```sql
+   GRANT ALL PRIVILEGES ON logistica.* TO 'user_dev'@'localhost';
+   ```
+
+5. **Terapkan Perubahan dan Keluar:**
+   Jalankan perintah berikut untuk menerapkan perubahan dan keluar dari MySQL shell:
+   ```sql
+   FLUSH PRIVILEGES;
+   EXIT;
+   ```
+
+Sekarang, pengguna `user_dev` memiliki akses penuh ke database `logistica` pada server MySQL yang berjalan di localhost.
+
+Pastikan untuk menggunakan kata sandi yang aman dan mempertimbangkan hak akses yang diberikan sesuai dengan kebutuhan aplikasi Anda. Jangan lupa untuk melakukan langkah-langkah ini dengan hati-hati pada lingkungan produksi.
