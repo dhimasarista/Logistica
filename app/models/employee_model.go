@@ -3,10 +3,13 @@ package models
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 	"logistica/app/config"
 	"logistica/app/utility"
 	"sync"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 var mutex sync.Mutex
@@ -51,6 +54,11 @@ func (e *Employee) NewEmployee(id int, name, address, numberPhone string, positi
 	var query string = "INSERT INTO employees VALUES(?, ?, ?, ?, ?, ?, 0)"
 	result, err := db.Exec(query, id, name, address, numberPhone, position, isUser)
 	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, errors.New("race condition, id has been taken")
+			}
+		}
 		return nil, err
 	}
 
