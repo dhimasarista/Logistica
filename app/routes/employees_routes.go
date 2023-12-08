@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
@@ -12,12 +11,13 @@ import (
 )
 
 func EmployeesRoutes(app *fiber.App, store *session.Store) {
+	employee := models.Employee{}
+	position := models.Position{}
+
+	// Merender halaman /employees
 	app.Get("/employees", func(c *fiber.Ctx) error {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
-
-		employee := models.Employee{}
-		position := models.Position{}
 
 		employees, err := employee.FindAll()
 		if err != nil {
@@ -41,7 +41,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	// Memeriksa ketersedian ID
 	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
 		var id string = c.Params("id")
-		employee := &models.Employee{}
 
 		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
 		if err != nil {
@@ -60,9 +59,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 
+	// Menghapus employee berdasarkan id
 	app.Delete("/employee/delete/:id", func(c *fiber.Ctx) error {
 		var id string = c.Params("id")
-		employee := models.Employee{}
 
 		idInteger, err := strconv.Atoi(id)
 		if err != nil {
@@ -85,8 +84,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 	// Mengirim ID baru
 	app.Get("/employee/newId", func(c *fiber.Ctx) error {
-		employee := models.Employee{}
 		lastId, err := employee.LastId()
+
 		if err != nil {
 			InternalServerError(c, err.Error())
 		}
@@ -97,10 +96,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 
+	// Membuat data employee baru
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
-		var formData map[string]interface{}
-		var employee = models.Employee{}
-
+		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
 		err := c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
@@ -148,8 +146,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-		fmt.Println(formData)
-		fmt.Println(c.Response().StatusCode())
 
 		return c.JSON(fiber.Map{
 			"error":  nil,
@@ -159,9 +155,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 
+	// Menambah position baru
 	app.Post("/employee/position/new", func(c *fiber.Ctx) error {
-		var position = models.Position{}
-		var formData map[string]any
+		var formData map[string]any // variabel untuk menyimpan data yang diterima dari client-side
 
 		err := c.BodyParser(&formData)
 		if err != nil {

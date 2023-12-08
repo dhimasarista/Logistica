@@ -359,7 +359,7 @@
         // if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
         //     return 0;
         // }
-        // e.preventDefault();
+        e.preventDefault();
         checkSession(); // checking session to server
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
