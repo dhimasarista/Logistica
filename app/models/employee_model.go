@@ -75,6 +75,11 @@ func (e *Employee) DeleteEmployee(id int) error {
 	var query string = "DELETE FROM employees WHERE id = ?"
 	_, err := db.Exec(query, id)
 	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return errors.New("race condition, id has been taken")
+			}
+		}
 		return err
 	}
 
