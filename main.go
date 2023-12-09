@@ -8,7 +8,9 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/mustache/v2"
 )
@@ -26,6 +28,9 @@ func main() {
 			return c.Redirect("/404")
 		},
 	})
+
+	app.Use(logger.New())  // Init logger with default config
+	app.Use(recover.New()) // Init recover with default config
 
 	app.Use(func(c *fiber.Ctx) error {
 		if err := c.Next(); err != nil {
