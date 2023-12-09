@@ -119,7 +119,7 @@
                                 <div class="form-group">
                                     <label id="pengirim-label" for="new-position">ID Card | Max: 200kb Type: JPG/JPEG/PNG</label>
                                     <div class="input-group mb-3">
-                                        <input type="file" id="id-card-form">
+                                        <input type="file" id="id-card-form" accept="image/*">
                                         <div class="col-md-6 mt-1">
                                             <div id="delete-idcardform" style="display: none;">
                                                 <a href="#"  class="px-1 badge badge-danger" id="button-delete-idcard" onclick="buttonDeleteIdCardFile()">
@@ -140,12 +140,78 @@
                                 const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
                                 idCardForm.addEventListener("change", () => {
-                                    checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm); // script.js
-                                    checkFileSize(idCardForm); // script.js
-                                    idCardFilename.textContent = idCardForm.files[0]["name"]
-                                    deleteIdCardForm.style.display = "block";
-                                    idCardForm.style.display = "none";
+                                    checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm);
+                                    checkFileSize(idCardForm);
+
+                                    const formData = new FormData();
+                                    formData.append("image",    );
+
+                                    if (idCardForm.files[0]) {
+                                        fetch("/upload/image", {
+                                            method: "POST",
+                                            body: formData,
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                Swal.fire({
+                                                    icon: "error",
+                                                    title: "Oops...",
+                                                    text: `${results.error}`,
+                                                });
+                                                throw new Error(`HTTP error! Status: ${response.status}`);
+                                            }
+                                            toastr.success("File Uploaded.", "success");
+                                            idCardFilename.textContent = idCardForm.files[0]["name"];
+                                            deleteIdCardForm.style.display = "block";
+                                            idCardForm.style.display = "none";
+                                        })
+                                        .catch(error => {
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Oops...",
+                                                text: error.message,
+                                            });
+                                        });
+                                    }
                                 });
+
+                                // idCardForm.addEventListener("change", () => {
+                                //     checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm); // script.js
+                                //     // checkFileSize(idCardForm); // script.js
+
+                                //     const formData = new FormData();
+                                //     formData.append("image", idCardForm.files[0])
+
+                                //     if (idCardForm.files[0]) {
+                                //         fetch("/upload/image",{
+                                //             method: "POST",
+                                //             body: formData
+                                //         })
+                                //         .then(response => response.json())
+                                //         .then(results => {
+                                //             if (results.status !== 200) {
+                                //                 Swal.fire({
+                                //                     icon: "error",
+                                //                     title: "Oops...",
+                                //                     text: `${results.error}`,
+                                //                 });
+                                //                 return 0;
+                                //             }
+                                //             toastr.success("File Uploaded.", "success");
+                                //             idCardFilename.textContent = idCardForm.files[0]["name"]
+                                //             deleteIdCardForm.style.display = "block";
+                                //             idCardForm.style.display = "none";
+                                //         })
+                                //         .catch(error => {
+                                //             Swal.fire({
+                                //                 icon: "error",
+                                //                 title: "Oops...",
+                                //                 text: error,
+                                //             });
+                                //             return 0;
+                                //         })
+                                //     }
+                                // });
                                 function buttonDeleteIdCardFile() {
                                     if (idCardForm.files["length"] > 0) {
                                         toastr.success("File Deleted.", "success");
@@ -353,6 +419,8 @@
         }
     }
     );
+
+
 
     // Submit New Employee
     document.getElementById("submit-new-employee").addEventListener("click", (e) => {

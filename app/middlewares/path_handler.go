@@ -32,7 +32,7 @@ func PathHandler(store *session.Store) fiber.Handler {
 		}
 
 		if c.OriginalURL() == "/" && username == nil {
-			return c.Redirect("/home")
+			return c.Redirect("/home ")
 		}
 
 		return c.Next()

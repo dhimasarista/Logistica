@@ -26,6 +26,8 @@ func main() {
 			return c.Redirect("/404")
 		},
 	})
+	app.Use(fiber.Logger())
+	app.Use(fiber.Recover())
 	app.Use(func(c *fiber.Ctx) error {
 		if err := c.Next(); err != nil {
 			c.Status(fiber.StatusInternalServerError).SendString(err.Error())
