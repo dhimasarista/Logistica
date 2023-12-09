@@ -144,7 +144,7 @@
                                     checkFileSize(idCardForm);
 
                                     const formData = new FormData();
-                                    formData.append("image",    );
+                                    formData.append("image", idCardForm.files[0]);
 
                                     if (idCardForm.files[0]) {
                                         fetch("/upload/image", {
@@ -152,15 +152,25 @@
                                             body: formData,
                                         })
                                         .then(response => {
+                                            console.log(response);
                                             if (!response.ok) {
+                                                throw new Error(`HTTP error! Status: ${response.status}`);
+                                                Swal.fire({
+                                                    icon: "error",
+                                                    title: "Oops...",
+                                                    text: response.status,
+                                                });
+                                            }
+                                        })
+                                        .then(results => {
+                                            if (results.status !== 200) {
                                                 Swal.fire({
                                                     icon: "error",
                                                     title: "Oops...",
                                                     text: `${results.error}`,
                                                 });
-                                                throw new Error(`HTTP error! Status: ${response.status}`);
                                             }
-                                            toastr.success("File Uploaded.", "success");
+                                            toastr.success(results.message, "success");
                                             idCardFilename.textContent = idCardForm.files[0]["name"];
                                             deleteIdCardForm.style.display = "block";
                                             idCardForm.style.display = "none";
