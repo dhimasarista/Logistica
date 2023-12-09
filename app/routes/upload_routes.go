@@ -27,7 +27,7 @@ func UploadFileRoutes(app *fiber.App) {
 			})
 		}
 
-		err = c.SaveFile(image, "./uploads/images"+image.Filename)
+		err = c.SaveFile(image, "../uploads/images"+image.Filename)
 		if err != nil {
 			fmt.Println(err)
 			return c.JSON(fiber.Map{
