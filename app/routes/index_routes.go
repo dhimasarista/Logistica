@@ -7,5 +7,5 @@ import (
 )
 
 func IndexRoutes(app *fiber.App) {
-	app.Get("/", controllers.IndexRender)
+	app.Get("/home", controllers.IndexRender)
 }
