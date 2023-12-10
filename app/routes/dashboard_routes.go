@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
 
@@ -16,6 +17,7 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 
 		totalEmployees, err := employees.Count()
 		if err != nil {
+			log.Println(err)
 			return InternalServerError(c, err.Error())
 		}
 		// Mengirimkan halaman HTML yang dihasilkan ke browser

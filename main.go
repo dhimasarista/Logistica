@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -29,7 +28,7 @@ func main() {
 		},
 	})
 
-	app.Use(logger.New())  // Init logger with default config
+	// app.Use(logger.New())  // Init logger with default config: "github.com/gofiber/fiber/v2/middleware/logger"
 	app.Use(recover.New()) // Init recover with default config
 
 	app.Use(func(c *fiber.Ctx) error {

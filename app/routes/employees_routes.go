@@ -11,12 +11,12 @@ import (
 )
 
 func EmployeesRoutes(app *fiber.App, store *session.Store) {
-	/* 
+	/*
 		Inisialisasi variabel employee sebagai pointer ke struct models.Employee.
 		Dengan menggunakan pointer, kita dapat memanfaatkan referensi ke data Employee yang sudah ada
-		dan menghindari pembuatan salinan nilai data, yang dapat menghemat memori. 
+		dan menghindari pembuatan salinan nilai data, yang dapat menghemat memori.
 	*/
-	var employee *models.Employee  = &models.Employee{} 
+	var employee *models.Employee = &models.Employee{}
 	position := models.Position{}
 
 	// Merender halaman /employees
@@ -26,11 +26,13 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 		employees, err := employee.FindAll()
 		if err != nil {
+			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
 
 		positions, err := position.FindAll()
 		if err != nil {
+			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
 
@@ -75,6 +77,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 		err = employee.DeleteEmployee(idInteger)
 		if err != nil {
+			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":          err.Error(),
 				"responseStatus": 500,
@@ -92,6 +95,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		lastId, err := employee.LastId()
 
 		if err != nil {
+			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
 

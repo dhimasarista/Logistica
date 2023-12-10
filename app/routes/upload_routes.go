@@ -1,46 +1,68 @@
 package routes
 
 import (
-	"fmt"
+	"encoding/hex"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func UploadFileRoutes(app *fiber.App) {
+func FileManagement(app *fiber.App) {
 	app.Post("/upload/image", func(c *fiber.Ctx) error {
-		const maxFileSize = 200 << 10 // 200kb dalam bentuk byte
-		// Ambil filed dari form client
-		image, err := c.FormFile("image")
+		form, err := c.MultipartForm() // Init Multipartform
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return c.JSON(fiber.Map{
 				"status": fiber.StatusBadRequest,
 				"error":  err.Error(),
 			})
 		}
 
-		// Memeriksa ukuran file
-		if image.Size > maxFileSize {
-			return c.JSON(fiber.Map{
-				"status": fiber.StatusBadRequest,
-				"error":  "File size exceeds the limit",
-			})
+		// Mengambil files dengan key image dari map
+		files := form.File["image"]
+		for _, file := range files {
+			err := c.SaveFile(file, "./app/uploads/images/"+file.Filename)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"status": fiber.StatusBadRequest,
+					"error":  err.Error(),
+				})
+			}
 		}
-
-		err = c.SaveFile(image, "../uploads/images"+image.Filename)
-		if err != nil {
-			fmt.Println(err)
-			return c.JSON(fiber.Map{
-				"status": fiber.StatusBadRequest,
-				"error":  err.Error(),
-			})
-		}
-
-		fmt.Println(image)
 
 		return c.JSON(fiber.Map{
-			"status":  fiber.StatusAccepted,
+			"status":  c.Response().StatusCode(),
 			"message": "Image uploaded successfully",
+		})
+	})
+	app.Delete("/delete/image/:filename", func(c *fiber.Ctx) error {
+		// Mengubah data yang dikirim dalam bentuk hexadecimal menjadi byte
+		byte, err := hex.DecodeString(c.Params("filename"))
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"status": fiber.StatusBadRequest,
+				"error":  err.Error(),
+			})
+		}
+		// Mengubah byte menjadi string
+		var filename string = string(byte)
+		// Menghapus file
+		err = os.Remove("./app/uploads/images/" + filename)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"status": fiber.StatusBadRequest,
+				"error":  err.Error(),
+			})
+		}
+
+		// Mengirim response 200 ke client
+		return c.JSON(fiber.Map{
+			"status":  c.Response().StatusCode,
+			"message": "Success delete image",
 		})
 	})
 }

@@ -57,6 +57,7 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		}
 		session, err := store.Get(c)
 		if err != nil {
+			log.Println(err)
 			return c.Redirect("/505")
 		}
 
