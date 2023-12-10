@@ -97,6 +97,7 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
+		cancel()
 		log.Println(err)
 		return nil, err
 	}
