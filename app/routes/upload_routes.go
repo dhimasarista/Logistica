@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/hex"
 	"log"
 	"os"
 
@@ -38,19 +37,10 @@ func FileManagement(app *fiber.App) {
 		})
 	})
 	app.Delete("/delete/image/:filename", func(c *fiber.Ctx) error {
-		// Mengubah data yang dikirim dalam bentuk hexadecimal menjadi byte
-		byte, err := hex.DecodeString(c.Params("filename"))
-		if err != nil {
-			log.Println(err)
-			return c.JSON(fiber.Map{
-				"status": fiber.StatusBadRequest,
-				"error":  err.Error(),
-			})
-		}
-		// Mengubah byte menjadi string
-		var filename string = string(byte)
+		filename := c.Params("filename")
+
 		// Menghapus file
-		err = os.Remove("./app/uploads/images/" + filename)
+		err := os.Remove("./app/uploads/images/" + filename)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{

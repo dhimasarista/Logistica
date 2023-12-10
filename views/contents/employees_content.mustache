@@ -180,9 +180,7 @@
                                 });
 
                                 buttonDeleteIdCard.addEventListener("click", () => {
-                                    // Mengirim nama file dalam bentuk hexadecimal
-                                    const encodedFilename = encodeURIComponent(idCardForm.files[0]["name"]);
-                                    fetch(`/delete/image/${encodedFilename}`, {
+                                    fetch(`/delete/image/${idCardForm.files[0]["name"]}`, {
                                         method: "DELETE",
                                         headers: {
                                             "Content-Type": "application/json"
@@ -200,11 +198,11 @@
                                             return 0;
                                         }
                                         toastr.success(results.message, "success");
-                                        clearIdCardForm();
                                     })
                                     .catch(error => {
                                         console.error(error);
                                     })
+                                    clearIdCardForm();
                                 })
 
                                 function clearIdCardForm() {
