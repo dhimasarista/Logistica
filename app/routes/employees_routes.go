@@ -19,7 +19,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	var employee *models.Employee = &models.Employee{}
 	position := models.Position{}
 
-	// Merender halaman /employees
+	// Halaman-halaman yang dirender
 	app.Get("/employees", func(c *fiber.Ctx) error {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
