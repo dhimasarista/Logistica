@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,6 +30,7 @@ func UploadImage(c *fiber.Ctx) error {
 			})
 		}
 	}
+	time.Sleep(2 * time.Second)
 
 	return c.JSON(fiber.Map{
 		"status":  c.Response().StatusCode(),
@@ -48,7 +50,6 @@ func DeleteImage(c *fiber.Ctx) error {
 			"error":  err.Error(),
 		})
 	}
-
 	// Mengirim response 200 ke client
 	return c.JSON(fiber.Map{
 		"status":  c.Response().StatusCode,

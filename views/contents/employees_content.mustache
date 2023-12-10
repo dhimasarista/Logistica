@@ -80,7 +80,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="name-employee-label" for="name">Full Name</label>
-                                    <input type="text" name="name" id="name-employee-form" placeholder="EX: Dhimas Arista" class="form-control" required>
+                                    <input type="text" name="name" id="name-employee-form" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -90,13 +90,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="number-phone-label" for="numberPhone">Number Phone</label>
-                                    <input type="text" name="numberPhone" id="number-phone-form" placeholder="EX: 085157248841" class="form-control" required>
+                                    <input type="text" name="numberPhone" id="number-phone-form" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="address-label" for="address">Address</label>
-                                    <input type="text" name="address" id="address-form" class="form-control" placeholder="Ex: 68 Main Street, Wellington, 6021, New Zealand" required/>
+                                    <input type="text" name="address" id="address-form" class="form-control" required/>
                                 </div>
                             </div>
                         </div>
@@ -119,6 +119,7 @@
                                 <div class="form-group">
                                     <label id="pengirim-label" for="new-position">ID Card | Max: 200kb Type: JPG/JPEG/PNG</label>
                                     <div class="input-group mb-3">
+                                        <div id="image-operation-spinner" class="spinner-border text-muted" hidden></div>
                                         <input type="file" id="id-card-form" accept="image/*">
                                         <div class="col-md-6 mt-1">
                                             <div id="delete-idcardform" style="display: none;">
@@ -139,12 +140,18 @@
                                 const buttonDeleteIdCard = document.getElementById("button-delete-idcard");
                                 const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
+
+                                const imageSpinner = document.getElementById("image-operation-spinner");
+
                                 idCardForm.addEventListener("change", () => {
                                     checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm);
                                     checkFileSize(idCardForm);
-
                                     const formData = new FormData();
                                     formData.append("image", idCardForm.files[0]);
+
+                                    imageSpinner.removeAttribute("hidden");
+                                    idCardForm.style.display = "none";
+                                    toastr.info("Uploading Image", "Info");
 
                                     if (idCardForm.files[0]) {
                                         fetch("/upload/image", {
@@ -167,7 +174,8 @@
                                             toastr.success(results.message, "success");
                                             idCardFilename.textContent = idCardForm.files[0]["name"];
                                             deleteIdCardForm.style.display = "block";
-                                            idCardForm.style.display = "none";
+
+                                            imageSpinner.setAttribute('hidden', true);
                                         })
                                         .catch(error => {
                                             Swal.fire({
@@ -180,6 +188,8 @@
                                 });
 
                                 buttonDeleteIdCard.addEventListener("click", () => {
+                                    imageSpinner.removeAttribute("hidden");
+                                    toastr.info("Deleting Image", "Info");
                                     fetch(`/delete/image/${idCardForm.files[0]["name"]}`, {
                                         method: "DELETE",
                                         headers: {
@@ -201,7 +211,8 @@
                                     })
                                     .catch(error => {
                                         console.error(error);
-                                    })
+                                    });
+                                    imageSpinner.setAttribute("hidden", true);
                                     clearIdCardForm();
                                 })
 
