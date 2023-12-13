@@ -1,3 +1,7 @@
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script>
+    let notyf = new Notyf();
+</script>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -140,28 +144,33 @@
                                 const buttonDeleteIdCard = document.getElementById("button-delete-idcard");
                                 const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
-
                                 const imageSpinner = document.getElementById("image-operation-spinner");
+
+                                function showFormIDCard(){
+                                    imageSpinner.setAttribute('hidden', true);
+                                    deleteIdCardForm.style.display = "none";
+                                    idCardForm.style.display = "block";
+                                    idCardFilename.textContent = null;
+                                    idCardForm.value = "";
+                                }
 
                                 idCardForm.addEventListener("change", () => {
                                     checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm);
                                     checkFileSize(idCardForm);
-                                    const formData = new FormData();
+                                    let formData = new FormData();
                                     formData.append("image", idCardForm.files[0]);
 
                                     imageSpinner.removeAttribute("hidden");
                                     idCardForm.style.display = "none";
-                                    toastr.info("Uploading Image", "Info");
+                                    // toastr.info("Uploading Image", "Info");
+                                    
 
                                     if (idCardForm.files[0]) {
                                         fetch("/upload/image", {
                                             method: "POST",
                                             body: formData,
                                         })
-                                        .then(response => {
-                                            console.log(response);
-                                            return response.json();
-                                        })
+                                        .then(response => response.json())
                                         .then(results => {
                                             console.log(results);
                                             if (results.status !== 200) {
@@ -171,23 +180,41 @@
                                                     text: `${results.error}`,
                                                 });
                                             }
-                                            toastr.success(results.message, "success");
+                                            notyf.open({
+                                                type: "success",
+                                                message: results.message,
+                                                duration: 2000,
+                                                dismissible: true,
+                                                position: {
+                                                    x: "right",
+                                                    y: "top"
+                                                }
+                                            })
+
                                             idCardFilename.textContent = idCardForm.files[0]["name"];
                                             deleteIdCardForm.style.display = "block";
-
                                             imageSpinner.setAttribute('hidden', true);
                                         })
                                         .catch(error => {
-                                            Swal.fire({
-                                                icon: "error",
-                                                title: "Oops...",
-                                                text: error.message,
+                                            console.log(error);
+                                            notyf.open({
+                                                type: "error",
+                                                message: error, 
+                                                duration: 2000,
+                                                dismissible: true,
+                                                position: {
+                                                    x: "right",
+                                                    y: "top"
+                                                }
                                             });
+                                            showFormIDCard();
+                                            return 0;
                                         });
                                     }
                                 });
 
                                 buttonDeleteIdCard.addEventListener("click", () => {
+                                    idCardFilename.setAttribute("hidden", true);
                                     imageSpinner.removeAttribute("hidden");
                                     toastr.info("Deleting Image", "Info");
                                     fetch(`/delete/image/${idCardForm.files[0]["name"]}`, {
@@ -229,18 +256,7 @@
                             </script>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check mx-4">
-                                    <input id="add-tobe-user-form" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                      Add to be User
-                                    </label>
-                                  </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-2 my-4">
+                            <div class="col-md-2">
                                 <button type="submit" id="submit-new-employee" class="btn btn-primary btn-block">Upload</button>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -18,6 +19,8 @@ func UploadImage(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println(form)
+
 	// Mengambil files dengan key image dari map
 	files := form.File["image"]
 	for _, file := range files {
@@ -30,6 +33,7 @@ func UploadImage(c *fiber.Ctx) error {
 			})
 		}
 	}
+
 	time.Sleep(2 * time.Second)
 
 	return c.JSON(fiber.Map{
