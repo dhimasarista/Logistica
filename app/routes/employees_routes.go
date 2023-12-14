@@ -86,6 +86,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 		return c.JSON(fiber.Map{
 			"responseStatus": c.Response().StatusCode(),
+			"message":        "Employee Deleted!",
 		})
 
 	})

@@ -258,7 +258,7 @@
                         {{/error}}
                         <div class="OptionsContainer">
                             <div class="checkboxContainer">
-                                <input type="checkbox" id="RememberMe" class="checkbox" name="stay"> <label for="RememberMe">Stay Logged In</label>
+                                <input type="checkbox" id="RememberMe" class="checkbox" name="stay"> <label for="RememberMe">Remember Me</label>
                             </div>
                             <a href="#" class="ForgotPasswordLink">Forgot Password?</a>
                         </div>
@@ -270,4 +270,37 @@
         </div>
     </div>
 </body>
+<script>
+    // Fungsi untuk menyimpan status Remember Me di localStorage
+    function saveRememberMeStatus() {
+        const rememberMeCheckbox = document.getElementById("RememberMe");
+        const isChecked = rememberMeCheckbox.checked;
+        
+        // Menyimpan status Remember Me di localStorage
+        localStorage.setItem("rememberMe", isChecked);
+    }
+
+    // Fungsi untuk mengambil status Remember Me dari localStorage
+    function getRememberMeStatus() {
+        const rememberMeCheckbox = document.getElementById("RememberMe");
+        const storedRememberMe = localStorage.getItem("rememberMe");
+
+        // Memeriksa dan menetapkan status Remember Me dari localStorage
+        if (storedRememberMe === "true") {
+            rememberMeCheckbox.checked = true;
+        } else {
+            rememberMeCheckbox.checked = false;
+        }
+    }
+
+    // Panggil fungsi untuk mendapatkan status Remember Me saat halaman dimuat
+    window.onload = function() {
+        getRememberMeStatus();
+    };
+
+    // Panggil fungsi untuk menyimpan status Remember Me saat ceklis berubah
+    document.getElementById("RememberMe").addEventListener("change", function() {
+        saveRememberMeStatus();
+    });
+</script>
 </html>

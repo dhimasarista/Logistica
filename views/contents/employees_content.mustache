@@ -209,7 +209,7 @@
                                     });
                                 }
 
-                                function deleteIDCardFromServer(path) {
+                                function deleteImageFromServer(path) {
                                     fetch(path, {
                                         method: "DELETE",
                                         headers: {
@@ -230,7 +230,26 @@
                                             type: "success",
                                             message: results.message,
                                         });
+                                        return results.status;
                                     })
+                                    .catch(error => {
+                                        console.error(error);
+                                        notyf.open({
+                                            type: "error",
+                                            background: "orange",
+                                            message: error, 
+                                        });
+                                    });
+                                }
+
+                                function deleteImageIdCard() {
+                                    idCardFilename.setAttribute("hidden", true);
+                                    imageSpinner.removeAttribute("hidden");
+                                    
+                                    const path = `/delete/image/${idCardForm.files[0]["name"]}`;
+                                    deleteImageFromServer(path); // Menghapus gambar dari server
+
+                                    imageSpinner.setAttribute("hidden", true);
                                 }
 
                                 idCardForm.addEventListener("change", () => {
@@ -246,16 +265,34 @@
                                         uploadIDCardToServer("/upload/image", file);
                                     }
                                 });
-
+                                // Menghapus gambar melalui button delete image
                                 buttonDeleteIdCard.addEventListener("click", () => {
-                                    idCardFilename.setAttribute("hidden", true);
-                                    imageSpinner.removeAttribute("hidden");
-                                    
-                                    const path = `/delete/image/${idCardForm.files[0]["name"]}`;
-                                    deleteIDCardFromServer(path); // Menghapus gambar dari server
-
-                                    imageSpinner.setAttribute("hidden", true);
+                                    deleteImageIdCard();
                                     clearIdCardForm();
+                                });
+                                // Menghapus gambar ketika event reload halaman/pindah path/menutup tab atau browser
+                                window.addEventListener("beforeunload", (e) => {
+                                    if (idCardForm.files[0]) {
+                                        e.preventDefault(); // Menggunakan parameter e
+                                        e.returnValue = "You have unsaved changes. Are you sure you want to leave?"; // Pesan prompt
+
+                                        const userResponse = confirm(e.returnValue);
+
+                                        if (userResponse) {
+                                            // Memanggil fungsi-fungsi yang sesuai
+                                            const status = deleteImageIdCard(); // Menghapus gambar dari server
+                                            if (status !== 200) {
+                                                notyf.open({
+                                                    type: "error",
+                                                    message: "Error Internal Server", 
+                                                });
+                                                e.returnValue = undefined;
+                                            }
+                                        } else {
+                                            // Jika pengguna memilih "Cancel", lepaskan penahanan
+                                            e.returnValue = undefined;
+                                        }
+                                    }
                                 });
                             </script>
                         </div>
@@ -291,7 +328,7 @@
         const numberPhoneForm = document.getElementById("number-phone-form");
         const addressForm = document.getElementById("address-form");
         const positionselect = document.getElementById("position-name");
-        const addToBeUserForm = document.getElementById("add-tobe-user-form");
+
 
         // Mengambil id employee terakhir di db
         // const lastIdEmploye = 100293;
@@ -334,7 +371,6 @@
         .then(response => response.json())
         .then(results => {
             if (results.responseStatus === 200) {
-                returnButton.removeAttribute("hidden");
                 cardNewEmployee.removeAttribute("hidden");
                 cardSpinner.setAttribute("hidden", true);
 
@@ -363,7 +399,10 @@
                 });
                 return 0
             }
-            toastr.success("Employee Deleted.", "success");
+            notyf.open({
+                type: "success",
+                message: results.message,
+            })
             document.getElementById(`employee-${id}`).remove();
         })
         .catch(error => {
@@ -389,6 +428,7 @@
         cardEmployeeList.setAttribute("hidden",true);
 
         getNewId();
+        returnButton.removeAttribute("hidden");
     });
     /*
         7 Input Form
@@ -429,8 +469,8 @@
                     nameEmployeeForm.value = null;
                     numberPhoneForm.value = null;
                     addressForm.value = null;
-                    buttonDeleteIdCardFile(); // ID Card File
-                    addToBeUserForm.checked = false;
+                    deleteImageIdCard();
+                    clearIdCardForm();
                     showEmployeeList();
                     return 0;
                 }
@@ -440,8 +480,7 @@
             showEmployeeList();
             return 0;
         }
-    }
-    );
+    });
 
 
 
@@ -478,7 +517,6 @@
                             numberPhone: numberPhoneForm.value,
                             address: addressForm.value,
                             position: positionselect.value,
-                            isUser: addToBeUserForm.checked,
                         };
                         fetch("/employee/new", {
                             method: "POST",

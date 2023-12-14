@@ -30,6 +30,10 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		// if username != nil {
 		// 	return c.Redirect("/")
 		// }
+
+		// Tanpa Caching
+		c.Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+
 		return c.Render("login", fiber.Map{
 			"Title": "LOGISTICA",
 		})

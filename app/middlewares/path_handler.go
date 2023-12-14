@@ -32,6 +32,8 @@ func PathHandler(store *session.Store) fiber.Handler {
 			return c.Redirect("/dashboard")
 		}
 
+		// di linux kode ini bekerja
+		// di windows kode ini 404
 		if path == "/" {
 			return c.Redirect("/home")
 		}
