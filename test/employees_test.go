@@ -75,7 +75,7 @@ func TestNewEmployee(t *testing.T) {
 	var employee = models.Employee{}
 	lastId, _ := employee.LastId()
 
-	_, err := employee.NewEmployee(lastId+1, "Test New Employee", "Unknown", "+628000000000", 2224, 0)
+	_, err := employee.NewEmployee(lastId+1, "Test New Employee", "Unknown", "+628000000000", 2224)
 	if err != nil {
 		panic(err)
 	}

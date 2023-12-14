@@ -134,18 +134,12 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			panic(err)
 		}
 
-		var isUser int = 0
-		if formData["isUser"].(bool) {
-			isUser = 1
-		}
-
 		newEmpResult, err := employee.NewEmployee(
 			idToInt,
 			formData["name"].(string),
 			formData["address"].(string),
 			formData["numberPhone"].(string),
 			positionToInt,
-			isUser,
 		)
 
 		if err != nil {

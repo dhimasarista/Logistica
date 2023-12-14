@@ -44,15 +44,15 @@ func (e *Employee) GetById(id int64) error {
 	return nil
 }
 
-func (e *Employee) NewEmployee(id int, name, address, numberPhone string, position, isUser int) (sql.Result, error) {
+func (e *Employee) NewEmployee(id int, name, address, numberPhone string, position int) (sql.Result, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
 	var db = config.ConnectDB()
 	defer db.Close()
 
-	var query string = "INSERT INTO employees VALUES(?, ?, ?, ?, ?, ?, 0)"
-	result, err := db.Exec(query, id, name, address, numberPhone, position, isUser)
+	var query string = "INSERT INTO employees VALUES(?, ?, ?, ?, ?, 0, 0)"
+	result, err := db.Exec(query, id, name, address, numberPhone, position)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			if mysqlErr.Number == 1062 {
