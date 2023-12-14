@@ -9,6 +9,7 @@ import (
 
 func PathHandler(store *session.Store) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		path := c.OriginalURL() // mengambil path
 		// Mendapatkan sesi
 		session, err := store.Get(c)
 		if err != nil {
@@ -27,12 +28,12 @@ func PathHandler(store *session.Store) fiber.Handler {
 
 		// Jika pengguna sudah login dan mengakses path /login
 		// Alihkan ke path / atau /dashboard
-		if c.OriginalURL() == "/login" && username != nil {
-			return c.Redirect("/")
+		if path == "/login" && username != nil {
+			return c.Redirect("/dashboard")
 		}
 
-		if c.OriginalURL() == "/" && username == nil {
-			return c.Redirect("/home ")
+		if path == "/" && username == nil {
+			return c.Redirect("/home")
 		}
 
 		return c.Next()
