@@ -54,7 +54,7 @@
                                 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item" href="javascript:void(0);">Detail</a>
-                                            <a class="dropdown-item" href="#" onclick="deleteEmployee('{{id}}')">Remove</a>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="deleteEmployee('{{id}}')">Remove</a>
                                             <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
                                         </div>
                                     </div>
@@ -391,19 +391,32 @@
         })
         .then(response => response.json())
         .then(results => {
-            if (results.responseStatus !== 200){
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: results.error,
-                });
-                return 0
-            }
-            notyf.open({
-                type: "success",
-                message: results.message,
-            })
-            document.getElementById(`employee-${id}`).remove();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {   
+                if (result.isConfirmed) {
+                    if (results.responseStatus !== 200){
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: results.error,
+                        });
+                        return 0
+                    }
+                    notyf.open({
+                        type: "success",
+                        message: results.message,
+                    })
+                    document.getElementById(`employee-${id}`).remove();
+                    return 0;
+                }
+            });
         })
         .catch(error => {
             Swal.fire({
