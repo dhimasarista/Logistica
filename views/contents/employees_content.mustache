@@ -1,6 +1,13 @@
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script>
-    let notyf = new Notyf();
+    let notyf = new Notyf({
+        duration: 2000,
+        dismissible: true,
+        position: {
+            x: "right",
+            y: "top"
+        }
+    });
 </script>
 <div class="container-fluid">
     <!-- Page Heading -->
@@ -84,7 +91,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="name-employee-label" for="name">Full Name</label>
-                                    <input type="text" name="name" id="name-employee-form" class="form-control" required>
+                                    <input type="text" name="name" id="name-employee-form" class="form-control" placeholder="Your Name" required>
                                 </div>
                             </div>
                         </div>
@@ -94,13 +101,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="number-phone-label" for="numberPhone">Number Phone</label>
-                                    <input type="text" name="numberPhone" id="number-phone-form" class="form-control" required>
+                                    <input type="text" name="numberPhone" id="number-phone-form" class="form-control" placeholder="Your Number Phone" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="address-label" for="address">Address</label>
-                                    <input type="text" name="address" id="address-form" class="form-control" required/>
+                                    <input type="text" name="address" id="address-form" class="form-control" placeholder="Your Address" required/>
                                 </div>
                             </div>
                         </div>
@@ -141,6 +148,7 @@
                             <script>
                                 const idCardForm = document.getElementById("id-card-form");  // Part of 7 Input Form
                                 const deleteIdCardForm = document.getElementById("delete-idcardform");
+
                                 const buttonDeleteIdCard = document.getElementById("button-delete-idcard");
                                 const idCardFilename = document.getElementById("idcard-filename");
                                 const imagesTypes = ["image/jpg", "image/jpeg", "image/png"];
@@ -153,71 +161,56 @@
                                     idCardFilename.textContent = null;
                                     idCardForm.value = "";
                                 }
+                                function clearIdCardForm() {
+                                    if (idCardForm.files["length"] > 0) {
+                                        deleteIdCardForm.style.display = "none";
+                                        idCardForm.style.display = "block";
+                                        idCardFilename.textContent = null;
+                                        idCardForm.value = "";
+                                    }
+                                    return 0;
+                                }
 
-                                idCardForm.addEventListener("change", () => {
-                                    checkFileType(idCardForm.files[0], imagesTypes, "Change the Image format", idCardForm);
-                                    checkFileSize(idCardForm);
-                                    let formData = new FormData();
-                                    formData.append("image", idCardForm.files[0]);
-
-                                    imageSpinner.removeAttribute("hidden");
-                                    idCardForm.style.display = "none";
-                                    // toastr.info("Uploading Image", "Info");
-                                    
-
-                                    if (idCardForm.files[0]) {
-                                        fetch("/upload/image", {
-                                            method: "POST",
-                                            body: formData,
-                                        })
-                                        .then(response => response.json())
-                                        .then(results => {
-                                            console.log(results);
-                                            if (results.status !== 200) {
-                                                Swal.fire({
-                                                    icon: "error",
-                                                    title: "Oops...",
-                                                    text: `${results.error}`,
-                                                });
-                                            }
-                                            notyf.open({
-                                                type: "success",
-                                                message: results.message,
-                                                duration: 2000,
-                                                dismissible: true,
-                                                position: {
-                                                    x: "right",
-                                                    y: "top"
-                                                }
-                                            })
-
-                                            idCardFilename.textContent = idCardForm.files[0]["name"];
-                                            deleteIdCardForm.style.display = "block";
-                                            imageSpinner.setAttribute('hidden', true);
-                                        })
-                                        .catch(error => {
-                                            console.log(error);
+                                function uploadIDCardToServer(path, file) {
+                                    const formData = new FormData();
+                                    formData.append("image", file);
+                                    fetch(path, {
+                                        method: "POST",
+                                        body: formData,
+                                    })
+                                    .then(response => response.json())
+                                    .then(results => {
+                                        console.log(results);
+                                        if (results.status !== 200) {
                                             notyf.open({
                                                 type: "error",
-                                                message: error, 
-                                                duration: 2000,
-                                                dismissible: true,
-                                                position: {
-                                                    x: "right",
-                                                    y: "top"
-                                                }
+                                                background: "orange",
+                                                message: results.error,
                                             });
-                                            showFormIDCard();
-                                            return 0;
-                                        });
-                                    }
-                                });
+                                        }
+                                        notyf.open({
+                                            type: "success",
+                                            message: results.message,
+                                        })
 
-                                buttonDeleteIdCard.addEventListener("click", () => {
-                                    idCardFilename.setAttribute("hidden", true);
-                                    imageSpinner.removeAttribute("hidden");
-                                    toastr.info("Deleting Image", "Info");
-                                    fetch(`/delete/image/${idCardForm.files[0]["name"]}`, {
+                                        idCardFilename.textContent = idCardForm.files[0]["name"];
+                                        deleteIdCardForm.style.display = "block";
+                                        imageSpinner.setAttribute('hidden', true);
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
+                                        notyf.open({
+                                            type: "error",
+                                            background: "orange",
+                                            message: error, 
+                                        });
+                                        showFormIDCard(); // Menampilkan Form ID Card
+                                        return 0;
+                                    });
+                                }
+
+                                function deleteIDCardFromServer(path) {
+                                    fetch(path, {
                                         method: "DELETE",
                                         headers: {
                                             "Content-Type": "application/json"
@@ -227,32 +220,43 @@
                                     .then(results => {
                                         console.log(results);
                                         if (results.status !== 200) {
-                                            Swal.fire({
-                                                icon: "error",
-                                                title: "Oops...",
-                                                text: `${results.error}`,
+                                            notyf.open({
+                                                type: "error",
+                                                message: results.error, 
                                             });
                                             return 0;
                                         }
-                                        toastr.success(results.message, "success");
+                                        notyf.open({
+                                            type: "success",
+                                            message: results.message,
+                                        });
                                     })
-                                    .catch(error => {
-                                        console.error(error);
-                                    });
+                                }
+
+                                idCardForm.addEventListener("change", () => {
+                                    const file = idCardForm.files[0];
+                                    checkFileType(file, imagesTypes, "Change the Image format", idCardForm);
+                                    checkFileSize(idCardForm);
+
+                                    imageSpinner.removeAttribute("hidden");
+                                    idCardForm.style.display = "none";
+
+                                    if (idCardForm.files[0]) {
+                                        // Mengirim ID Card dalam gambar ke server
+                                        uploadIDCardToServer("/upload/image", file);
+                                    }
+                                });
+
+                                buttonDeleteIdCard.addEventListener("click", () => {
+                                    idCardFilename.setAttribute("hidden", true);
+                                    imageSpinner.removeAttribute("hidden");
+                                    
+                                    const path = `/delete/image/${idCardForm.files[0]["name"]}`;
+                                    deleteIDCardFromServer(path); // Menghapus gambar dari server
+
                                     imageSpinner.setAttribute("hidden", true);
                                     clearIdCardForm();
-                                })
-
-                                function clearIdCardForm() {
-                                    if (idCardForm.files["length"] > 0) {
-                                        toastr.success("File Deleted.", "success");
-                                        deleteIdCardForm.style.display = "none";
-                                        idCardForm.style.display = "block";
-                                        idCardFilename.textContent = null;
-                                        idCardForm.value = "";
-                                    }
-                                    return 0;
-                                }
+                                });
                             </script>
                         </div>
                         <div class="row">
@@ -313,7 +317,6 @@
             getNewId();
         }
     </script>
-
 </div>
 <script>
     // Card Body Handlers
