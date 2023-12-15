@@ -69,7 +69,7 @@ func (p *Product) GetById(id int) error {
 }
 
 func (p *Product) FindAll() ([]map[string]interface{}, error) {
-	var db = config.ConnectDB()
+	db := config.ConnectDB()
 	defer db.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -96,45 +96,44 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
-		cancel()
-		log.Println(err)
+		log.Println("Error querying database:", err)
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	var products []map[string]interface{}
 
 	for rows.Next() {
-		err := rows.Scan(
-			&p.ID,
-			&p.Name,
-			&p.SerialNumber,
-			&p.ManufacturerID,
-			&p.Stocks,
-			&p.Price,
-			&p.Weight,
-			&p.CategoryID,
-			&p.ManufacturerName,
-			&p.CategoryName,
-		)
+		var productData Product // Use a separate variable to scan data into
 
+		err := rows.Scan(
+			&productData.ID,
+			&productData.Name,
+			&productData.SerialNumber,
+			&productData.ManufacturerID,
+			&productData.Stocks,
+			&productData.Price,
+			&productData.Weight,
+			&productData.CategoryID,
+			&productData.ManufacturerName,
+			&productData.CategoryName,
+		)
 		if err != nil {
-			log.Println(err)
+			log.Println("Error scanning row:", err)
 			return nil, err
 		}
 
-		var product = map[string]interface{}{
-			"id":              p.ID.Int64,
-			"name":            utility.Capitalize(p.Name.String),
-			"serial_number":   utility.Capitalize(p.SerialNumber.String),
-			"manufacturer_id": p.ManufacturerID.Int64,
-			"manufacturer":    utility.Capitalize(p.ManufacturerName.String),
-			"stocks":          p.Stocks.Int64,
-			"price":           p.Price.Int64,
-			"weight":          p.Weight.Int64,
-			"category_id":     p.CategoryID.Int64,
-			"category":        utility.Capitalize(p.CategoryName.String),
+		product := map[string]interface{}{
+			"id":              productData.ID.Int64,
+			"name":            utility.Capitalize(productData.Name.String),
+			"serial_number":   utility.Capitalize(productData.SerialNumber.String),
+			"manufacturer_id": productData.ManufacturerID.Int64,
+			"manufacturer":    utility.Capitalize(productData.ManufacturerName.String),
+			"stocks":          productData.Stocks.Int64,
+			"price":           productData.Price.Int64,
+			"weight":          productData.Weight.Int64,
+			"category_id":     productData.CategoryID.Int64,
+			"category":        utility.Capitalize(productData.CategoryName.String),
 		}
 
 		products = append(products, product)
