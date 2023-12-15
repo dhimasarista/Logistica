@@ -26,23 +26,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{#surat-masuk}}
-                                <tr>
-                                    <td>{{tanggalSurat}}</td>
-                                    <td>{{judulSurat}}</td>
-                                    <td>{{penerima}}</td>
-                                    <td>{{pengirim}}</td>
-                                    <td>{{perihal}}</td>
-                                    <td>{{jenisSurat}}</td>
-                                </tr>
-                                {{/surat-masuk}}
+                        {{#products}}
                             <tr>
-                                <td>0435843957346</td>
-                                <td>Ryzen 5 5000X</td>
-                                <td>85043859347549</td>
-                                <td>AMD</td>
-                                <td>1032</td>
-                                <td>3.900.000</td>
+                                <td>{{id}}</td>
+                                <td>{{name}}</td>
+                                <td>{{serial_number}}</td>
+                                <td>{{manufacturer}}</td>
+                                <td>{{stocks}}</td>
+                                <td>{{price}}</td>
                                 <td>
                                     <div class="dropdown">
                                         <a href="javascript:void(0);">
@@ -61,24 +52,10 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>Intel i5 5460U</td>
-                                <td>85043859347549</td>
-                                <td>Intel</td>
-                                <td>980</td>
-                                <td>4.153.000</td>
-                                <td>4.153.000</td>
-                            </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>DA PSU 80W Bronze</td>
-                                <td>85043859347549</td>
-                                <td>Digital Alliance</td>
-                                <td>98</td>
-                                <td>560.000</td>
-                                <td>560.000</td>
-                            </tr>
+                            {{/products}}
+                            <script>
+                                console.log("{{products}}")
+                            </script>
                         </tbody>
                     </table>
                 </div>
