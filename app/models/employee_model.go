@@ -90,7 +90,7 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 	var db = config.ConnectDB()
 	defer db.Close()
 
-	var query string = "SELECT e.id, e.name as employee_name, e.address, e.number_phone, e.position_id, e.is_user, e.is_superuser, p.name AS position_name FROM employees e JOIN positions p ON e.position_id = p.id WHERE e.id > 1"
+	var query string = "SELECT e.id, e.name as employee_name, e.address, e.number_phone, e.position_id, e.is_user, e.is_superuser, p.name AS position_name FROM employees e JOIN positions p ON e.position_id = p.id WHERE e.id > 1;"
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
