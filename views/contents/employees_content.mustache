@@ -46,7 +46,7 @@
                                 <td>
                                     <div class="dropdown">
                                         <a href="javascript:void(0);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.118 2.118 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621Z"/><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"/></g></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" fill-opacity="0" d="M20 7L17 4L15 6L18 9L20 7Z"><animate fill="freeze" attributeName="fill-opacity" begin="1.2s" dur="0.15s" values="0;0.3"/></path><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="20" stroke-dashoffset="20" d="M3 21H21"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="20;0"/></path><path stroke-dasharray="44" stroke-dashoffset="44" d="M7 17V13L17 3L21 7L11 17H7"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.6s" values="44;0"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M14 6L18 10"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" values="8;0"/></path></g></svg>
                                         </a>
                                         <a href="javascript:void(0);" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20"><g fill="currentColor"><circle cx="10" cy="15" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="10" cy="5" r="2"/></g></svg>
@@ -54,6 +54,7 @@
                                 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item" href="javascript:void(0);">Detail</a>
+                                            <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="javascript:void(0);" onclick="deleteEmployee('{{id}}')">Remove</a>
                                             <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
                                         </div>
@@ -382,25 +383,24 @@
 
     function deleteEmployee(id) {
         checkSession(); // checking session to server
-
-        fetch(`/employee/delete/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        })
-        .then(response => response.json())
-        .then(results => {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {   
-                if (result.isConfirmed) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {   
+            if (result.isConfirmed) {
+                fetch(`/employee/delete/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                })
+                .then(response => response.json())
+                .then(results => {
                     if (results.responseStatus !== 200){
                         Swal.fire({
                             icon: "error",
@@ -415,16 +415,16 @@
                     })
                     document.getElementById(`employee-${id}`).remove();
                     return 0;
-                }
-            });
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: error,
-            });
-        })
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: error,
+                    });
+                });
+            }
+        });
     }
 
     // const employee = `{{employees}}`;

@@ -94,6 +94,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	// Mengirim ID baru
 	app.Get("/employee/newId", func(c *fiber.Ctx) error {
 		lastId, err := employee.LastId()
+		if lastId <= 100020 {
+			lastId = 100020
+		}
 
 		if err != nil {
 			log.Println(err)
@@ -184,6 +187,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return err
 		}
+
 		result, err := position.NewPosition(lastId+1, formData["name"].(string))
 		if err != nil {
 			log.Println(err)
