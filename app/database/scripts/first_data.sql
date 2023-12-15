@@ -5,3 +5,6 @@ INSERT INTO employees VALUES(1, "administrator", "0", "0", NULL, 1, 1);
 INSERT INTO employees VALUES(100010, "muhammad dhimas arista", "jl. cendrawasih, kota batam", 6285157248841, 2222, 0, 0);
 INSERT INTO employees VALUES(100011, "bayu setiawan", "kota jambi", 6285157248841, 2223, 0, 0);
 INSERT INTO users(id, username, password, employee_id) VALUES(1, "0x0002", "$2a$12$jb.qLEDHWmvFptryo8J/e.LnxhxNu9N5mmH.IEmHkjMvNYbb9f.iq", 1);
+INSERT INTO manufacturer VALUES(9100, "amd");
+INSERT INTO product_category VALUES (890, "processor");
+INSERT INTO products VALUES(1023, "ryzen 5500x", "47395349854365", 9100, 100, 1490000, 300, 890);
