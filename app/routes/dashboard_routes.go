@@ -10,12 +10,20 @@ import (
 )
 
 func DashboardRoutes(app *fiber.App, store *session.Store) {
+	employee := models.Employee{}
+	product := models.Product{}
+
 	app.Get("/dashboard", func(c *fiber.Ctx) error {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
-		employees := models.Employee{}
 
-		totalEmployees, err := employees.Count()
+		totalEmployees, err := employee.Count()
+		if err != nil {
+			log.Println(err)
+			return InternalServerError(c, err.Error())
+		}
+
+		totalProducts, err := product.Count()
 		if err != nil {
 			log.Println(err)
 			return InternalServerError(c, err.Error())
@@ -25,6 +33,7 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 			"path":           path,
 			"user":           username,
 			"totalEmployees": totalEmployees,
+			"totalProducts":  totalProducts,
 		})
 	},
 	)

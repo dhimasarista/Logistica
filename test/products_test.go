@@ -23,3 +23,13 @@ func TestProductFindAll(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestCountProducts(t *testing.T) {
+	product := models.Product{}
+
+	data, err := product.Count()
+
+	fmt.Println(data)
+
+	assert.Nil(t, err)
+}

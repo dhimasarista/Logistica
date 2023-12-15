@@ -1,3 +1,20 @@
+<script>
+    fetch("/inventory/product/1023", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    .then(res => res.json())
+    .then(resutls => {
+        console.log(resutls);
+        console.log(resutls.data);
+        console.log(typeof resutls.data);
+    })
+    .catch(error => {
+        console.error(error);
+    })
+</script>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -16,10 +33,9 @@
                     <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Product ID</th>
+                                <th>Manufacturer</th>
                                 <th>Name</th>
                                 <th>Serial Number</th>
-                                <th>Manufacturer</th>
                                 <th>Stocks</th>
                                 <th>Price</th>
                                 <th>Action</th>
@@ -28,10 +44,9 @@
                         <tbody>
                         {{#products}}
                             <tr>
-                                <td>{{id}}</td>
+                                <td>{{manufacturer}}</td>
                                 <td>{{name}}</td>
                                 <td>{{serial_number}}</td>
-                                <td>{{manufacturer}}</td>
                                 <td>{{stocks}}</td>
                                 <td>{{price}}</td>
                                 <td>
@@ -53,9 +68,6 @@
                                 </td>
                             </tr>
                             {{/products}}
-                            <script>
-                                console.log("{{products}}")
-                            </script>
                         </tbody>
                     </table>
                 </div>
@@ -98,9 +110,9 @@
                                         <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;' required>
                                             <option value="" selected disabled>Select Product</option>
                                             <option value="newProduct">New Product</option>
-                                            <option value="10002">Intel i5 5600U | stocks: 320</option>
-                                            <option value="10004">Intel i7 7600U</option>
-                                            <option value="10003">Intel i9 9600U</option>
+                                            {{#products}}
+                                                <option value="{{id}}">{{manufacturer}} {{name}} | stocks: {{stocks}}</option>
+                                            {{/products}}
                                         </select>
                                     </div>
                                 </div>
@@ -118,7 +130,8 @@
                             </div>
                         </div>
                         <script>
-                                    const products = [{
+                                    const products = [
+                                    {
                                     "id": 10002,
                                     "name": "Intel i5 5600U",
                                     "serial_number": "S320482057454534",
@@ -188,34 +201,54 @@
                                         existingProduct.style.display = 'block';
                                         newProduct.style.display = 'none';
 
-                                        for (let index = 0; index < products.length; index++) {
-                                            if (products[index]["id"] == parseInt(productSelect.value)) {
-                                                // Menampilkan data produk yang sudah ada
-                                                const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
-                                                const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-                                                const categoryValue = products[index]["category"];
+                                        fetch(`/inventory/product/${productSelect.value}`, {
+                                            method: "GET",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                        })
+                                        .then(res => res.json())
+                                        .then(results => {
+                                            console.log(results);
+                                            serialNumberForm.value = results.data.serialNumber;
+                                            serialNumberForm.setAttribute("disabled", true);
+                                            priceForm.value = results.data.price;
+                                            priceForm.setAttribute("disabled", true);
+                                            weightForm.value = results.data.weight;
+                                            weightForm.setAttribute("disabled", true);
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        })
 
-                                                serialNumberForm.value = serialNumber;
-                                                serialNumberForm.setAttribute("disabled", true);
-                                                priceForm.value = products[index]["price"];
-                                                priceForm.setAttribute("disabled", true);
-                                                weightForm.value = products[index]["weight"];
-                                                weightForm.setAttribute("disabled", true);
+                                        // for (let index = 0; index < products.length; index++) {
+                                        //     if (products[index]["id"] == parseInt(productSelect.value)) {
+                                        //         // Menampilkan data produk yang sudah ada
+                                        //         const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
+                                        //         const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
+                                        //         const categoryValue = products[index]["category"];
+
+                                        //         serialNumberForm.value = serialNumber;
+                                        //         serialNumberForm.setAttribute("disabled", true);
+                                        //         priceForm.value = products[index]["price"];
+                                        //         priceForm.setAttribute("disabled", true);
+                                        //         weightForm.value = products[index]["weight"];
+                                        //         weightForm.setAttribute("disabled", true);
                                                 
-                                                for (let index2 = 0; index2 < optionsManufacturer.length; index2++) {
-                                                    if (manufacturer === optionsManufacturer[index2].value) {
-                                                        manufacturerForm.selectedIndex = index2;
-                                                        manufacturerForm.setAttribute("disabled", true);
-                                                    }
-                                                }
-                                                for (let index3 = 0; index3 < optionsCategory.length; index3++) {
-                                                    if (categoryValue === optionsCategory[index3].value) {
-                                                        categoryForm.selectedIndex = index3;
-                                                        categoryForm.setAttribute("disabled", true);
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        //         for (let index2 = 0; index2 < optionsManufacturer.length; index2++) {
+                                        //             if (manufacturer === optionsManufacturer[index2].value) {
+                                        //                 manufacturerForm.selectedIndex = index2;
+                                        //                 manufacturerForm.setAttribute("disabled", true);
+                                        //             }
+                                        //         }
+                                        //         for (let index3 = 0; index3 < optionsCategory.length; index3++) {
+                                        //             if (categoryValue === optionsCategory[index3].value) {
+                                        //                 categoryForm.selectedIndex = index3;
+                                        //                 categoryForm.setAttribute("disabled", true);
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
                                         
                                     }
                                 }

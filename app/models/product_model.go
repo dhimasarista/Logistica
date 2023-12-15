@@ -96,7 +96,7 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
-		log.Println("Error querying database:", err)
+		log.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -119,7 +119,7 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 			&productData.CategoryName,
 		)
 		if err != nil {
-			log.Println("Error scanning row:", err)
+			log.Println(err)
 			return nil, err
 		}
 
@@ -140,4 +140,18 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	}
 
 	return products, nil
+}
+
+func (p *Product) Count() (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var totalProducts int
+	var query string = "SELECT COUNT(*) AS total FROM products"
+	err := db.QueryRow(query).Scan(&totalProducts)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalProducts, nil
 }
