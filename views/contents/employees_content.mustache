@@ -8,6 +8,27 @@
             y: "top"
         }
     });
+
+    function ErrorNotif(error) {
+        notyf.open({
+            type: "error",
+            background: "orange",
+            message: error, 
+        });
+    }
+
+    function InternalServerError(error) {
+        notyf.open({
+            type: "error",
+            message: error,
+        });
+    }
+    function ServerStatusOke(msg) {
+        notyf.open({
+            type: "success",
+            message: msg,
+        })
+    }
 </script>
 <div class="container-fluid">
     <!-- Page Heading -->
@@ -183,16 +204,9 @@
                                     .then(results => {
                                         console.log(results);
                                         if (results.status !== 200) {
-                                            notyf.open({
-                                                type: "error",
-                                                background: "orange",
-                                                message: results.error,
-                                            });
+                                            InternalServerError(results.error);
                                         }
-                                        notyf.open({
-                                            type: "success",
-                                            message: results.message,
-                                        })
+                                        ServerStatusOke(results.message); // Notify Succes
 
                                         idCardFilename.textContent = idCardForm.files[0]["name"];
                                         deleteIdCardForm.style.display = "block";
@@ -200,11 +214,7 @@
                                     })
                                     .catch(error => {
                                         console.log(error);
-                                        notyf.open({
-                                            type: "error",
-                                            background: "orange",
-                                            message: error, 
-                                        });
+                                        ErrorNotif(error);
                                         showFormIDCard(); // Menampilkan Form ID Card
                                         return 0;
                                     });
@@ -221,25 +231,15 @@
                                     .then(results => {
                                         console.log(results);
                                         if (results.status !== 200) {
-                                            notyf.open({
-                                                type: "error",
-                                                message: results.error, 
-                                            });
+                                            InternalServerError(results.error);
                                             return 0;
                                         }
-                                        notyf.open({
-                                            type: "success",
-                                            message: results.message,
-                                        });
+                                        ServerStatusOke(results.message); // Notify Succes
                                         return results.status;
                                     })
                                     .catch(error => {
                                         console.error(error);
-                                        notyf.open({
-                                            type: "error",
-                                            background: "orange",
-                                            message: error, 
-                                        });
+                                        ErrorNotif(error);
                                     });
                                 }
 
@@ -283,10 +283,7 @@
                                             // Memanggil fungsi-fungsi yang sesuai
                                             const status = deleteImageIdCard(); // Menghapus gambar dari server
                                             if (status !== 200) {
-                                                notyf.open({
-                                                    type: "error",
-                                                    message: "Error Internal Server", 
-                                                });
+                                                InternalServerError("Internal Server Error");
                                                 e.returnValue = undefined;
                                             }
                                         } else {
@@ -402,26 +399,16 @@
                 .then(response => response.json())
                 .then(results => {
                     if (results.responseStatus !== 200){
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: results.error,
-                        });
+                        InternalServerError(results.error);
                         return 0
                     }
-                    notyf.open({
-                        type: "success",
-                        message: results.message,
-                    })
+                    ServerStatusOke(results.message); // Notify Succes
                     document.getElementById(`employee-${id}`).remove();
                     return 0;
                 })
                 .catch(error => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: error,
-                    });
+                    console.error(error);
+                    ErrorNotif(error);
                 });
             }
         });
@@ -542,11 +529,7 @@
                         .then( results => {
                             console.log(results);
                             if (results.status !== 200) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Oops...",
-                                    text: `${results.error}`,
-                                });
+                                InternalServerError(results.error);
                                 return 0;
                             } 
 
@@ -564,6 +547,7 @@
                         })
                         .catch(error => {
                             console.error(error);
+                            ErrorNotif(error);
                         })
                     }
                     return 0;
@@ -572,6 +556,7 @@
         })
         .catch(error => {
             console.error(error);
+            ErrorNotif(error);
         })
     });
 </script>
