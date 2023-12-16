@@ -1,19 +1,19 @@
 <script>
-    fetch("/inventory/product/1023", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-    })
-    .then(res => res.json())
-    .then(resutls => {
-        console.log(resutls);
-        console.log(resutls.data);
-        console.log(typeof resutls.data);
-    })
-    .catch(error => {
-        console.error(error);
-    })
+    // fetch("/inventory/product/1023", {
+    //     method: "GET",
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    // })
+    // .then(res => res.json())
+    // .then(resutls => {
+    //     console.log(resutls);
+    //     console.log(resutls.data);
+    //     console.log(typeof resutls.data);
+    // })
+    // .catch(error => {
+    //     console.error(error);
+    // })
 </script>
 <div class="container-fluid">
     <!-- Page Heading -->
@@ -159,10 +159,9 @@
                                     "category": "9922",
                                     "stock": 12,
                                 }];
+                                const existingProduct = document.getElementById('existing-product');
+                                const newProduct = document.getElementById('new-product');
                                 function checkNewProduct() {
-                                    const existingProduct = document.getElementById('existing-product');
-                                    const newProduct = document.getElementById('new-product');
-                                    
                                     // Input Form
                                     const productSelect = document.getElementById('product-name');
                                     const manufacturerForm = document.getElementById('manufacturer-form');
@@ -171,6 +170,10 @@
                                     const weightForm = document.getElementById("weight-form");
                                     const stockAmountForm = document.getElementById("stock-amount-form");
                                     const categoryForm = document.getElementById("category-form");
+
+                                    serialNumberForm.setAttribute("aria-hidden", "true");
+                                    priceForm.setAttribute("aria-hidden", "true");
+                                    weightForm.setAttribute("aria-hidden", "true");
 
                                     // Mengambil semua opsi di manufacturer form
                                     const optionsManufacturer = manufacturerForm.options;
@@ -222,7 +225,12 @@
                                                     manufacturerForm.setAttribute("disabled", true);
                                                 }
                                             }
-                                            
+                                            for (let index = 0; index < optionsCategory.length; index++) {
+                                                if (results.data.categoryId === parseInt(optionsCategory[index].value)) {
+                                                    categoryForm.selectedIndex = index  ;
+                                                    categoryForm.setAttribute("disabled", true);
+                                                }
+                                            }
                                             
                                         })
                                         .catch(error => {
@@ -370,9 +378,9 @@
                                         <select class="form-control scrollable-menu" id="category-form" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Category</option>
                                             <option value="newCategory">New Category</option>
-                                            <option value="9922">Processor</option>
-                                            <option value="9923">Harddisk</option>
-                                            <option value="9924">Motherboard</option>
+                                            {{#categories}}
+                                            <option value="{{id}}">{{name}}</option>
+                                            {{/categories}}
                                         </select>
                                     </div>
                                 </div>

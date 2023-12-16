@@ -130,7 +130,7 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 			"manufacturer_id": productData.ManufacturerID.Int64,
 			"manufacturer":    utility.Capitalize(productData.ManufacturerName.String),
 			"stocks":          productData.Stocks.Int64,
-			"price":           productData.Price.Int64,
+			"price":           utility.RupiahFormat(productData.Price.Int64),
 			"weight":          productData.Weight.Int64,
 			"category_id":     productData.CategoryID.Int64,
 			"category":        utility.Capitalize(productData.CategoryName.String),
