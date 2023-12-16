@@ -47,6 +47,8 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 
+	// app.Post("/inventory/")
+
 	app.Get("/inventory/product/:id", func(c *fiber.Ctx) error {
 		productID := c.Params("id")
 

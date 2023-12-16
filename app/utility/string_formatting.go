@@ -12,6 +12,13 @@ func Capitalize(i string) string {
 	return toPascalCaseWithSpace(i)
 }
 
+func CapitalizeAll(i string) string {
+	// Membuat case mapper untuk title case
+	result := strings.ToUpper(i)
+
+	return result
+}
+
 func toPascalCaseWithSpace(input string) string {
 	// Pisahkan string berdasarkan spasi
 	words := strings.Fields(input)

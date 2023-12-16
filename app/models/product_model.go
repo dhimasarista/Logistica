@@ -126,9 +126,9 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 		product := map[string]interface{}{
 			"id":              productData.ID.Int64,
 			"name":            utility.Capitalize(productData.Name.String),
-			"serial_number":   utility.Capitalize(productData.SerialNumber.String),
+			"serial_number":   utility.CapitalizeAll(productData.SerialNumber.String),
 			"manufacturer_id": productData.ManufacturerID.Int64,
-			"manufacturer":    utility.Capitalize(productData.ManufacturerName.String),
+			"manufacturer":    utility.CapitalizeAll(productData.ManufacturerName.String),
 			"stocks":          productData.Stocks.Int64,
 			"price":           utility.RupiahFormat(productData.Price.Int64),
 			"weight":          productData.Weight.Int64,
