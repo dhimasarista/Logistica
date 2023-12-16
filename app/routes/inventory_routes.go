@@ -13,6 +13,7 @@ import (
 
 func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var product *models.Product = &models.Product{}
+	var manufacturer *models.Manufacturer
 
 	app.Get("/inventory", func(c *fiber.Ctx) error {
 		var path string = c.Path()
@@ -24,10 +25,17 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			InternalServerError(c, err.Error())
 		}
 
+		manufacturers, err := manufacturer.FindAll()
+		if err != nil {
+			log.Println(err)
+			InternalServerError(c, err.Error())
+		}
+
 		return c.Render("inventory_page", fiber.Map{
-			"path":     path,
-			"user":     username,
-			"products": products,
+			"path":          path,
+			"user":          username,
+			"products":      products,
+			"manufacturers": manufacturers,
 		})
 	})
 
