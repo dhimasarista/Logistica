@@ -13,7 +13,7 @@ import (
 
 func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var product *models.Product = &models.Product{}
-	var manufacturer *models.Manufacturer
+	var manufacturer *models.Manufacturer = &models.Manufacturer{}
 
 	app.Get("/inventory", func(c *fiber.Ctx) error {
 		var path string = c.Path()

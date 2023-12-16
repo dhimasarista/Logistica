@@ -216,6 +216,14 @@
                                             priceForm.setAttribute("disabled", true);
                                             weightForm.value = results.data.weight;
                                             weightForm.setAttribute("disabled", true);
+                                            for (let index = 0; index < optionsManufacturer.length; index++) {
+                                                if (results.data.manufacturerId === parseInt(optionsManufacturer[index].value)) {
+                                                    manufacturerForm.selectedIndex = index;
+                                                    manufacturerForm.setAttribute("disabled", true);
+                                                }
+                                            }
+                                            
+                                            
                                         })
                                         .catch(error => {
                                             console.error(error);
@@ -294,9 +302,9 @@
                                         <select class="form-control scrollable-menu" id="manufacturer-form" name="manufacturer" onchange="newManufacturerEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Manufacturer</option>
                                             <option value="newManufacturer">New Manufacturer</option>
-                                            <option value="100022">Intel Corporation</option>
-                                            <option value="100023">Google Inc.</option>
-                                            <option value="100024">Samsung ELectronics</option>
+                                            {{#manufacturers}}
+                                            <option value="{{id}}">{{name}}</option>
+                                            {{/manufacturers}}
                                         </select>
                                     </div>
                                 </div>
