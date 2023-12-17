@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -18,6 +17,53 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var product *models.Product = &models.Product{}
 	var manufacturer *models.Manufacturer = &models.Manufacturer{}
 	category := &models.Category{}
+
+	app.Post("/product/new", func(c *fiber.Ctx) error {
+		lastId, err := product.LastId()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+		if lastId <= 1020 {
+			lastId = 1020
+		}
+
+		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
+		fmt.Println(formData)
+		body := c.Body()
+		err = json.Unmarshal(body, &formData)
+		fmt.Println(formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+		results, err := product.NewProduct(
+			lastId+1,
+			formData["name"].(string),
+			formData["serialNumber"].(string),
+			formData["manufacturer"].(int),
+			formData["stocks"].(int),
+			formData["price"].(int),
+			formData["weight"].(int),
+			formData["category"].(int),
+		)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(results.RowsAffected())
+
+		return c.JSON(fiber.Map{
+			"error":  nil,
+			"status": c.Response().StatusCode(),
+			"result": formData,
+		})
+	})
 
 	app.Get("/inventory", func(c *fiber.Ctx) error {
 		var path string = c.Path()
@@ -159,62 +205,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"message": "Stock Updated!",
 			"results": results,
 			"status":  c.Response().StatusCode(),
-		})
-	})
-
-	app.Post("/product/new", func(c *fiber.Ctx) error {
-		// lastId, err := product.LastId()
-		// if err != nil {
-		// 	log.Println(err)
-		// 	return c.JSON(fiber.Map{
-		// 		"error":  err.Error(),
-		// 		"status": fiber.StatusInternalServerError,
-		// 	})
-		// }
-		// if lastId <= 1020 {
-		// 	lastId = 1020
-		// }
-
-		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
-		fmt.Println(formData)
-		body := c.Body()
-		err := json.Unmarshal(body, &formData)
-		fmt.Println(formData)
-		if err != nil {
-			log.Println(err)
-			return c.JSON(fiber.Map{
-				"error":  nil,
-				"status": c.Response().StatusCode(),
-				"data":   formData,
-				"result": nil,
-			})
-		}
-		productData := &models.Product{
-			ID:             sql.NullInt64{Int64: formData["id"].(int64) + 1},
-			Name:           sql.NullString{String: formData["name"].(string)},
-			SerialNumber:   sql.NullString{String: formData["serialNumber"].(string)},
-			ManufacturerID: sql.NullInt64{Int64: formData["manufacturer"].(int64)},
-			Stocks:         sql.NullInt64{Int64: formData["stocks"].(int64)},
-			Price:          sql.NullInt64{Int64: formData["price"].(int64)},
-			Weight:         sql.NullInt64{Int64: formData["weight"].(int64)},
-			CategoryID:     sql.NullInt64{Int64: formData["category"].(int64)},
-		}
-
-		fmt.Println(productData)
-
-		// results, err := productData.NewProduct()
-		// if err != nil {
-		// 	return c.JSON(fiber.Map{
-		// 		"error":  err.Error(),
-		// 		"status": fiber.StatusInternalServerError,
-		// 	})
-		// }
-
-		return c.JSON(fiber.Map{
-			"error":  nil,
-			"status": c.Response().StatusCode(),
-			"data":   productData,
-			"result": nil,
 		})
 	})
 }

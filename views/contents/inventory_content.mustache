@@ -483,9 +483,9 @@
                             method: "POST",
                             body: JSON.stringify(newData)
                         })
-                        .then(response => response)
+                        .then(response => response.json())
                         .then(results => {
-                            console.log(results);
+                            console.log(    );
                             Swal.fire({
                                 icon: "success",
                                 title: "Success",

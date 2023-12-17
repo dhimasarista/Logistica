@@ -160,7 +160,7 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	return products, nil
 }
 
-func (p *Product) NewProduct() (sql.Result, error) {
+func (p *Product) NewProduct(id int, name, serialNumber string, manufacturer, stocks, price, weight, category int) (sql.Result, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -168,7 +168,7 @@ func (p *Product) NewProduct() (sql.Result, error) {
 	defer db.Close()
 
 	var query string = "INSERT INTO products VALUES(?, ?, ?, ?, ?, ?, ?, ?);"
-	result, err := db.Exec(query, p.ID.Int64, p.Name.String, p.SerialNumber.String, p.ManufacturerID.Int64, p.Stocks.Int64, p.Price.Int64, p.Weight.Int64, p.CategoryID.Int64)
+	result, err := db.Exec(query, id, name, serialNumber, manufacturer, stocks, price, weight, category)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			if mysqlErr.Number == 1062 {
