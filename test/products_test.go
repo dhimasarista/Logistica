@@ -33,3 +33,20 @@ func TestCountProducts(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestProductStock(t *testing.T) {
+	product := models.Product{}
+
+	stocks, err := product.UpdateStocks(1023, 28)
+	fmt.Println(stocks.RowsAffected())
+
+	assert.Nil(t, err)
+}
+func TestLastStock(t *testing.T) {
+	product := models.Product{}
+
+	stocks, err := product.LastStocks(1023)
+	fmt.Println(stocks)
+
+	assert.Nil(t, err)
+}
