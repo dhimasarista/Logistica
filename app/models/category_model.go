@@ -44,3 +44,22 @@ func (c *Category) FindAll() ([]map[string]interface{}, error) {
 
 	return categories, nil
 }
+func (c *Category) LastId() (int, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var lastId int
+	var query string = "SELECT MAX(id) FROM product_category;"
+	err := db.QueryRow(query).Scan(
+		&lastId,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
+}

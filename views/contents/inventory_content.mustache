@@ -296,7 +296,7 @@
                                         <label id="manufacturer" for="manufacturer">Manufacturer</label>
                                         <select class="form-control scrollable-menu" id="manufacturer-form" name="manufacturer" onchange="newManufacturerEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Manufacturer</option>
-                                            <option value="newManufacturer">New Manufacturer</option>
+                                            <option value="0">New Manufacturer</option>
                                             {{#manufacturers}}
                                             <option value="{{id}}">{{name}}</option>
                                             {{/manufacturers}}
@@ -318,7 +318,7 @@
                                     const existinManufacturer = document.getElementById("existing-manufacturer");
                                     const manufacturerForm = document.getElementById("manufacturer-form");
                                     function newManufacturerEvent() {
-                                        if (manufacturerForm.value === "newManufacturer") {
+                                        if (manufacturerForm.value === "0") {
                                             newManufacturer.style.display = "block";
                                             existinManufacturer.style.display = "none";
                                             return;
@@ -364,7 +364,7 @@
                                         <label id="judul-surat-label" for="product_name">Product Category</label>
                                         <select class="form-control scrollable-menu" id="category-form" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Category</option>
-                                            <option value="newCategory">New Category</option>
+                                            <option value="0">New Category</option>
                                             {{#categories}}
                                             <option value="{{id}}">{{name}}</option>
                                             {{/categories}}
@@ -386,7 +386,7 @@
                                     const newCategory = document.getElementById("new-category");
                                     const newCategoryForm = document.getElementById("new-category-form");
                                     function newCategoryEvent() {
-                                        if (categorySelect.value === "newCategory") {
+                                        if (categorySelect.value === "0") {
                                             existingCategory.style.display = "none";
                                             newCategory.style.display = "block";
                                         } else {
@@ -453,6 +453,22 @@
         .then(results => {
             console.log(results);
             if (results.new_product) {
+                const serialNumberForm = document.getElementById('serial-number-form');
+                const manufacturerForm = document.getElementById('manufacturer-form');
+                const priceForm = document.getElementById("price-form");
+                const weightForm = document.getElementById("weight-form");
+                const stockAmountForm = document.getElementById("stock-amount-form");
+                const categorySelect = document.getElementById("category-form");
+
+                const newData = {
+                    name: document.getElementById('new-product-form').value,
+                    serialNumber: serialNumberForm.value,
+                    manufacturer: manufacturerForm.value === "0" ? document.getElementById("new-manufacturer-form").value : manufacturerForm.value,
+                    stockAmount: stockAmountForm.value,
+                    price: priceForm.value,
+                    weight: weightForm.value,
+                    category: categorySelect.value === "0" ? document.getElementById("new-category-form").value : categorySelect.value,
+                }
                 Swal.fire({
                     title: "New Product?",
                     text: "Make sure the data is correct!",
@@ -463,7 +479,26 @@
                     confirmButtonText: "Yes"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        ServerStatusOke(results)
+                        fetch("/product/new", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(newData)
+                        })
+                        .then(response => response.json())
+                        .then(results => {
+                            console.log(results);
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: results.data,
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            ErrorNotif(error)
+                        })
                     }
                 });
             }

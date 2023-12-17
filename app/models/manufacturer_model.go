@@ -44,3 +44,23 @@ func (m *Manufacturer) FindAll() ([]map[string]interface{}, error) {
 
 	return manufacturers, nil
 }
+
+func (m *Manufacturer) LastId() (int, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var lastId int
+	var query string = "SELECT MAX(id) FROM manufacturer;"
+	err := db.QueryRow(query).Scan(
+		&lastId,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
+}

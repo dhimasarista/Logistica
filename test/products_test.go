@@ -50,3 +50,12 @@ func TestLastStock(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestLastIdProduct(t *testing.T) {
+	product := models.Product{}
+
+	lastId, err := product.LastId()
+
+	assert.Nil(t, err)
+	assert.Equal(t, 1024, lastId)
+}

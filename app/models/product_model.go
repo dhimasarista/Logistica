@@ -160,6 +160,27 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	return products, nil
 }
 
+func (p *Product) NewProduct() (sql.Result, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "INSERT INTO products VALUES(?, ?, ?, ?, ?, ?, ?, ?);"
+	result, err := db.Exec(query, p.ID.Int64, p.Name.String, p.SerialNumber.String, p.ManufacturerID.Int64, p.Stocks.Int64, p.Price.Int64, p.Weight.Int64, p.CategoryID.Int64)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, errors.New("race condition, id has been taken")
+			}
+		}
+		return result, err
+	}
+
+	return result, nil
+}
+
 func (p *Product) Count() (int, error) {
 	var db = config.ConnectDB()
 	defer db.Close()
@@ -205,4 +226,24 @@ func (p *Product) LastStocks(id int) (int, error) {
 	}
 
 	return lastStock, nil
+}
+
+func (p *Product) LastId() (int, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var lastId int
+	var query string = "SELECT MAX(id) FROM products"
+	err := db.QueryRow(query).Scan(
+		&lastId,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
 }

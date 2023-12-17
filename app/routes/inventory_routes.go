@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"logistica/app/controllers"
@@ -157,6 +158,52 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"message": "Stock Updated!",
 			"results": results,
 			"status":  c.Response().StatusCode(),
+		})
+	})
+
+	app.Post("/product/new", func(c *fiber.Ctx) error {
+		lastId, err := product.LastId()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+		if lastId <= 1020 {
+			lastId = 1020
+		}
+
+		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
+		if err := c.BodyParser(&formData); err != nil {
+			log.Println(err)
+		}
+		productData := &models.Product{
+			ID:             sql.NullInt64{Int64: formData["id"].(int64) + 1},
+			Name:           sql.NullString{String: formData["name"].(string)},
+			SerialNumber:   sql.NullString{String: formData["serialNumber"].(string)},
+			ManufacturerID: sql.NullInt64{Int64: formData["manufacturer"].(int64)},
+			Stocks:         sql.NullInt64{Int64: formData["stocks"].(int64)},
+			Price:          sql.NullInt64{Int64: formData["price"].(int64)},
+			Weight:         sql.NullInt64{Int64: formData["weight"].(int64)},
+			CategoryID:     sql.NullInt64{Int64: formData["category"].(int64)},
+		}
+
+		fmt.Println(productData)
+
+		// results, err := productData.NewProduct()
+		// if err != nil {
+		// 	return c.JSON(fiber.Map{
+		// 		"error":  err.Error(),
+		// 		"status": fiber.StatusInternalServerError,
+		// 	})
+		// }
+
+		return c.JSON(fiber.Map{
+			"error":  nil,
+			"status": c.Response().StatusCode(),
+			"data":   productData,
+			"result": nil,
 		})
 	})
 }
