@@ -59,7 +59,7 @@ func (e *Employee) NewEmployee(id int, name, address, numberPhone string, positi
 				return nil, errors.New("race condition, id has been taken")
 			}
 		}
-		return nil, err
+		return result, err
 	}
 
 	return result, nil
