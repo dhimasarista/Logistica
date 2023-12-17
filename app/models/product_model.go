@@ -3,10 +3,13 @@ package models
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 	"logistica/app/config"
 	"logistica/app/utility"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 type Product struct {
@@ -66,6 +69,21 @@ func (p *Product) GetById(id int) error {
 	}
 
 	return nil
+}
+
+func (p *Product) OnlyGetID(id int) (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var dataId int
+	var query string = "SELECT id FROM products WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(
+		&dataId,
+	)
+	if err != nil {
+		return -1, err
+	}
+	return dataId, nil
 }
 
 func (p *Product) FindAll() ([]map[string]interface{}, error) {
@@ -154,4 +172,37 @@ func (p *Product) Count() (int, error) {
 	}
 
 	return totalProducts, nil
+}
+
+func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	query := "UPDATE products SET stocks = ? WHERE id = ?"
+
+	result, err := db.Exec(query, stocks, id)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, errors.New("race condition, id has been taken")
+			}
+		}
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (p *Product) LastStocks(id int) (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var lastStock int
+	var query string = "SELECT stocks FROM products WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(&lastStock)
+	if err != nil {
+		return 0, err
+	}
+
+	return lastStock, nil
 }

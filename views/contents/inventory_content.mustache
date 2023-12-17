@@ -1,20 +1,36 @@
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script>
-    // fetch("/inventory/product/1023", {
-    //     method: "GET",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    // })
-    // .then(res => res.json())
-    // .then(resutls => {
-    //     console.log(resutls);
-    //     console.log(resutls.data);
-    //     console.log(typeof resutls.data);
-    // })
-    // .catch(error => {
-    //     console.error(error);
-    // })
+    let notyf = new Notyf({
+        duration: 2000,
+        dismissible: true,
+        position: {
+            x: "right",
+            y: "top"
+        }
+    });
+
+    function ErrorNotif(error) {
+        notyf.open({
+            type: "error",
+            background: "orange",
+            message: error, 
+        });
+    }
+
+    function InternalServerError(error) {
+        notyf.open({
+            type: "error",
+            message: error,
+        });
+    }
+    function ServerStatusOke(msg) {
+        notyf.open({
+            type: "success",
+            message: msg,
+        })
+    }
 </script>
+
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -109,7 +125,7 @@
                                         <label id="judul-surat-label" for="product_name">Product Name</label>
                                         <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;' required>
                                             <option value="" selected disabled>Select Product</option>
-                                            <option value="newProduct">New Product</option>
+                                            <option value="0">New Product</option>
                                             {{#products}}
                                                 <option value="{{id}}">{{manufacturer}} {{name}} | stocks: {{stocks}}</option>
                                             {{/products}}
@@ -120,15 +136,16 @@
                         </div>
                         <div class="row" id="new-product" style="display: none;">
                             <div class="col-md-12">
-                                <label id="new-product-ilabel" for="new-product-input">Product Name</label>
+                                <label id="new-product-label" for="new-product">Product Name</label>
                                 <div class="input-group mb-3">
-                                    <input type="email" name="new-product" id="new-product-form" placeholder="EX: Intel i5 5600U" class="form-control" required>
+                                    <!-- Change the type to "text" or remove the type attribute -->
+                                    <input type="text" name="new-product" id="new-product-form" placeholder="EX: Intel i5 5600U" class="form-control" required>
                                     <div class="input-group-append">
-                                      <a href="javascript:void(0);" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
+                                        <a href="javascript:void(0);" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>                        
                         <script>
                                     const products = [
                                     {
@@ -179,7 +196,7 @@
                                     const optionsManufacturer = manufacturerForm.options;
                                     const optionsCategory = categoryForm.options;
 
-                                    if (productSelect.value === 'newProduct') {
+                                    if (productSelect.value === '0') {
                                         existingProduct.style.display = 'none';
                                         newProduct.style.display = 'block';
 
@@ -236,36 +253,6 @@
                                         .catch(error => {
                                             console.error(error);
                                         })
-
-                                        // for (let index = 0; index < products.length; index++) {
-                                        //     if (products[index]["id"] == parseInt(productSelect.value)) {
-                                        //         // Menampilkan data produk yang sudah ada
-                                        //         const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
-                                        //         const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-                                        //         const categoryValue = products[index]["category"];
-
-                                        //         serialNumberForm.value = serialNumber;
-                                        //         serialNumberForm.setAttribute("disabled", true);
-                                        //         priceForm.value = products[index]["price"];
-                                        //         priceForm.setAttribute("disabled", true);
-                                        //         weightForm.value = products[index]["weight"];
-                                        //         weightForm.setAttribute("disabled", true);
-                                                
-                                        //         for (let index2 = 0; index2 < optionsManufacturer.length; index2++) {
-                                        //             if (manufacturer === optionsManufacturer[index2].value) {
-                                        //                 manufacturerForm.selectedIndex = index2;
-                                        //                 manufacturerForm.setAttribute("disabled", true);
-                                        //             }
-                                        //         }
-                                        //         for (let index3 = 0; index3 < optionsCategory.length; index3++) {
-                                        //             if (categoryValue === optionsCategory[index3].value) {
-                                        //                 categoryForm.selectedIndex = index3;
-                                        //                 categoryForm.setAttribute("disabled", true);
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // }
-                                        
                                     }
                                 }
 
@@ -300,7 +287,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="serial_number_label" for="serialNumber">Serial Number</label>
-                                    <input type="email" name="serialNumber" id="serial-number-form" placeholder="EX: S23864872548" class="form-control" required>
+                                    <input type="text" name="serialNumber" id="serial-number-form" placeholder="EX: S23864872548" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -319,7 +306,7 @@
                                 <div class="form-group" id="new-manufacturer" style="display: none;">
                                     <label id="new-manufacturer-label" for="weight">New Manufacturer</label>
                                     <div class="input-group mb-3">
-                                    <input type="new-manufacturer" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation" onclick="newManufacturerEvent()"/>
+                                    <input type="text" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation" onclick="newManufacturerEvent()"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturer()">cancel</a>
                                     </div>
@@ -368,7 +355,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label id="pengirim-label" for="weight">Weight</label>
-                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
+                                    <input type="text" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -387,7 +374,7 @@
                                 <div class="form-group" id="new-category" style="display: none;">
                                     <label id="new-category-label" for="weight">New Category</label>
                                     <div class="input-group mb-3">
-                                    <input type="new-category" name="new-category" id="new-category-form" class="form-control" placeholder="Ex: Processor"/>
+                                    <input type="text" name="new-category" id="new-category-form" class="form-control" placeholder="Ex: Processor"/>
                                     <div class="input-group-append">
                                         <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
                                     </div>
@@ -428,7 +415,7 @@
                         
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
+                                <button type="submit" id="submit-inventory" class="btn btn-primary btn-block">Upload</button>
                             </div>
                         </div>
 
@@ -438,6 +425,94 @@
         </div>
     </div>
 </div>
+<script>
+    // Send data to server
+    document.getElementById("submit-inventory").addEventListener("click", (e) => {
+        e.preventDefault();
+        const stockAmountInput = document.getElementById("stock-amount-form");
+        const amountStocks = stockAmountInput.value === "" ? "0" : stockAmountInput.value;
+
+        const data = {
+            id: document.getElementById('product-name').value,
+            amountStocks: amountStocks,
+        };
+        console.log(data);
+
+        fetch(`/inventory/check/${data.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server returned an error: ${response.status}`);
+            }
+            return response.json(); // Keep parsing as JSON
+        })
+        .then(results => {
+            console.log(results);
+            if (results.new_product) {
+                Swal.fire({
+                    title: "New Product?",
+                    text: "Make sure the data is correct!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        ServerStatusOke(results)
+                    }
+                });
+            }
+            if (results.is_id_exists) {
+                Swal.fire({
+                    title: "Update Stocks?",
+                    text: "Make sure the data is correct!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("/inventory/stocks/update", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(data),
+                        })
+                        .then(response => response.json())
+                        .then(results => {
+                            if (results.status !== 200) {
+                                InternalServerError(results.error)
+                            }
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: results.message,
+                            })
+                            .then((result) => {
+                                // Mereload halaman setelah tombol OK diklik
+                                if (result.isConfirmed || result.isDismissed) {
+                                    window.location.reload();
+                                }
+                            });
+                        })
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            ErrorNotif(error)
+        });
+
+        });
+</script>
 <script>
     const cardProducts = document.getElementById("card-products");
     const cardAddStocks = document.getElementById("card-add-stocks");

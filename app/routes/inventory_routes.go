@@ -5,6 +5,7 @@ import (
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
+	"reflect"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -84,6 +85,78 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 		return c.JSON(fiber.Map{
 			"data": data,
+		})
+	})
+
+	app.Get("/inventory/check/:id", func(c *fiber.Ctx) error {
+		idString := c.Params("id")
+		idInteger, err := strconv.Atoi(idString)
+		var isIdExists bool = false
+		if err != nil {
+			log.Println(err)
+		}
+		if idInteger == 0 {
+			return c.JSON(fiber.Map{
+				"new_product": true,
+			})
+		}
+
+		dataId, err := product.OnlyGetID(idInteger)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
+		if int64(dataId) == int64(idInteger) {
+			isIdExists = true
+		}
+
+		return c.JSON(fiber.Map{
+			"is_id_exists":    isIdExists,
+			"response_status": c.Response().StatusCode(),
+		})
+	})
+
+	app.Post("/inventory/stocks/update", func(c *fiber.Ctx) error {
+		var formData map[string]any
+		err := c.BodyParser(&formData)
+		if err != nil {
+			log.Println("Body Parser", err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+		fmt.Println(reflect.TypeOf(formData["id"]))
+
+		idStr := formData["id"].(string)
+		id, _ := strconv.Atoi(idStr)
+		lastStocks, err := product.LastStocks(id)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		stockStr := formData["amountStocks"].(string)
+		stock, _ := strconv.Atoi(stockStr)
+		results, err := product.UpdateStocks(id, lastStocks+stock)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Stock Updated!",
+			"results": results,
+			"status":  c.Response().StatusCode(),
 		})
 	})
 }
