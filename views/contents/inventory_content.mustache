@@ -481,12 +481,9 @@
                     if (result.isConfirmed) {
                         fetch("/product/new", {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
                             body: JSON.stringify(newData)
                         })
-                        .then(response => response.json())
+                        .then(response => response)
                         .then(results => {
                             console.log(results);
                             Swal.fire({
@@ -498,7 +495,7 @@
                         .catch(error => {
                             console.log(error);
                             ErrorNotif(error)
-                        })
+                        });
                     }
                 });
             }

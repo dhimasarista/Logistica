@@ -2,6 +2,7 @@ package routes
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"logistica/app/controllers"
@@ -162,21 +163,31 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/product/new", func(c *fiber.Ctx) error {
-		lastId, err := product.LastId()
+		// lastId, err := product.LastId()
+		// if err != nil {
+		// 	log.Println(err)
+		// 	return c.JSON(fiber.Map{
+		// 		"error":  err.Error(),
+		// 		"status": fiber.StatusInternalServerError,
+		// 	})
+		// }
+		// if lastId <= 1020 {
+		// 	lastId = 1020
+		// }
+
+		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
+		fmt.Println(formData)
+		body := c.Body()
+		err := json.Unmarshal(body, &formData)
+		fmt.Println(formData)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
-				"error":  err.Error(),
-				"status": fiber.StatusInternalServerError,
+				"error":  nil,
+				"status": c.Response().StatusCode(),
+				"data":   formData,
+				"result": nil,
 			})
-		}
-		if lastId <= 1020 {
-			lastId = 1020
-		}
-
-		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
-		if err := c.BodyParser(&formData); err != nil {
-			log.Println(err)
 		}
 		productData := &models.Product{
 			ID:             sql.NullInt64{Int64: formData["id"].(int64) + 1},
