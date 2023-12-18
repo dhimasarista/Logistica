@@ -16,3 +16,20 @@ func TestManufacturerFindAll(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestManufacturerLastId(t *testing.T) {
+	manufacturer := models.Manufacturer{}
+	lastId, err := manufacturer.LastId()
+	fmt.Println(lastId)
+
+	assert.Nil(t, err)
+}
+func TestNewManufacturer(t *testing.T) {
+	manufacturer := models.Manufacturer{}
+	lastId, _ := manufacturer.LastId()
+
+	manufacturers, err := manufacturer.NewManufacturer(lastId+1, "Hello")
+	fmt.Println(manufacturers)
+
+	assert.Nil(t, err)
+}
