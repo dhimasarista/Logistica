@@ -6,6 +6,7 @@ import (
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
+	"logistica/app/utility"
 	"reflect"
 	"strconv"
 
@@ -31,37 +32,45 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			lastId = 1020
 		}
 
-		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
-		fmt.Println(formData)
+		var formData map[string]string // variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()
 		err = json.Unmarshal(body, &formData)
-		fmt.Println(formData)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error": err.Error(),
 			})
 		}
-		results, err := product.NewProduct(
-			lastId+1,
-			formData["name"].(string),
-			formData["serialNumber"].(string),
-			formData["manufacturer"].(int),
-			formData["stocks"].(int),
-			formData["price"].(int),
-			formData["weight"].(int),
-			formData["category"].(int),
-		)
-		if err != nil {
-			return err
+		var manufacturer int
+		if utility.IsNumeric(formData["manufacturer"]) {
+			manufacturerStrToInt, _ := strconv.Atoi(formData["manufacturer"])
+			manufacturer = manufacturerStrToInt
+		} else {
+			fmt.Println(formData["manufacturer"])
 		}
 
-		fmt.Println(results.RowsAffected())
+		stocksStrToInt, _ := strconv.Atoi(formData["stocks"])
+		priceStrToInt, _ := strconv.Atoi(formData["price"])
+		weightStrToint, _ := strconv.Atoi(formData["weight"])
+		categoryStrToInt, _ := strconv.Atoi(formData["category"])
+
+		results := map[string]interface{}{
+			"id":            lastId + 1,
+			"name":          string(formData["name"]),
+			"serial_number": string(formData["serialNumber"]),
+			"manufacturer":  manufacturer,
+			"stocks":        stocksStrToInt,
+			"price":         priceStrToInt,
+			"weight":        weightStrToint,
+			"category":      categoryStrToInt,
+		}
+		fmt.Println("After", formData)
+		// fmt.Println("After", results)
 
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": c.Response().StatusCode(),
-			"result": formData,
+			"result": results,
 		})
 	})
 
