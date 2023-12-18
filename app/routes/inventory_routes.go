@@ -17,6 +17,37 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var manufacturerModel *models.Manufacturer = &models.Manufacturer{}
 	categoryModel := &models.Category{}
 
+	// app.Put("/product/id")
+
+	app.Delete("/product/:id", func(c *fiber.Ctx) error {
+		// Mendapatkan ID produk dari parameter URL
+		productID := c.Params("id")
+
+		// Mengonversi ID produk ke dalam bentuk integer
+		productIDInteger, err := strconv.Atoi(productID)
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status": fiber.StatusBadRequest,
+				"error":  err.Error(),
+			})
+		}
+
+		// Mengambil produk dari model berdasarkan ID
+		err = productModel.DeleteProduct(productIDInteger)
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status": fiber.StatusBadRequest,
+				"error":  err.Error(),
+			})
+		}
+
+		// Mengembalikan respons JSON dengan data produk
+		return c.JSON(fiber.Map{
+			"error":  nil,
+			"status": fiber.StatusOK,
+		})
+	})
+
 	app.Post("/product/new", func(c *fiber.Ctx) error {
 		// Mendapatkan ID terakhir dari produk
 		lastId, err := productModel.LastId()

@@ -181,6 +181,40 @@ func (p *Product) NewProduct(id int, name, serialNumber string, manufacturer, st
 	return result, nil
 }
 
+func (p *Product) DeleteProduct(id int) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "DELETE FROM products WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return errors.New("race condition, id has been taken")
+			}
+		}
+		return err
+	}
+
+	return nil
+}
+func (p *Product) CheckStock(id int) (int, error) {
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var totalStocks int
+	var query string = "SELECT stocks FROM products WHERE id = ?;"
+	err := db.QueryRow(query, id).Scan(&totalStocks)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalStocks, nil
+}
+
 func (p *Product) Count() (int, error) {
 	var db = config.ConnectDB()
 	defer db.Close()
