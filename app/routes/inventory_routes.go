@@ -87,20 +87,38 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Mengkonversi string ke integer untuk beberapa atribut
-		stocksStrToInt, _ := strconv.Atoi(formData["stocks"])
+		stocksStrToInt, _ := strconv.Atoi(formData["stockAmount"])
 		priceStrToInt, _ := strconv.Atoi(formData["price"])
 		weightStrToint, _ := strconv.Atoi(formData["weight"])
 
 		// Menyusun hasil data produk
-		results := map[string]interface{}{
-			"id":            lastId + 1,
-			"name":          string(formData["name"]),
-			"serial_number": string(formData["serialNumber"]),
-			"manufacturer":  manufacturerData,
-			"stocks":        stocksStrToInt,
-			"price":         priceStrToInt,
-			"weight":        weightStrToint,
-			"category":      categoryData,
+		// results := map[string]interface{}{
+		// 	"id":            lastId + 1,
+		// 	"name":          string(formData["name"]),
+		// 	"serial_number": string(formData["name"]),
+		// 	"manufacturer":  manufacturerData,
+		// 	"stocks":        stocksStrToInt,
+		// 	"price":         priceStrToInt,
+		// 	"weight":        weightStrToint,
+		// 	"category":      categoryData,
+		// }
+
+		results, err := productModel.NewProduct(
+			lastId+1,
+			string(formData["name"]),
+			string(formData["serialNumber"]),
+			manufacturerData,
+			stocksStrToInt,
+			priceStrToInt,
+			weightStrToint,
+			categoryData,
+		)
+
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
 		}
 
 		// Mengembalikan respons JSON setelah menambahkan produk baru
