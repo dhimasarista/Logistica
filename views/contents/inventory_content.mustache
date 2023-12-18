@@ -479,18 +479,46 @@
                     confirmButtonText: "Yes"
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        Swal.fire({
+                        title: 'Loading!',
+                        html: 'Please wait...',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
                         fetch("/product/new", {
                             method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },  
                             body: JSON.stringify(newData)
                         })
                         .then(response => response.json())
                         .then(results => {
                             console.log(results);
-                            Swal.fire({
-                                icon: "success",
-                                title: "Success",
-                                text: results.data,
-                            });
+                            if (results.status !== 200) {
+                                Swal.close();
+                                InternalServerError(results.error)
+                                return 0;
+                            } else {
+                                Swal.close(); // Close the loading alert after some time
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: results.message,
+                                })
+                                .then((result2) => {
+                                    // Mereload halaman setelah tombol OK diklik
+                                    if (result2.isConfirmed || result2.isDismissed) {
+                                        window.location.reload();
+                                    }
+                                    return 0;
+                                });
+                            }
+                            
                         })
                         .catch(error => {
                             console.log(error);
@@ -518,23 +546,28 @@
                             body: JSON.stringify(data),
                         })
                         .then(response => response.json())
-                        .then(results => {
-                            if (results.status !== 200) {
-                                InternalServerError(results.error)
+                        .then(results2 => {
+                            console.log(results2)
+                            if (results2.status !== 200) {
+                                InternalServerError(results2.error)
+                                return 0;
+                            } else {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Success",
+                                    text: results2.message,
+                                })
+                                .then((result2) => {
+                                    // Mereload halaman setelah tombol OK diklik
+                                    if (result2.isConfirmed || result2.isDismissed) {
+                                        window.location.reload();
+                                    }
+                                    return 0;
+                                });
                             }
-                            Swal.fire({
-                                icon: "success",
-                                title: "Success",
-                                text: results.message,
-                            })
-                            .then((result) => {
-                                // Mereload halaman setelah tombol OK diklik
-                                if (result.isConfirmed || result.isDismissed) {
-                                    window.location.reload();
-                                }
-                            });
                         })
                     }
+                    return 0;
                 });
             }
         })

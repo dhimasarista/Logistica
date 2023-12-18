@@ -7,7 +7,6 @@ import (
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"logistica/app/utility"
-	"reflect"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,21 +14,18 @@ import (
 )
 
 func InventoryRoutes(app *fiber.App, store *session.Store) {
-	var product *models.Product = &models.Product{}
-	var manufacturer *models.Manufacturer = &models.Manufacturer{}
+	var productModel *models.Product = &models.Product{}
+	var manufacturerModel *models.Manufacturer = &models.Manufacturer{}
 	category := &models.Category{}
 
 	app.Post("/product/new", func(c *fiber.Ctx) error {
-		lastId, err := product.LastId()
+		lastId, err := productModel.LastId()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
 				"status": fiber.StatusInternalServerError,
 			})
-		}
-		if lastId <= 1020 {
-			lastId = 1020
 		}
 
 		var formData map[string]string // variabel untuk menyimpan data yang diterima dari client-side
@@ -41,12 +37,34 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error": err.Error(),
 			})
 		}
-		var manufacturer int
+		if string(formData["manufacturer"]) == "" || string(formData["name"]) == "" {
+			return c.JSON(fiber.Map{
+				"error":  "Form is Empty",
+				"status": fiber.StatusBadRequest,
+			})
+		}
+		// Memeriksa data manufacturer yang diterima
+		var manufacturerData int
+		// Jika dikirim dalam bentuk string number
 		if utility.IsNumeric(formData["manufacturer"]) {
+			// Data yang dikirim dalam bentuk string number adalah data yang sudah ada
+			// Kemudian data dikonversi dari str ke integer
 			manufacturerStrToInt, _ := strconv.Atoi(formData["manufacturer"])
-			manufacturer = manufacturerStrToInt
+			manufacturerData = manufacturerStrToInt
+			// Jika yang dikirim adalah string char
 		} else {
-			fmt.Println(formData["manufacturer"])
+			// Maka dibuat row data manufacturer baru
+			// Dengan patokan id terakhir
+			lastIdManufacturer, _ := manufacturerModel.LastId()
+			var newIdManufacturer = lastIdManufacturer + 1
+			_, err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+			manufacturerData = newIdManufacturer
 		}
 
 		stocksStrToInt, _ := strconv.Atoi(formData["stocks"])
@@ -58,7 +76,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"id":            lastId + 1,
 			"name":          string(formData["name"]),
 			"serial_number": string(formData["serialNumber"]),
-			"manufacturer":  manufacturer,
+			"manufacturer":  manufacturerData,
 			"stocks":        stocksStrToInt,
 			"price":         priceStrToInt,
 			"weight":        weightStrToint,
@@ -68,9 +86,10 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		// fmt.Println("After", results)
 
 		return c.JSON(fiber.Map{
-			"error":  nil,
-			"status": c.Response().StatusCode(),
-			"result": results,
+			"error":   nil,
+			"status":  fiber.StatusOK,
+			"message": "Succes Add New Product",
+			"result":  results,
 		})
 	})
 
@@ -78,13 +97,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
 
-		products, err := product.FindAll()
+		products, err := productModel.FindAll()
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
 
-		manufacturers, err := manufacturer.FindAll()
+		manufacturers, err := manufacturerModel.FindAll()
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
@@ -110,7 +129,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/inventory/product/:id", func(c *fiber.Ctx) error {
 		productID := c.Params("id")
 
-		fmt.Println(productID)
 		productIDInteger, err := strconv.Atoi(productID)
 		if err != nil {
 			return c.JSON(fiber.Map{
@@ -119,7 +137,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		err = product.GetById(productIDInteger)
+		err = productModel.GetById(productIDInteger)
 		if err != nil {
 			return c.JSON(fiber.Map{
 				"status": fiber.StatusBadRequest,
@@ -128,16 +146,16 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		data := map[string]interface{}{
-			"id":             product.ID.Int64,
-			"name":           product.Name.String,
-			"categoryId":     product.CategoryID.Int64,
-			"category":       product.CategoryName.String,
-			"manufacturerId": product.ManufacturerID.Int64,
-			"manufacturer":   product.ManufacturerName.String,
-			"price":          product.Price.Int64,
-			"serialNumber":   product.SerialNumber.String,
-			"stocks":         product.Stocks.Int64,
-			"weight":         product.Weight.Int64,
+			"id":             productModel.ID.Int64,
+			"name":           productModel.Name.String,
+			"categoryId":     productModel.CategoryID.Int64,
+			"category":       productModel.CategoryName.String,
+			"manufacturerId": productModel.ManufacturerID.Int64,
+			"manufacturer":   productModel.ManufacturerName.String,
+			"price":          productModel.Price.Int64,
+			"serialNumber":   productModel.SerialNumber.String,
+			"stocks":         productModel.Stocks.Int64,
+			"weight":         productModel.Weight.Int64,
 		}
 
 		return c.JSON(fiber.Map{
@@ -158,7 +176,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		dataId, err := product.OnlyGetID(idInteger)
+		dataId, err := productModel.OnlyGetID(idInteger)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -186,11 +204,10 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-		fmt.Println(reflect.TypeOf(formData["id"]))
 
 		idStr := formData["id"].(string)
 		id, _ := strconv.Atoi(idStr)
-		lastStocks, err := product.LastStocks(id)
+		lastStocks, err := productModel.LastStocks(id)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -201,7 +218,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 		stockStr := formData["amountStocks"].(string)
 		stock, _ := strconv.Atoi(stockStr)
-		results, err := product.UpdateStocks(id, lastStocks+stock)
+		results, err := productModel.UpdateStocks(id, lastStocks+stock)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{

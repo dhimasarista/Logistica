@@ -55,6 +55,10 @@ func (m *Manufacturer) NewManufacturer(id int, name string) (sql.Result, error) 
 	var db = config.ConnectDB()
 	defer db.Close()
 
+	// Jika id yang diterima di bawah 9100
+	if id <= 9100 {
+		id = 9000 // sebagai nilai set otomatis jika row belum ada
+	}
 	var query string = "INSERT INTO manufacturer VALUES(?, ?)"
 	result, err := db.Exec(query, id, name)
 	if err != nil {
