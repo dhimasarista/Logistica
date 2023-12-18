@@ -248,6 +248,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
+		if formData["id"].(string) == "" {
+			return c.JSON(fiber.Map{
+				"error":  "Form is Empty",
+				"status": fiber.StatusBadRequest,
+			})
+		}
+
 		// Mengambil ID produk dari formData dan mengonversinya ke dalam tipe data integer
 		idStr := formData["id"].(string)
 		id, _ := strconv.Atoi(idStr)

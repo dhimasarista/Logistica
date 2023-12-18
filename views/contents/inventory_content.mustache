@@ -436,7 +436,13 @@
             id: document.getElementById('product-name').value,
             amountStocks: amountStocks,
         };
-        console.log(data);
+        if (data.id === "") {
+            Swal.fire({
+                icon: "error",
+                title: "Form is Empty",
+            })
+            return 0;
+        }
 
         fetch(`/inventory/check/${data.id}`, {
             method: "GET",
@@ -501,7 +507,11 @@
                             console.log(results);
                             if (results.status !== 200) {
                                 Swal.close();
-                                InternalServerError(results.error)
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Something Wrong!",
+                                    text: results.error,
+                                })
                                 return 0;
                             } else {
                                 Swal.close(); // Close the loading alert after some time
