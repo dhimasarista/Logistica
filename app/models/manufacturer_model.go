@@ -39,7 +39,7 @@ func (m *Manufacturer) FindAll() ([]map[string]interface{}, error) {
 		}
 		var manufacturer = map[string]interface{}{
 			"id":   m.ID.Int64,
-			"name": utility.Capitalize(m.Name.String),
+			"name": utility.CapitalizeAll(m.Name.String),
 		}
 
 		manufacturers = append(manufacturers, manufacturer)

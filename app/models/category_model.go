@@ -39,7 +39,7 @@ func (c *Category) FindAll() ([]map[string]interface{}, error) {
 		}
 		var category = map[string]interface{}{
 			"id":   c.ID.Int64,
-			"name": utility.Capitalize(c.Name.String),
+			"name": utility.CapitalizeAll(c.Name.String),
 		}
 
 		categories = append(categories, category)
