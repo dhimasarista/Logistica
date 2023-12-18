@@ -59,3 +59,11 @@ func TestLastIdProduct(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1024, lastId)
 }
+func TestCheckStocks(t *testing.T) {
+	product := models.Product{}
+
+	lastId, err := product.CheckStock(1023)
+
+	assert.Nil(t, err)
+	assert.Equal(t, 100, lastId)
+}

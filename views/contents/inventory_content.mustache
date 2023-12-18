@@ -67,7 +67,7 @@
                                 <td>{{price}}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <a href="javascript:void(0);">
+                                        <a href="javascript:void(0);" data-toggle="modal" data-target="#editProductModal" onclick="GetDataByID(parseInt('{{id}}'))">
                                             edit
                                         </a>
                                         <a href="javascript:void(0);" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -147,35 +147,6 @@
                             </div>
                         </div>                        
                         <script>
-                                    const products = [
-                                    {
-                                    "id": 10002,
-                                    "name": "Intel i5 5600U",
-                                    "serial_number": "S320482057454534",
-                                    "manufacturer": "100022",
-                                    "price": "1.640.600",
-                                    "weight": 240,
-                                    "category": "9922",
-                                    "stock": 64,
-                                },{
-                                    "id": 10004,
-                                    "name": "Intel i7 7600U",
-                                    "serial_number": "S320482057454534",
-                                    "manufacturer": "100022",
-                                    "price": "1.890.600",
-                                    "weight": 239,
-                                    "category": "9922",
-                                    "stock": 48,
-                                },{
-                                    "id": 10003,
-                                    "name": "Intel i9 9600U",
-                                    "serial_number": "S320482057454534",
-                                    "manufacturer": "100022",
-                                    "price": "2.640.600",
-                                    "weight": 238,
-                                    "category": "9922",
-                                    "stock": 12,
-                                }];
                                 const existingProduct = document.getElementById('existing-product');
                                 const newProduct = document.getElementById('new-product');
                                 function checkNewProduct() {
@@ -425,6 +396,186 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 50%;" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="product-name-edit" class="col-form-label">Name</label>
+                      <input type="text" class="form-control" id="product-name-edit">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="serial-number-edit" class="col-form-label">Serial Number</label>
+                        <input type="text" class="form-control" id="serial-number-edit">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="existing-manufacturer-edit-product">
+                        <div class="form-group">
+                            <label id="manufacturer" for="manufacturer">Manufacturer</label>
+                            <select class="form-control scrollable-menu" id="manufacturer-form-edit-product" name="manufacturer" onchange="newManufacturerEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                <option value="" selected disabled>Select Manufacturer</option>
+                                <option value="0">New Manufacturer</option>
+                                {{#manufacturers}}
+                                <option value="{{id}}">{{name}}</option>
+                                {{/manufacturers}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="new-manufacturer-edit-product" style="display: none;">
+                        <label id="new-manufacturer-edit-product-label" for="weight">New Manufacturer</label>
+                        <div class="input-group mb-3">
+                        <input type="text" name="new-manufacturer-edit-product" id="new-manufacturer-edit-product-form" class="form-control" placeholder="Ex: Intel Corporation" onclick="newManufacturerEventEditProduct()"/>
+                        <div class="input-group-append">
+                            <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturerEditProduct()">cancel</a>
+                        </div>
+                        </div>
+                    </div>
+                    <script>
+                        const newManufacturerEditProduct = document.getElementById("new-manufacturer-edit-product");
+                        const newManufacturerFormEditProduct = document.getElementById("new-manufacturer-edit-product-form");
+                        const existinManufacturerEditProduct = document.getElementById("existing-manufacturer-edit-product");
+                        const manufacturerFormEditProduct = document.getElementById("manufacturer-form-edit-product");
+                        function newManufacturerEventEditProduct() {
+                            if (manufacturerFormEditProduct.value === "0") {
+                                newManufacturerEditProduct.style.display = "block";
+                                existinManufacturerEditProduct.style.display = "none";
+                                return;
+                            }
+                            newManufacturer.style.display = "none";
+                            existinManufacturerEditProduct.style.display = "block";
+                        }
+
+                        function cancelNewManufacturerEditProduct() {
+                            newManufacturerFormEditProduct.value = null;
+                            newManufacturerEditProduct.style.display = "none";
+                            existinManufacturerEditProduct.style.display = "block";
+                            manufacturerFormEditProduct.selectedIndex = 0;
+
+                        }
+                    </script>
+                </div>
+                <div class="col-md-6">
+                    <div id="existing-category-edit-product">
+                        <div class="form-group">
+                            <label id="judul-surat-label" for="product_name">Product Category</label>
+                            <select class="form-control scrollable-menu" id="category-form-edit-product" name="productName" onchange="newCategoryEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                <option value="" selected disabled>Select Category</option>
+                                <option value="0">New Category</option>
+                                {{#categories}}
+                                <option value="{{id}}">{{name}}</option>
+                                {{/categories}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="new-category-edit-product" style="display: none;">
+                        <label id="new-category-label" for="weight">New Category</label>
+                        <div class="input-group mb-3">
+                        <input type="text" name="new-category" id="new-category-form-edit-product" class="form-control" placeholder="Ex: Processor"/>
+                        <div class="input-group-append">
+                            <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategoryEditProduct()">cancel</a>
+                        </div>
+                        </div>
+                    </div>
+                    <script>
+                        const categorySelectEditProduct = document.getElementById("category-form-edit-product");
+                        const existingCategoryEditProduct = document.getElementById("existing-category-edit-product");
+                        const newCategoryEditProduct = document.getElementById("new-category-edit-product");
+                        const newCategoryFormEditProduct = document.getElementById("new-category-form-edit-product");
+                        function newCategoryEventEditProduct() {
+                            if (categorySelectEditProduct.value === "0") {
+                                existingCategoryEditProduct.style.display = "none";
+                                newCategoryEditProduct.style.display = "block";
+                            } else {
+                                existingCategoryEditProduct.style.display = "block";
+                                newCategoryEditProduct.style.display = "none";
+                            }
+                        }   
+
+                        function cancelNewCategoryEditProduct() {
+                            newCategoryFormEditProduct.value = null;
+                            categorySelectEditProduct.selectedIndex = 0;
+                            existingCategoryEditProduct.style.display = "block";
+                            newCategoryEditProduct.style.display = "none";
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="weight-product-edit" class="col-form-label">Weight</label>
+                        <input type="text" class="form-control" id="weight-product-edit">
+                      </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="price-product-edit" class="col-form-label">Price</label>
+                        <input type="text" class="form-control" id="price-product-edit">
+                      </div>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    // Modal Edit
+    function GetDataByID(id) {
+        fetch(`/inventory/product/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    .then(res => res.json())
+    .then(results => {
+        console.log(results);
+        document.getElementById("product-name-edit").value = results.data.name;
+        document.getElementById("serial-number-edit").value = results.data.serialNumber;
+        document.getElementById("weight-product-edit").value = results.data.weight;
+        document.getElementById("price-product-edit").value = results.data.price;
+        const manufacturerFormEditProduct = document.getElementById("manufacturer-form-edit-product");
+        const categoryFormEditProduct = document.getElementById("category-form-edit-product")
+
+        for (let index = 0; index < manufacturerFormEditProduct.length; index++) {
+            if (results.data.manufacturerId === parseInt(manufacturerFormEditProduct[index].value)) {
+                manufacturerFormEditProduct.selectedIndex = index;
+            }
+        }
+        for (let index = 0; index < categoryFormEditProduct.length; index++) {
+            if (results.data.categoryId === parseInt(categoryFormEditProduct[index].value)) {
+                categoryFormEditProduct.selectedIndex = index  ;
+            }
+        }
+        
+    })
+    .catch(error => {
+        console.error(error);
+    })
+    }
+</script>
+
 <script>
     // Send data to server
     document.getElementById("submit-inventory").addEventListener("click", (e) => {
