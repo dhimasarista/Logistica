@@ -321,6 +321,12 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		// Mengambil jumlah stok yang akan ditambahkan dari formData dan mengonversinya ke dalam tipe data integer
 		stockStr := formData["amountStocks"].(string)
 		stock, _ := strconv.Atoi(stockStr)
+		if stock < 0 {
+			return c.JSON(fiber.Map{
+				"error":  "Cannot be a Negative Number!",
+				"status": fiber.StatusBadRequest,
+			})
+		}
 
 		// Memperbarui stok produk
 		results, err := productModel.UpdateStocks(id, lastStocks+stock)
