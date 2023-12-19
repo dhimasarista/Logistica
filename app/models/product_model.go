@@ -71,21 +71,6 @@ func (p *Product) GetById(id int) error {
 	return nil
 }
 
-func (p *Product) OnlyGetID(id int) (int, error) {
-	var db = config.ConnectDB()
-	defer db.Close()
-
-	var dataId int
-	var query string = "SELECT id FROM products WHERE id = ?"
-	err := db.QueryRow(query, id).Scan(
-		&dataId,
-	)
-	if err != nil {
-		return -1, err
-	}
-	return dataId, nil
-}
-
 func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	db := config.ConnectDB()
 	defer db.Close()

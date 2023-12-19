@@ -341,7 +341,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Memeriksa keberadaan ID dalam database
-		dataId, err := productModel.OnlyGetID(idInteger)
+		err = productModel.GetById(idInteger)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -351,7 +351,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Menetapkan isIdExists menjadi true jika ID ditemukan dalam database
-		if int64(dataId) == int64(idInteger) {
+		if int64(productModel.ID.Int64) == int64(idInteger) {
 			isIdExists = true
 		}
 
