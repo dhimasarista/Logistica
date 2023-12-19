@@ -2,12 +2,14 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"logistica/app/utility"
-	"strconv"
 	"time"
+
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -148,6 +150,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/product/new", func(c *fiber.Ctx) error {
+		var lastId int
 		// Mendapatkan ID terakhir dari produk
 		lastId, err := productModel.LastId()
 		if err != nil {
@@ -157,6 +160,8 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+
+		fmt.Println(lastId)
 
 		var formData map[string]string // Variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()

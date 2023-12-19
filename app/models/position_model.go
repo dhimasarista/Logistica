@@ -61,7 +61,7 @@ func (p *Position) LastId() (int, error) {
 	defer db.Close()
 
 	var lastId int
-	var query string = "SELECT MAX(id) FROM positions"
+	var query string = "SELECT COALESCE(MAX(id), 2000) FROM positions"
 	err := db.QueryRow(query).Scan(
 		&lastId,
 	)
