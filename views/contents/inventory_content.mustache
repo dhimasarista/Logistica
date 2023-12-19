@@ -59,7 +59,7 @@
                         </thead>
                         <tbody>
                         {{#products}}
-                            <tr>
+                            <tr id="product-{{id}}">
                                 <td>{{manufacturer}}</td>
                                 <td>{{name}}</td>
                                 <td>{{serial_number}}</td>
@@ -82,7 +82,39 @@
                                         </div>
                                         <script>
                                             function deletePorduct(id) {
-                                                fetch("//produ")
+                                                Swal.fire({
+                                                    title: "Are you sure?",
+                                                    text: "You won't be able to revert this!",
+                                                    icon: "warning",
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: "#3085d6",
+                                                    cancelButtonColor: "#d33",
+                                                    confirmButtonText: "Yes, delete it!"
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        fetch(`/product/${id}`, {
+                                                            method: "DELETE",
+                                                            headers: {
+                                                                "Content-Type": "application/json"
+                                                            },
+                                                        })
+                                                        .then(response => response.json())
+                                                        .then(results => {
+                                                            console.log(results);
+                                                            if (results.status !== 200){
+                                                                InternalServerError(results.error);
+                                                                return 0
+                                                            }
+                                                            ServerStatusOke(results.message); // Notify Succes
+                                                            document.getElementById(`product-${id}`).remove();
+                                                            return 0;
+                                                        })
+                                                        .catch(error => {
+                                                            console.error(error);
+                                                            ErrorNotif(error);
+                                                        });
+                                                    }
+                                                })
                                             }
                                         </script>
                                     </div>
@@ -197,7 +229,7 @@
                                         existingProduct.style.display = 'block';
                                         newProduct.style.display = 'none';
 
-                                        fetch(`/inventory/product/${productSelect.value}`, {
+                                        fetch(`/product/${productSelect.value}`, {
                                             method: "GET",
                                             headers: {
                                                 "Content-Type": "application/json"

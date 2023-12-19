@@ -33,6 +33,14 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
+		stocksProduct, _ := productModel.CheckStock(productIDInteger)
+		if stocksProduct >= 1 {
+			return c.JSON(fiber.Map{
+				"status": fiber.StatusBadRequest,
+				"error":  "Stocks Product Should Zero(0)!",
+			})
+		}
+
 		// Mengambil produk dari model berdasarkan ID
 		err = productModel.DeleteProduct(productIDInteger)
 		if err != nil {
@@ -44,8 +52,9 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
-			"error":  nil,
-			"status": fiber.StatusOK,
+			"error":   nil,
+			"message": "Product Success Deleted!",
+			"status":  fiber.StatusOK,
 		})
 	})
 
@@ -279,7 +288,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 	// Endpoint untuk mendapatkan detail produk berdasarkan ID
-	app.Get("/inventory/product/:id", func(c *fiber.Ctx) error {
+	app.Get("/product/:id", func(c *fiber.Ctx) error {
 		// Mendapatkan ID produk dari parameter URL
 		productID := c.Params("id")
 
