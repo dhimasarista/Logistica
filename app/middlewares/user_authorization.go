@@ -35,9 +35,6 @@ func UserAuthorization(store *session.Store) fiber.Handler {
 		}
 
 		// Pengecualian path yang bisa diakses tanpa login
-		if path == "/home" {
-			return c.Next()
-		}
 		if path == "/login" {
 			return c.Next()
 		}
