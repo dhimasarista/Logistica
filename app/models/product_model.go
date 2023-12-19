@@ -180,6 +180,26 @@ func (p *Product) NewProduct(id int, name, serialNumber string, manufacturer, st
 
 	return result, nil
 }
+func (p *Product) UpdateProduct(id int, name, serialNumber string, manufacturer, price, weight, category int) (sql.Result, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectDB()
+	defer db.Close()
+
+	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ?;"
+	result, err := db.Exec(query, name, serialNumber, manufacturer, price, weight, category, id)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, errors.New("race condition, id has been taken")
+			}
+		}
+		return result, err
+	}
+
+	return result, nil
+}
 
 func (p *Product) DeleteProduct(id int) error {
 	mutex.Lock()

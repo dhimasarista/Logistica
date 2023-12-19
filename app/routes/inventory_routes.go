@@ -7,6 +7,7 @@ import (
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -45,6 +46,95 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": fiber.StatusOK,
+		})
+	})
+
+	app.Put("/product/update", func(c *fiber.Ctx) error {
+		var formData map[string]string // Variabel untuk menyimpan data yang diterima dari client-side
+		body := c.Body()
+		err := json.Unmarshal(body, &formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		// Memeriksa apakah data penting seperti 'manufacturer' dan 'name' kosong
+		if string(formData["manufacturer"]) == "" || string(formData["name"]) == "" || string(formData["category"]) == "" {
+			return c.JSON(fiber.Map{
+				"error":  "Form is Empty",
+				"status": fiber.StatusBadRequest,
+			})
+		}
+		// Memeriksa data manufacturer yang diterima
+		var manufacturerData int
+		// Jika dikirim dalam bentuk string number
+		if utility.IsNumeric(formData["manufacturer"]) {
+			// Data yang dikirim dalam bentuk string number adalah data yang sudah ada
+			// Kemudian data dikonversi dari str ke integer
+			manufacturerStrToInt, _ := strconv.Atoi(formData["manufacturer"])
+			manufacturerData = manufacturerStrToInt
+		} else {
+			// Jika yang dikirim adalah string char, maka dibuat row data manufacturer baru
+			// Dengan patokan id terakhir
+			lastIdManufacturer, _ := manufacturerModel.LastId()
+			var newIdManufacturer = lastIdManufacturer + 1
+			_, err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+			manufacturerData = newIdManufacturer
+		}
+
+		var categoryData int
+		if utility.IsNumeric(formData["category"]) {
+			categoryStrToInt, _ := strconv.Atoi(formData["category"])
+			categoryData = categoryStrToInt
+		} else {
+			lastIdCategory, _ := categoryModel.LastId()
+			var newIdCategory = lastIdCategory + 1
+			_, err := categoryModel.NewCategory(newIdCategory, formData["category"])
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+			categoryData = newIdCategory
+		}
+
+		// Mengkonversi string ke integer untuk beberapa atribut
+		idProductStr, _ := strconv.Atoi(formData["id"])
+		priceStrToInt, _ := strconv.Atoi(formData["price"])
+		weightStrToint, _ := strconv.Atoi(formData["weight"])
+
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		results, err := productModel.UpdateProduct(idProductStr, string(formData["name"]), string(formData["serialNumber"]), manufacturerData, priceStrToInt, weightStrToint, categoryData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		time.Sleep(1 * time.Second)
+
+		// Mengembalikan respons JSON setelah menambahkan produk baru
+		return c.JSON(fiber.Map{
+			"error":   nil,
+			"status":  fiber.StatusOK,
+			"message": "Success Update Product",
+			"result":  results,
 		})
 	})
 
@@ -122,18 +212,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		priceStrToInt, _ := strconv.Atoi(formData["price"])
 		weightStrToint, _ := strconv.Atoi(formData["weight"])
 
-		// Menyusun hasil data produk
-		// results := map[string]interface{}{
-		// 	"id":            lastId + 1,
-		// 	"name":          string(formData["name"]),
-		// 	"serial_number": string(formData["name"]),
-		// 	"manufacturer":  manufacturerData,
-		// 	"stocks":        stocksStrToInt,
-		// 	"price":         priceStrToInt,
-		// 	"weight":        weightStrToint,
-		// 	"category":      categoryData,
-		// }
-
 		results, err := productModel.NewProduct(
 			lastId+1,
 			string(formData["name"]),
@@ -151,6 +229,8 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error": err.Error(),
 			})
 		}
+
+		time.Sleep(1 * time.Second)
 
 		// Mengembalikan respons JSON setelah menambahkan produk baru
 		return c.JSON(fiber.Map{
