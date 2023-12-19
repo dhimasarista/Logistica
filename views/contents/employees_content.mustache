@@ -1,35 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-<script>
-    let notyf = new Notyf({
-        duration: 2000,
-        dismissible: true,
-        position: {
-            x: "right",
-            y: "top"
-        }
-    });
-
-    function ErrorNotif(error) {
-        notyf.open({
-            type: "error",
-            background: "orange",
-            message: error, 
-        });
-    }
-
-    function InternalServerError(error) {
-        notyf.open({
-            type: "error",
-            message: error,
-        });
-    }
-    function ServerStatusOke(msg) {
-        notyf.open({
-            type: "success",
-            message: msg,
-        })
-    }
-</script>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -105,8 +73,8 @@
                                 <div class="input-group mb-3">
                                     <input type="number" name="id-employee" id="id-employee-form" class="form-control" disabled required>
                                     <div class="input-group-append">
-                                      <a href="#" class="input-group-text" id="button-custom-id-employee" onclick="customIdEmployee()">custom</a>
-                                      <a href="#" class="input-group-text" id="button-cancel-custom-id-employee" onclick="cancelCustomIdEmployee()" style="display: none;">cancel</a>
+                                      <a href="javascript:void(0);" class="input-group-text" id="button-custom-id-employee" onclick="customIdEmployee()">custom</a>
+                                      <a href="javascript:void(0);" class="input-group-text" id="button-cancel-custom-id-employee" onclick="cancelCustomIdEmployee()" style="display: none;">cancel</a>
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +304,6 @@
         const buttonCustomIdEmployee = document.getElementById("button-custom-id-employee");
         const buttonCancelCustomIdEmployee = document.getElementById("button-cancel-custom-id-employee");
         function customIdEmployee(){
-            checkSession(); // checking session to server
             idEmployeeForm.value = newIdEmployee;
             idEmployeeForm.removeAttribute("disabled");
             buttonCustomIdEmployee.style.display = "none";
@@ -364,7 +331,6 @@
 
     // Fungsi-fungsi yang  berisi http-get
     function getNewId() {
-        checkSession(); // checking session to server
         fetch("/employee/newId")
         .then(response => response.json())
         .then(results => {
@@ -379,7 +345,6 @@
     }
 
     function deleteEmployee(id) {
-        checkSession(); // checking session to server
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -422,7 +387,6 @@
     }
 
     newEmployeeButton.addEventListener("click", () => {
-        checkSession(); // checking session to server
         cardSpinner.removeAttribute("hidden");
         newEmployeeButton.setAttribute("hidden", true);
         cardEmployeeList.setAttribute("hidden",true);
@@ -442,7 +406,6 @@
     */ 
 
     function showEmployeeList() {
-        checkSession(); // checking session to server
         newEmployeeButton.removeAttribute("hidden");
         cardEmployeeList.removeAttribute("hidden");
         
@@ -451,7 +414,6 @@
     }
     // Event akan di panggil ketika form tidak kosong
     returnButton.addEventListener("click", () => {
-        checkSession(); // checking session to server
         // Jika input file == 1 hapus file dari input dan server /uploads
         if (idCardForm.files["length"] > 0) {
             Swal.fire({
@@ -490,7 +452,6 @@
         //     return 0;
         // }
         e.preventDefault();
-        checkSession(); // checking session to server
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
         .then(results => {

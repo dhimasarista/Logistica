@@ -1,3 +1,4 @@
+// Memeriksa ukuran file yang diunggah
 function checkFileSize(file) {
     const maxSize = 200 * 1024;
     if (file.files.length > 0) {
@@ -10,7 +11,7 @@ function checkFileSize(file) {
         }
     }                                   
 }
-
+// Memeriksa jenis tipe file yang akan diunggah
 function checkFileType(file, expectedTypes, errorMsg, toDelete) {
     if (!expectedTypes.includes(file.type)) {
         alert(errorMsg);
@@ -18,64 +19,33 @@ function checkFileType(file, expectedTypes, errorMsg, toDelete) {
         return 0;
     }
 }
+// Pustaka notifikasi
+let notyf = new Notyf({
+    duration: 4000,
+    dismissible: true,
+    position: {
+        x: "right",
+        y: "top"
+    }
+});
 
-function checkSession() {
-    fetch("/check-session", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.sessionExists) {
-            console.log("Sesi ada, pengguna dapat melanjutkan.");
-        } else {
-            return 0;
-            Swal.fire({
-                icon: "warning",
-                title: "Session Ended",
-                text: "Please, login again.",
-                showCancelButton: false,
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "OK",
-            }).then((result) => {
-                if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = "/login";
-                }
-            });
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
+function ErrorNotif(error) {
+    notyf.open({
+        type: "error",
+        background: "orange",   
+        message: error, 
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    checkSession();
-});
-
-
-// let sidebarIsToggled = localStorage.getItem("toggle-mode") === "true";
-// const sidebarClass = document.querySelector(".sidebar");
-
-// function sidebarToggledEvent() {
-//     if (!sidebarIsToggled) {
-//         localStorage.setItem("toggle-mode", "true");
-//         sidebarIsToggled = true;
-//         sidebarClass.classList.add("toggled");
-//     } else {
-//         localStorage.setItem("toggle-mode", "false");
-//         sidebarIsToggled = false;
-//         sidebarClass.classList.remove("toggled");
-//     }
-// }
-
-// document.addEventListener("DOMContentLoaded", () => {
-//     const isToggled = localStorage.getItem("toggle-mode")
-//     if (isToggled) {
-//         sidebarClass.classList.add("toggled")
-//     } else if (!isToggled) {
-//         sidebarClass.classList.remove("toggled")
-//     }
-// })
+function InternalServerError(error) {
+    notyf.open({
+        type: "error",
+        message: error,
+    });
+}
+function ServerStatusOke(msg) {
+    notyf.open({
+        type: "success",
+        message: msg,
+    })
+}

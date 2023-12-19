@@ -1,36 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-<script>
-    let notyf = new Notyf({
-        duration: 4000,
-        dismissible: true,
-        position: {
-            x: "right",
-            y: "top"
-        }
-    });
-
-    function ErrorNotif(error) {
-        notyf.open({
-            type: "error",
-            background: "orange",   
-            message: error, 
-        });
-    }
-
-    function InternalServerError(error) {
-        notyf.open({
-            type: "error",
-            message: error,
-        });
-    }
-    function ServerStatusOke(msg) {
-        notyf.open({
-            type: "success",
-            message: msg,
-        })
-    }
-</script>
-
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -316,7 +283,7 @@
                                     <div class="input-group mb-3">
                                     <input type="text" name="new-manufacturer" id="new-manufacturer-form" class="form-control" placeholder="Ex: Intel Corporation" onclick="newManufacturerEvent()"/>
                                     <div class="input-group-append">
-                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturer()">cancel</a>
+                                        <a href="javascript:void(0);" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewManufacturer()">cancel</a>
                                     </div>
                                     </div>
                                 </div>
@@ -384,7 +351,7 @@
                                     <div class="input-group mb-3">
                                     <input type="text" name="new-category" id="new-category-form" class="form-control" placeholder="Ex: Processor"/>
                                     <div class="input-group-append">
-                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
+                                        <a href="javascript:void(0);" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
                                     </div>
                                     </div>
                                 </div>
