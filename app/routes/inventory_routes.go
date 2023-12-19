@@ -37,7 +37,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		if stocksProduct >= 1 {
 			return c.JSON(fiber.Map{
 				"status": fiber.StatusBadRequest,
-				"error":  "Stocks Product Should Zero(0)!",
+				"error":  "Stocks Product Should Zero/Empty!",
 			})
 		}
 
