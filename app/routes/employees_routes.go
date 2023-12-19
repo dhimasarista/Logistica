@@ -37,11 +37,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		return c.Render("employees_page", fiber.Map{
-			"path":           path,
-			"user":           username,
-			"employees":      employees,
-			"positions":      positions,
-			"responseStatus": c.Response().StatusCode(),
+			"path":      path,
+			"user":      username,
+			"employees": employees,
+			"positions": positions,
+			"status":    c.Response().StatusCode(),
 		})
 	})
 
@@ -61,8 +61,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		return c.JSON(fiber.Map{
-			"isIdExists":     isIdExists,
-			"responseStatus": c.Response().StatusCode(),
+			"isIdExists": isIdExists,
+			"status":     c.Response().StatusCode(),
 		})
 	})
 
@@ -79,14 +79,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
-				"error":          err.Error(),
-				"responseStatus": 500,
+				"error":  err.Error(),
+				"status": 500,
 			})
 		}
 
 		return c.JSON(fiber.Map{
-			"responseStatus": c.Response().StatusCode(),
-			"message":        "Employee Deleted!",
+			"status":  c.Response().StatusCode(),
+			"message": "Employee Deleted!",
 		})
 
 	})
@@ -104,8 +104,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		return c.JSON(fiber.Map{
-			"newId":          lastId + 1,
-			"responseStatus": c.Response().StatusCode(),
+			"newId":  lastId + 1,
+			"status": c.Response().StatusCode(),
 		})
 	})
 

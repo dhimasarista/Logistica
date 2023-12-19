@@ -2,6 +2,12 @@
 
 ## Aplikasi Manajemen Logistik dan Supply Chain
 
+## Coding Convention
+- PascalCase: Struct/Class, Interface, Method/Public-Function
+- camelCase: Variabel, Private-Function, key-value(map, object, etc)
+- snake_case: SQL, JSON format, File-Name
+- kebab-case: HTML, URL, route/path
+
 ### Spesifikasi Teknologi
 
 Aplikasi Manajemen Logistik dan Supply Chain ini dibangun menggunakan berbagai teknologi terkini untuk memastikan kinerja yang optimal dan keamanan data. Berikut adalah daftar teknologi yang digunakan:

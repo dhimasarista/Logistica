@@ -30,10 +30,10 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 		}
 		// Mengirimkan halaman HTML yang dihasilkan ke browser
 		return c.Render("dashboard", fiber.Map{
-			"path":           path,
-			"user":           username,
-			"totalEmployees": totalEmployees,
-			"totalProducts":  totalProducts,
+			"path":            path,
+			"user":            username,
+			"total_employees": totalEmployees,
+			"total_products":  totalProducts,
 		})
 	},
 	)

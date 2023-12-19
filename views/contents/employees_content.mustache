@@ -368,7 +368,7 @@
         fetch("/employee/newId")
         .then(response => response.json())
         .then(results => {
-            if (results.responseStatus === 200) {
+            if (results.status === 200) {
                 cardNewEmployee.removeAttribute("hidden");
                 cardSpinner.setAttribute("hidden", true);
 
@@ -398,7 +398,7 @@
                 })
                 .then(response => response.json())
                 .then(results => {
-                    if (results.responseStatus !== 200){
+                    if (results.status !== 200){
                         InternalServerError(results.error);
                         return 0
                     }
@@ -415,8 +415,8 @@
     }
 
     // const employee = `{{employees}}`;
-    const responseStatus = `{{responseStatus}}`
-    if (responseStatus === "200") {
+    const status = `{{status}}`
+    if (status === "200") {
         cardEmployeeList.removeAttribute("hidden");
         cardSpinner.setAttribute("hidden", true);
     }
