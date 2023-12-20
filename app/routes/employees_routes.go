@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	"logistica/app/controllers"
+	"logistica/app/helpers"
 	"logistica/app/models"
 	"strconv"
 
@@ -114,10 +115,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 		// Memeriksa data yang dikirim
-		if formData["id"] == "" || formData["name"] == "" || formData["numberPhone"] == "" || formData["position"] == "" {
+		isEmpty := helpers.IsEmpty(c, formData, "id", "name", "numberPhone", "position")
+		if isEmpty {
 			// Jika kosong `Empty` kirim response `bad request`
 			return c.JSON(fiber.Map{
-				"error":  "Form is Empty",
+				"error":  "Form is Empty!",
 				"status": fiber.StatusBadRequest,
 			})
 		}
