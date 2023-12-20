@@ -147,7 +147,7 @@ func (e *Employee) LastId() (int, error) {
 	defer db.Close()
 
 	var lastId int
-	var query string = "SELECT MAX(id) FROM employees"
+	var query string = "SELECT COALESCE(MAX(id), 100020) FROM employees"
 	err := db.QueryRow(query).Scan(
 		&lastId,
 	)
