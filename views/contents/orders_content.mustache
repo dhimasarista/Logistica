@@ -2,71 +2,60 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Orders</h1>
-        <div id="add-stocks-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Add Stocks</i></a></div>
+        <div id="add-stocks-button"><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>New Order</i></a></div>
         <div id="return-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Return</i></a></div>
     </div>
     <!-- DataTales Example -->
     <div class="card shadow mb-4" id="card-products">
         <div class="card">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Products</h6>
+                <ul class="nav nav-tabs" style="border-bottom: none;">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="ongoing-tab" data-toggle="tab" href="#on-going-button" style="background: none; border: none;">On Going</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="finished-tab" data-toggle="tab" href="#finished-button" style="background: none; border: none;">Finished</a>
+                    </li>
+                </ul>
             </div>
-            <div class="card-body" id="surat-masuk">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Name</th>
-                                <th>Serial Number</th>
-                                <th>Manufacturer</th>
-                                <th>Stocks</th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#surat-masuk}}
-                                <tr>
-                                    <td>{{tanggalSurat}}</td>
-                                    <td>{{judulSurat}}</td>
-                                    <td>{{penerima}}</td>
-                                    <td>{{pengirim}}</td>
-                                    <td>{{perihal}}</td>
-                                    <td>{{jenisSurat}}</td>
-                                </tr>
-                                {{/surat-masuk}}
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>Ryzen 5 5000X</td>
-                                <td>85043859347549</td>
-                                <td>AMD</td>
-                                <td>1032</td>
-                                <td>3.900.000</td>
-                            </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>Intel i5 5460U</td>
-                                <td>85043859347549</td>
-                                <td>Intel</td>
-                                <td>980</td>
-                                <td>4.153.000</td>
-                            </tr>
-                            <tr>
-                                <td>0435843957346</td>
-                                <td>DA PSU 80W Bronze</td>
-                                <td>85043859347549</td>
-                                <td>Digital Alliance</td>
-                                <td>98</td>
-                                <td>560.000</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="on-going-button">
+                        <!-- On Going Content -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Total Order</th>
+                                        <th>Serial Number</th>
+                                        <th>Manufacturer</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ryzen 5 5000X</td>
+                                        <td>3.900.000</td>
+                                        <td>3</td>
+                                        <td>85043859347549</td>
+                                        <td>AMD</td>
+                                        <td>On Delivery</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="finished-button">
+                        <!-- Finished Content -->
+                        <!-- Add your content for Finished tab here -->
+                    </div>
                 </div>
-            </div>
-            <div class="card-body" id="surat-keluar" style="display: none;">
             </div>
         </div>
     </div>
+    
  
 
     <script>
