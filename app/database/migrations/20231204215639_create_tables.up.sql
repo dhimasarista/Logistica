@@ -108,12 +108,3 @@ CREATE TABLE earnings(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Input data ketika migrasi
--- Default Employee untuk default user
-INSERT INTO employees VALUES(1, "administrator", "0", "0", NULL, 1, 1);
--- Default User as administrator
-INSERT INTO users(id, username, password, employee_id) VALUES(1, "0x0002", "$2a$12$jb.qLEDHWmvFptryo8J/e.LnxhxNu9N5mmH.IEmHkjMvNYbb9f.iq", 1);
-INSERT INTO order_status VALUES(1, "on delivery")
-INSERT INTO order_status VALUES(2, "received")
-INSERT INTO order_status VALUES(3, "returned")
-INSERT INTO order_status VALUES(4, "fail")
