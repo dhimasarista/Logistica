@@ -331,7 +331,7 @@
 
     // Fungsi-fungsi yang  berisi http-get
     function getNewId() {
-        fetch("/employee/newId")
+        fetch("/employee/new-id")
         .then(response => response.json())
         .then(results => {
             if (results.status === 200) {
@@ -455,7 +455,7 @@
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
         .then(results => {
-            if (results.isIdExists) {
+            if (results.is_exists) {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",

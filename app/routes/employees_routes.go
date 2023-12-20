@@ -17,25 +17,26 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		dan menghindari pembuatan salinan nilai data, yang dapat menghemat memori.
 	*/
 	var employee *models.Employee = &models.Employee{}
-	position := models.Position{}
+	position := &models.Position{}
 
-	// Halaman-halaman yang dirender
+	// Merender halaman employees_page
 	app.Get("/employees", func(c *fiber.Ctx) error {
+		// Mendapatkan path dan username dari sesi
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
-
+		// Mengambil data employee dan posisi dari database
 		employees, err := employee.FindAll()
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
-
 		positions, err := position.FindAll()
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
-
+		// Mengembalikan respons dalam bentuk page yang dirender
+		// Dan data juga dikirim dalam bentuk rendered-data
 		return c.Render("employees_page", fiber.Map{
 			"path":      path,
 			"user":      username,
@@ -44,37 +45,34 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"status":    c.Response().StatusCode(),
 		})
 	})
-
 	// Memeriksa ketersedian ID
 	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
-		var id string = c.Params("id")
-
+		var id string = c.Params("id")     // Mendapatkan id dari paramater path
 		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
 		if err != nil {
 			log.Println(err)
 		}
-		employee.GetById(int64(idInteger)) // Mengambil ID
-
+		// Mengambil ID dari basis data
+		employee.GetById(int64(idInteger))
+		// Menentukan status ketersedian id
 		var isIdExists bool = false
 		if employee.ID.Int64 == int64(idInteger) {
 			isIdExists = true
 		}
-
+		// Mengirimnya dalam bentuk JSON
 		return c.JSON(fiber.Map{
-			"isIdExists": isIdExists,
-			"status":     c.Response().StatusCode(),
+			"is_exists": isIdExists,
+			"status":    c.Response().StatusCode(), // 200 OK
 		})
 	})
-
 	// Menghapus employee berdasarkan id
 	app.Delete("/employee/delete/:id", func(c *fiber.Ctx) error {
-		var id string = c.Params("id")
-
-		idInteger, err := strconv.Atoi(id)
+		var id string = c.Params("id")     // Mengambil id Dari parameter
+		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
 		if err != nil {
 			log.Println(err)
 		}
-
+		// Kemudian meneruskan ke basis data
 		err = employee.DeleteEmployee(idInteger)
 		if err != nil {
 			log.Println(err)
@@ -83,35 +81,30 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": 500,
 			})
 		}
-
+		// Jika berhasil, kirim response
 		return c.JSON(fiber.Map{
-			"status":  c.Response().StatusCode(),
+			"status":  c.Response().StatusCode(), // 200 OK
 			"message": "Employee Deleted!",
 		})
 
 	})
-
 	// Mengirim ID baru
-	app.Get("/employee/newId", func(c *fiber.Ctx) error {
-		lastId, err := employee.LastId()
-		if lastId <= 100020 {
-			lastId = 100020
-		}
-
+	app.Get("/employee/new-id", func(c *fiber.Ctx) error {
+		lastId, err := employee.LastId() // Mengambil Max ID dari basis data
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
-
+		// Berhasil, kirim id terakhir yang diminta
 		return c.JSON(fiber.Map{
 			"newId":  lastId + 1,
 			"status": c.Response().StatusCode(),
 		})
 	})
-
 	// Membuat data employee baru
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
-		var formData map[string]interface{} // variabel untuk menyimpan data yang diterima dari client-side
+		// variabel untuk menyimpan data yang diterima dari client-side
+		var formData map[string]interface{}
 		err := c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
@@ -120,24 +113,27 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
+		// Memeriksa data yang dikirim
 		if formData["id"] == "" || formData["name"] == "" || formData["numberPhone"] == "" || formData["position"] == "" {
+			// Jika kosong `Empty` kirim response `bad request`
 			return c.JSON(fiber.Map{
 				"error":  "Form is Empty",
 				"status": fiber.StatusBadRequest,
 			})
 		}
-
+		// Data yang dikirim dari client dalam bentuk string
+		// Golang tidak akan menerima tipe data any mentah-mentah
+		// Tidak akan ada error, tapi program tetap anomali
+		// Kemudian data dikonversi ke tipe data masing-masing
 		idToInt, err := strconv.Atoi(formData["id"].(string))
 		if err != nil {
 			panic(err)
 		}
-
 		positionToInt, err := strconv.Atoi(formData["position"].(string))
 		if err != nil {
 			panic(err)
 		}
-
+		// Data yang diterima tadi langsung dieksekusi oleh basis data
 		newEmpResult, err := employee.NewEmployee(
 			idToInt,
 			formData["name"].(string),
@@ -145,7 +141,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			formData["numberPhone"].(string),
 			positionToInt,
 		)
-
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -153,7 +148,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
+		// Berhasil, kirimkan response 200 ke client
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": c.Response().StatusCode(),
@@ -161,11 +156,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"result": newEmpResult,
 		})
 	})
-
-	// Menambah position baru
+	// Menambah position baru: Not Used and Fixed
 	app.Post("/employee/position/new", func(c *fiber.Ctx) error {
-		var formData map[string]any // variabel untuk menyimpan data yang diterima dari client-side
-
+		// variabel untuk menyimpan data yang diterima dari client-side
+		var formData map[string]any
+		// Mengambil data dari body yang dikirim oleh client
 		err := c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
@@ -174,14 +169,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
+		// Memeriksa kekosongan data yang dikirim
 		if formData["name"].(string) == "" {
 			return c.JSON(fiber.Map{
 				"error":  "Position Filed is Empty!",
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
+		// Mengambil id
 		lastId, err := position.LastId()
 		if err != nil {
 			log.Println(err)
