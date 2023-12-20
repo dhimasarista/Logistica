@@ -16,7 +16,7 @@ type Category struct {
 }
 
 func (c *Category) FindAll() ([]map[string]interface{}, error) {
-	db := config.ConnectDB()
+	db := config.ConnectSQLDB()
 	defer db.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -52,7 +52,7 @@ func (c *Category) NewCategory(id int, name string) (sql.Result, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	// Jika id yang diterima di bawah 9100
@@ -76,7 +76,7 @@ func (c *Category) LastId() (int, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var lastId int

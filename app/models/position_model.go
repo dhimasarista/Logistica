@@ -12,7 +12,7 @@ type Position struct {
 }
 
 func (p *Position) FindAll() ([]map[string]any, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var query string = "SELECT id, name FROM positions"
@@ -44,7 +44,7 @@ func (p *Position) FindAll() ([]map[string]any, error) {
 }
 
 func (p *Position) NewPosition(id int, name string) (sql.Result, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var query string = "INSERT INTO positions VALUES(?, ?)"
@@ -57,7 +57,7 @@ func (p *Position) NewPosition(id int, name string) (sql.Result, error) {
 }
 
 func (p *Position) LastId() (int, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var lastId int

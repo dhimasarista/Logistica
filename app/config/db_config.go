@@ -3,20 +3,29 @@ package config
 import (
 	"database/sql"
 	"log"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func ConnectDB() *sql.DB {
-	// Membuat koneksi database dengan database pooling
-	var dsn string = "user_dev:vancouver@tcp(localhost:3306)/logistica?parseTime=true"
+// ConnectSQLDB membuat koneksi *sql.DB dan mengembalikannya
+func ConnectSQLDB() *sql.DB {
+	dsn := "user_dev:vancouver@tcp(localhost:3306)/logistica?parseTime=true"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Println(err)
+		return nil
 	}
+	return db
+}
 
-	// Set maximum open connections and maximum idle connections
-	// db.SetMaxOpenConns(10) // Atur jumlah maksimum koneksi terbuka
-	// db.SetMaxIdleConns(5)  // Atur jumlah maksimum koneksi yang tetap terbuka
-
-	// Pastikan koneksi database ditutup saat selesai
+// ConnectGormDB membuat koneksi *gorm.DB dan mengembalikkannya
+func ConnectGormDB() *gorm.DB {
+	dsn := "user_dev:vancouver@tcp(localhost:3306)/logistica?parseTime=true"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
 	return db
 }

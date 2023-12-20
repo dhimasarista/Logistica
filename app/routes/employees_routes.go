@@ -135,8 +135,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		if err != nil {
 			panic(err)
 		}
+
 		// Data yang diterima tadi langsung dieksekusi oleh basis data
-		newEmpResult, err := employee.NewEmployee(
+		newEmpResult, err := employee.NewEmployeeGorm(
 			idToInt,
 			formData["name"].(string),
 			formData["address"].(string),
