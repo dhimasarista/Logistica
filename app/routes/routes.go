@@ -15,5 +15,6 @@ func SetupRoutes(app *fiber.App, store *session.Store, client *resty.Client) {
 	InventoryRoutes(app, store)
 	ErrorRoutes(app, store)
 	EmployeesRoutes(app, store)
+	ReportsRoutes(app, store)
 	FileManagement(app)
 }

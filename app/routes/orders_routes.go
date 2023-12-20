@@ -13,8 +13,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		var username string = controllers.GetSessionUsername(c, store)
 
 		return c.Render("orders_page", fiber.Map{
-			"path":     path,
-			"username": username,
+			"path": path,
+			"user": username,
 		})
 	})
 }

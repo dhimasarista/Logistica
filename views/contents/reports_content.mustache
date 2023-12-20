@@ -1,0 +1,370 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Reports</h1>
+        <div id="create-report-button" hidden><a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i>Create Report</i></a></div>
+    </div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4" id="card-products">
+        <div class="card">
+            <div class="card-header py-3">
+                <ul class="nav nav-tabs" style="border-bottom: none;">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="stock-records-button" data-toggle="tab" href="#stock-records-tab" style="background: none; border: none;">Stock Records</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="monthly-reports-button" data-toggle="tab" href="#monthly-reports-tab" style="background: none; border: none;">Monthly Reports</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="stock-records-tab">
+                        <!-- On Going Content -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Total Order</th>
+                                        <th>Serial Number</th>
+                                        <th>Manufacturer</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ryzen 5 5000X</td>
+                                        <td>3.900.000</td>
+                                        <td>3</td>
+                                        <td>85043859347549</td>
+                                        <td>AMD</td>
+                                        <td>On Delivery</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="monthly-reports-tab">
+                        <!-- Finished Content -->
+                        <!-- Add your content for Finished tab here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+ 
+
+    <script>
+        const products = [{
+            "id": 10002,
+            "name": "Intel i5 5600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "1.640.600",
+            "weight": 240,
+            "category": "Processor",
+            "stock": 64,
+        },{
+            "id": 10004,
+            "name": "Intel i7 7600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "1.890.600",
+            "weight": 239,
+            "category": "Processor",
+            "stock": 48,
+        },{
+            "id": 10003,
+            "name": "Intel i9 9600U",
+            "serial_number": "S320482057454534",
+            "manufacturer": "Intel Corporation",
+            "price": "2.640.600",
+            "weight": 238,
+            "category": "Processor",
+            "stock": 12,
+        }];
+        function checkNewProduct() {
+              const productSelect = document.getElementById('product-name');
+              const existingProduct = document.getElementById('existing-product');
+              const newProductInput = document.getElementById('new-product-input');
+
+              const serialNumberForm = document.getElementById('serial_number_form');
+              const manufacturerForm = document.getElementById('manufacturer_form');
+              const priceForm = document.getElementById("price-form");
+              const weightForm = document.getElementById("weight-form");
+              const stockAmountForm = document.getElementById("stock-amount-form");
+
+            if (productSelect.value === 'newProduct') {
+                existingProduct.style.display = 'none';
+                newProductInput.style.display = 'block';
+
+                serialNumberForm.value = null;
+                manufacturerForm.value = null;
+                priceForm.value = null;
+                weightForm.value = null;
+                stockAmountForm.value = null;
+
+                serialNumberForm.removeAttribute("disabled");
+                manufacturerForm.removeAttribute("disabled");
+                priceForm.removeAttribute("disabled");
+                weightForm.removeAttribute("disabled");
+            } else {
+                existingProduct.style.display = 'block';
+                newProductInput.style.display = 'none';
+
+                for (let index = 0; index < products.length; index++) {
+                    if (products[index]["id"] == parseInt(productSelect.value)) {
+                        // Menampilkan data produk yang sudah ada
+                        const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
+                        const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
+
+                        serialNumberForm.value = serialNumber;
+                        serialNumberForm.setAttribute("disabled", true);
+                        manufacturerForm.value = manufacturer;
+                        manufacturerForm.setAttribute("disabled", true);
+                        priceForm.value = products[index]["price"];
+                        priceForm.setAttribute("disabled", true);
+                        weightForm.value = products[index]["weight"];
+                        weightForm.setAttribute("disabled", true);
+                    }
+                }
+                
+            }
+        }
+
+        function cancelNewProduct() {
+            const productSelect = document.getElementById('product-name');
+            const existingProduct = document.getElementById('existing-product');
+            const newProductInput = document.getElementById('new-product-input');
+
+            const serialNumberForm = document.getElementById('serial_number_form');
+            const manufacturerForm = document.getElementById('manufacturer_form');
+            const priceForm = document.getElementById("price-form");
+            const weightForm = document.getElementById("weight-form");
+            const stockAmountForm = document.getElementById("stock-amount-form");
+
+            serialNumberForm.value = null;
+            manufacturerForm.value = null;
+            priceForm.value = null;
+            weightForm.value = null;
+            stockAmountForm.value = null;
+
+            existingProduct.style.display = 'block';
+            newProductInput.style.display = 'none';   
+            productSelect.selectedIndex = 0;
+        }
+
+        function newCategoryEvent() {
+            const categorySelect = document.getElementById("category-name");
+            const existingCategory = document.getElementById("existing-category");
+            const newCategory = document.getElementById("new-category");
+            if (categorySelect.value === "newCategory") {
+                existingCategory.style.display = "none";
+                newCategory.style.display = "block";
+            } else {
+                existingCategory.style.display = "block";
+                newCategory.style.display = "none";
+            }
+        }
+
+        function cancelNewCategory() {
+            const categorySelect = document.getElementById("category-name");
+            const existingCategory = document.getElementById("existing-category");
+            const newCategory = document.getElementById("new-category");
+
+            categorySelect.selectedIndex = 0;
+            existingCategory.style.display = "block";
+            newCategory.style.display = "none";
+        }
+
+        // document.getElementById('productForm').addEventListener('submit', function(event) {
+        // event.preventDefault();
+
+        // var productName = document.getElementById('productName').value;
+        // var newProductName = document.getElementById('newProductName').value;
+
+        // // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
+        // if (productName === 'newProduct' && newProductName.trim() !== '') {
+        //     alert('Menambahkan produk baru: ' + newProductName);
+        // } else {
+        //     alert('Memilih produk: ' + productName);
+        // }
+        // });
+    </script>
+    <div class="card shadow mb-4" id="card-add-stocks" hidden>
+        <div class="card">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Add Stock</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-wrap">	
+                    <form id="survey-form">
+                        <div class="row">
+                            <div class="col-md-12">
+                            <div id="existing-product">
+                                    <div class="form-group">
+                                        <label id="judul-surat-label" for="product_name">Product Name</label>
+                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Product</option>
+                                            <option value="newProduct">New Product</option>
+                                            <option value="10002">Intel i5 5600U | stocks: 320</option>
+                                            <option value="10004">Intel i7 7600U</option>
+                                            <option value="10003">Intel i9 9600U</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="new-product-input" style="display: none;">
+                            <div class="col-md-12">
+                                <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
+                                <div class="input-group mb-3">
+                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
+                                    <div class="input-group-append">
+                                      <a href="#" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="serial_number_label" for="serialNumber">Serial Number</label>
+                                    <input type="email" name="serialNumber" id="serial_number_form" placeholder="EX: S23864872548" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="manufacturer_label" for="manufacturer">Manufacturer</label>
+                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="pengirim-label" for="stock">Stock Amount</label>
+                                    <input type="stock" name="stock" id="stock-amount-form" class="form-control" placeholder="Ex: 1024"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="price_label" for="pengirim">Price</label>
+                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label id="pengirim-label" for="weight">Weight</label>
+                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="existing-category">
+                                    <div class="form-group">
+                                        <label id="judul-surat-label" for="product_name">Product Category</label>
+                                        <select class="form-control scrollable-menu" id="category-name" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                            <option value="" selected disabled>Select Category</option>
+                                            <option value="newCategory">New Category</option>
+                                            <option value="product1">Produk 1</option>
+                                            <option value="product2">Produk 2</option>
+                                            <option value="product3">Produk 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="new-category" style="display: none;">
+                                    <label id="pengirim-label" for="weight">New Category</label>
+                                    <div class="input-group mb-3">
+                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Processor"/>
+                                    <div class="input-group-append">
+                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Notes <small>(optional)</small></label>
+                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Write somethings..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>	
+            </div>
+        </div>
+        
+    </div>
+
+        <!-- <script>
+            function showTab(tabId) {
+                // Sembunyikan semua card body
+                var cardBodies = document.getElementsByClassName('card-body');
+                for (var i = 0; i < cardBodies.length; i++) {
+                    cardBodies[i].style.display = 'none';
+                }
+        
+                // Hapus kelas "active" dari semua tautan
+                var navLinks = document.getElementsByClassName('nav-link');
+                for (var j = 0; j < navLinks.length; j++) {
+                    navLinks[j].classList.remove('active');
+                }
+        
+                // Tampilkan card body dengan id yang sesuai
+                document.getElementById(tabId).style.display = 'block';
+        
+                // Tambahkan kelas "active" pada tautan yang diklik
+                var clickedLink = event.currentTarget;
+                clickedLink.classList.add('active');
+            }
+        </script>       -->
+
+</div>
+<script>
+    const createReportButton = document.getElementById("create-report-button");
+    const stockRecordsButton = document.getElementById("stock-records-button")
+    const monthlyReportsButton = document.getElementById("monthly-reports-button")
+
+    monthlyReportsButton.addEventListener("click", () => {
+        createReportButton.removeAttribute("hidden");
+    });
+
+    stockRecordsButton.addEventListener("click", () => {
+        createReportButton.setAttribute("hidden", true);
+    })
+
+    // const cardProducts = document.getElementById("card-products");
+    // const cardAddStocks = document.getElementById("card-add-stocks");
+    // const addStocksButton = document.getElementById("add-stocks-button")
+    // // const inventoryButton = document.getElementById("inventory-button");
+    // const returnButton = document.getElementById("return-button")
+
+    // addStocksButton.addEventListener("click", () => {
+    //     cardAddStocks.removeAttribute("hidden");
+    //     returnButton.removeAttribute("hidden");
+    //     addStocksButton.setAttribute("hidden", true);
+    //     cardProducts.setAttribute("hidden",true)
+    // });
+    // returnButton.addEventListener("click", () => {
+    //     cardAddStocks.setAttribute("hidden", true);
+    //     returnButton.setAttribute("hidden", true);
+    //     addStocksButton.removeAttribute("hidden");
+    //     cardProducts.removeAttribute("hidden");
+    // });
+</script>
