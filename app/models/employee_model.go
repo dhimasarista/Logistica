@@ -10,11 +10,13 @@ import (
 	"sync"
 
 	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 var mutex sync.Mutex
 
 type Employee struct {
+	gorm.Model
 	ID          sql.NullInt64  `json:"id"`
 	Name        sql.NullString `json:"name"`
 	Address     sql.NullString `json:"address"`
