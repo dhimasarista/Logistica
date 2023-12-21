@@ -51,7 +51,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error":  err.Error(),
 			})
 		}
-
+		time.Sleep(1 * time.Second)
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
 			"error":   nil,

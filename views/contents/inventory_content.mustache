@@ -195,7 +195,17 @@
 
                                         existingProduct.style.display = 'block';
                                         newProduct.style.display = 'none';
-
+           
+                                        Swal.fire({
+                                            title: 'Loading!',
+                                            html: 'Please wait...',
+                                            icon: 'info',
+                                            allowOutsideClick: false,
+                                            showConfirmButton: false,
+                                            didOpen: () => {
+                                                Swal.showLoading();
+                                            }
+                                        });
                                         fetch(`/product/${productSelect.value}`, {
                                             method: "GET",
                                             headers: {
@@ -205,6 +215,7 @@
                                         .then(res => res.json())
                                         .then(results => {
                                             console.log(results);
+                                            Swal.close(); // Close the loading alert after some time
                                             serialNumberForm.value = results.data.serialNumber;
                                             serialNumberForm.setAttribute("disabled", true);
                                             priceForm.value = results.data.price;
@@ -417,13 +428,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                       <label for="product-name-edit" class="col-form-label">Name</label>
-                      <input type="text" class="form-control" id="product-name-edit">
+                      <input type="text" class="form-control" id="product-name-edit" disabled>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="serial-number-edit" class="col-form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="serial-number-edit">
+                        <input type="text" class="form-control" id="serial-number-edit" disabled>
                     </div>
                 </div>
             </div>
@@ -432,7 +443,7 @@
                     <div id="existing-manufacturer-edit-product">
                         <div class="form-group">
                             <label id="manufacturer" for="manufacturer">Manufacturer</label>
-                            <select class="form-control scrollable-menu" id="manufacturer-form-edit-product" name="manufacturer" onchange="newManufacturerEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                            <select class="form-control scrollable-menu" id="manufacturer-form-edit-product" name="manufacturer" onchange="newManufacturerEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;' disabled>
                                 <option value="" selected disabled>Select Manufacturer</option>
                                 <option value="0">New Manufacturer</option>
                                 {{#manufacturers}}
@@ -478,7 +489,7 @@
                     <div id="existing-category-edit-product">
                         <div class="form-group">
                             <label id="judul-surat-label" for="product_name">Product Category</label>
-                            <select class="form-control scrollable-menu" id="category-form-edit-product" name="productName" onchange="newCategoryEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                            <select class="form-control scrollable-menu" id="category-form-edit-product" name="productName" onchange="newCategoryEventEditProduct()" onfocus="this.size=1;" onchange='this.size=1;' disabled>
                                 <option value="" selected disabled>Select Category</option>
                                 <option value="0">New Category</option>
                                 {{#categories}}
@@ -490,7 +501,7 @@
                     <div class="form-group" id="new-category-edit-product" style="display: none;">
                         <label id="new-category-label" for="weight">New Category</label>
                         <div class="input-group mb-3">
-                        <input type="text" name="new-category" id="new-category-form-edit-product" class="form-control" placeholder="Ex: Processor"/>
+                        <input type="text" name="new-category" id="new-category-form-edit-product" class="form-control" placeholder="Ex: Processor" disabled/>
                         <div class="input-group-append">
                             <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategoryEditProduct()">cancel</a>
                         </div>
@@ -524,13 +535,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="weight-product-edit" class="col-form-label">Weight</label>
-                        <input type="text" class="form-control" id="weight-product-edit">
+                        <input type="text" class="form-control" id="weight-product-edit" disabled>
                       </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="price-product-edit" class="col-form-label">Price</label>
-                        <input type="text" class="form-control" id="price-product-edit">
+                        <input type="text" class="form-control" id="price-product-edit" disabled>
                       </div>
                 </div>
             </div>
@@ -566,13 +577,27 @@
         .then(results => {
             Swal.close(); // Close the loading alert after some time
             console.log(results);
-            document.getElementById("id-product-edit").setAttribute("data-id-product", results.data.id);
-            document.getElementById("product-name-edit").value = results.data.name;
-            document.getElementById("serial-number-edit").value = results.data.serialNumber;
-            document.getElementById("weight-product-edit").value = results.data.weight;
-            document.getElementById("price-product-edit").value = results.data.price;
+            const idProductEdit = document.getElementById("id-product-edit");
+            const productNameEdit = document.getElementById("product-name-edit");
+            const serialNumberEdit = document.getElementById("serial-number-edit");
+            const weightProductEdit = document.getElementById("weight-product-edit");
+            const priceProductEdit = document.getElementById("price-product-edit");
             const manufacturerFormEditProduct = document.getElementById("manufacturer-form-edit-product");
             const categoryFormEditProduct = document.getElementById("category-form-edit-product")
+
+            idProductEdit.removeAttribute("disabled");
+            productNameEdit.removeAttribute("disabled");
+            serialNumberEdit.removeAttribute("disabled");
+            weightProductEdit.removeAttribute("disabled");
+            priceProductEdit.removeAttribute("disabled");
+            manufacturerFormEditProduct.removeAttribute("disabled");
+            categoryFormEditProduct.removeAttribute("disabled");
+            
+            idProductEdit.setAttribute("data-id-product", results.data.id)
+            productNameEdit.value = results.data.name;
+            serialNumberEdit.value = results.data.serialNumber;
+            weightProductEdit.value = results.data.weight;
+            priceProductEdit.value = results.data.price;
 
             for (let index = 0; index < manufacturerFormEditProduct.length; index++) {
                 if (results.data.manufacturerId === parseInt(manufacturerFormEditProduct[index].value)) {

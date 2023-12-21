@@ -326,7 +326,7 @@
     <div class="modal-dialog" style="max-width: 50%; top: 60px" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editEmployeeModalLabel">Edit Employee</h5>
+          <h5 class="modal-title placeholder col-6" id="editEmployeeModalLabel">Edit Employee</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -378,6 +378,30 @@
       </div>
     </div>
 </div>
+<script>
+    function GetDataByID(id){
+        Swal.fire({
+            title: 'Loading!',
+            html: 'Please wait...',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        fetch(`/product/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+        .then(response => response.json())
+        .then(results => {
+            Swal.close(); // Close the loading alert after some time
+        })
+    }
+</script>
 <script>
     // Card Body Handlers
     const cardEmployeeList = document.getElementById("card-employee-list");
