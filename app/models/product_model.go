@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 type Product struct {
@@ -23,6 +24,10 @@ type Product struct {
 	Weight           sql.NullInt64  `json:"weight"`
 	CategoryID       sql.NullInt64  `json:"category_id"`
 	CategoryName     sql.NullString `json:"category_name"`
+
+	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 func (p *Product) GetById(id int) error {

@@ -97,6 +97,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
+		if lastId <= 100020 {
+			lastId = 100020
+		}
 		// Berhasil, kirim id terakhir yang diminta
 		return c.JSON(fiber.Map{
 			"newId":  lastId + 1,

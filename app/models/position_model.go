@@ -4,11 +4,18 @@ import (
 	"database/sql"
 	"logistica/app/config"
 	"logistica/app/utility"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 type Position struct {
-	ID   sql.NullInt64  `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   sql.NullInt64  `gorm:"primaryKey;column:id" json:"id"`
+	Name sql.NullString `gorm:"column:name" json:"name"`
+	// Timestamp
+	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 func (p *Position) FindAll() ([]map[string]any, error) {
