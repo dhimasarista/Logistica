@@ -10,14 +10,13 @@ import (
 	"sync"
 
 	"github.com/go-sql-driver/mysql"
-	"gorm.io/gorm"
 )
 
 var mutex sync.Mutex
 
 type Employee struct {
 	// gorm.Model
-	ID          sql.NullInt64  `gorm:"column:id" json:"id"`
+	ID          sql.NullInt64  `gorm:"primaryKey;column:id" json:"id"`
 	Name        sql.NullString `gorm:"column:name" json:"name"`
 	Address     sql.NullString `gorm:"column:address" json:"address"`
 	NumberPhone sql.NullString `gorm:"column:number_phone" json:"number_phone"`
@@ -51,13 +50,13 @@ func (e *Employee) NewEmployeeGorm(id int, name, address, numberPhone string, po
 	defer mutex.Unlock()
 
 	newEmployee := &Employee{
+		ID:          sql.NullInt64{Int64: int64(id), Valid: true},
 		Name:        sql.NullString{String: name, Valid: true},
 		Address:     sql.NullString{String: address, Valid: true},
 		NumberPhone: sql.NullString{String: numberPhone, Valid: true},
 		Position:    sql.NullInt64{Int64: int64(position), Valid: true},
 		IsUser:      sql.NullBool{Bool: false, Valid: true},
 		IsSuperuser: sql.NullBool{Bool: false, Valid: true},
-		ID:          sql.NullInt64{Int64: int64(id), Valid: true},
 	}
 
 	var db = config.ConnectGormDB()
