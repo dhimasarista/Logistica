@@ -161,7 +161,7 @@ func (p *Product) NewProduct(id int, name, serialNumber string, manufacturer, st
 	// Nilai pada kolom pertama (index_column) ditentukan dengan menggunakan fungsi CASE:
 	//   - Jika nilai maksimum dari kolom 'index_column' kurang dari 1020 atau NULL, maka nilainya diset menjadi 1020.
 	//   - Jika nilai maksimum dari kolom 'index_column' tidak kurang dari 1020, maka nilainya diset menjadi nilai maksimum tersebut ditambah 1.
-	var query string = `INSERT INTO products VALUES(?, ?, ?, ?, ?, ?, ?, ?);`
+	var query string = `INSERT INTO products VALUES(?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL);`
 	result, err := db.Exec(query, id, name, serialNumber, manufacturer, stocks, price, weight, category)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {

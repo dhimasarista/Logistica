@@ -59,7 +59,7 @@ func (m *Manufacturer) NewManufacturer(id int, name string) (sql.Result, error) 
 	if id <= 9100 {
 		id = 9000 // sebagai nilai set otomatis jika row belum ada
 	}
-	var query string = "INSERT INTO manufacturer VALUES(?, ?)"
+	var query string = "INSERT INTO manufacturer VALUES(?, ?, NOW(), NOW(), NULL)"
 	result, err := db.Exec(query, id, name)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {

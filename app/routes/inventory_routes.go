@@ -161,8 +161,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		fmt.Println(lastId)
-
 		var formData map[string]string // Variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()
 		err = json.Unmarshal(body, &formData)
@@ -172,6 +170,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error": err.Error(),
 			})
 		}
+		fmt.Println(formData)
 
 		// Memeriksa apakah data penting seperti 'manufacturer' dan 'name' kosong
 		if string(formData["manufacturer"]) == "" || string(formData["name"]) == "" || string(formData["category"]) == "" {

@@ -59,7 +59,7 @@ func (c *Category) NewCategory(id int, name string) (sql.Result, error) {
 	if id <= 889 {
 		id = 890 // sebagai nilai set otomatis jika row belum ada
 	}
-	var query string = "INSERT INTO product_category VALUES(?, ?)"
+	var query string = "INSERT INTO product_category VALUES(?, ?, NOW(), NOW(), NULL)"
 	result, err := db.Exec(query, id, name)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
