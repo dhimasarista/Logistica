@@ -328,7 +328,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"stocks":         productModel.Stocks.Int64,
 			"weight":         productModel.Weight.Int64,
 		}
-
+		time.Sleep(1 * time.Second)
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
 			"data": data,

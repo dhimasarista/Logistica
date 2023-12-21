@@ -10,20 +10,19 @@ import (
 	"sync"
 
 	"github.com/go-sql-driver/mysql"
-	"gorm.io/gorm"
 )
 
 var mutex sync.Mutex
 
 type Employee struct {
-	gorm.Model
-	ID          sql.NullInt64  `json:"id"`
-	Name        sql.NullString `json:"name"`
-	Address     sql.NullString `json:"address"`
-	NumberPhone sql.NullString `json:"number_phone"`
-	PositionId  sql.NullInt64  `json:"position_id"`
-	IsUser      sql.NullBool   `json:"is_user"`
-	IsSuperuser sql.NullBool   `json:"is_superuser"`
+	// gorm.Model
+	ID          sql.NullInt64  `gorm:"column:id" json:"id"`
+	Name        sql.NullString `gorm:"column:name" json:"name"`
+	Address     sql.NullString `gorm:"column:address" json:"address"`
+	NumberPhone sql.NullString `gorm:"column:number_phone" json:"number_phone"`
+	Position    sql.NullInt64  `gorm:"column:position_id" json:"position_id"`
+	IsUser      sql.NullBool   `gorm:"column:is_user" json:"is_user"`
+	IsSuperuser sql.NullBool   `gorm:"column:is_superuser" json:"is_superuser"`
 }
 
 func (e *Employee) GetById(id int64) error {
@@ -36,7 +35,7 @@ func (e *Employee) GetById(id int64) error {
 		&e.Name,
 		&e.Address,
 		&e.NumberPhone,
-		&e.PositionId,
+		&e.Position,
 		&e.IsUser,
 		&e.IsSuperuser,
 	)
@@ -54,7 +53,7 @@ func (e *Employee) NewEmployeeGorm(id int, name, address, numberPhone string, po
 		Name:        sql.NullString{String: name, Valid: true},
 		Address:     sql.NullString{String: address, Valid: true},
 		NumberPhone: sql.NullString{String: numberPhone, Valid: true},
-		PositionId:  sql.NullInt64{Int64: int64(position), Valid: true},
+		Position:    sql.NullInt64{Int64: int64(position), Valid: true},
 		IsUser:      sql.NullBool{Bool: false, Valid: true},
 		IsSuperuser: sql.NullBool{Bool: false, Valid: true},
 		ID:          sql.NullInt64{Int64: int64(id), Valid: true},
@@ -140,7 +139,7 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 			&e.Name,
 			&e.Address,
 			&e.NumberPhone,
-			&e.PositionId,
+			&e.Position,
 			&e.IsUser,
 			&e.IsSuperuser,
 			&positionName,

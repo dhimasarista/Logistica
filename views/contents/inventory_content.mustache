@@ -546,6 +546,16 @@
 <script>
     // Modal Edit
     function GetDataByID(id) {
+        Swal.fire({
+            title: 'Loading!',
+            html: 'Please wait...',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         fetch(`/product/${id}`, {
             method: "GET",
             headers: {
@@ -554,6 +564,7 @@
         })
         .then(res => res.json())
         .then(results => {
+            Swal.close(); // Close the loading alert after some time
             console.log(results);
             document.getElementById("id-product-edit").setAttribute("data-id-product", results.data.id);
             document.getElementById("product-name-edit").value = results.data.name;
@@ -620,15 +631,14 @@
                 .then(response => response.json())
                 .then(results => {
                     console.log(results);
+                    Swal.close(); // Close the loading alert after some time
                     if (results.status !== 200) {
-                        Swal.close();
                         Swal.fire({
                             icon: "error",
                             title: results.error,
                         })
                         return 0;
                     } else {
-                        Swal.close(); // Close the loading alert after some time
                         Swal.fire({
                             icon: "success",
                             title: "Success",
@@ -731,15 +741,14 @@
                         .then(response => response.json())
                         .then(results => {
                             console.log(results);
+                            Swal.close(); // Close the loading alert after some time
                             if (results.status !== 200) {
-                                Swal.close();
                                 Swal.fire({
                                     icon: "error",
                                     title: results.error,
                                 })
                                 return 0;
                             } else {
-                                Swal.close(); // Close the loading alert after some time
                                 Swal.fire({
                                     icon: "success",
                                     title: "Success",

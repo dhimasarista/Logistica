@@ -6,6 +6,7 @@ import (
 	"logistica/app/helpers"
 	"logistica/app/models"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -151,6 +152,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+
+		time.Sleep(1 * time.Second)
 		// Berhasil, kirimkan response 200 ke client
 		return c.JSON(fiber.Map{
 			"error":  nil,
