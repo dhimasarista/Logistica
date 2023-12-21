@@ -155,7 +155,7 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 			&e.Name,
 			&e.Address,
 			&e.NumberPhone,
-			&e.Position,
+			&e.PositionID,
 			&e.IsUser,
 			&e.IsSuperuser,
 			&positionName,

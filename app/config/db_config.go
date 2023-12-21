@@ -50,7 +50,6 @@ var dbConfig DBConfig = readDBConfig()
 
 // ConnectSQLDB membuat koneksi *sql.DB dan mengembalikannya
 func ConnectSQLDB() *sql.DB {
-	fmt.Println(generateDSN(dbConfig))
 	db, err := sql.Open("mysql", generateDSN(dbConfig))
 	if err != nil {
 		log.Println(err)
