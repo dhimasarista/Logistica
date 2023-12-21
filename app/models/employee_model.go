@@ -58,7 +58,6 @@ func (e *Employee) NewEmployeeGorm(id int, name, address, numberPhone string, po
 		IsUser:      sql.NullBool{Bool: false, Valid: true},
 		IsSuperuser: sql.NullBool{Bool: false, Valid: true},
 	}
-
 	var db = config.ConnectGormDB()
 
 	db.AutoMigrate(&Employee{})
