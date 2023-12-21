@@ -3,8 +3,10 @@ package routes
 import (
 	"log"
 	"logistica/app/controllers"
+	"logistica/app/helpers"
 	"logistica/app/models"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -114,10 +116,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 		// Memeriksa data yang dikirim
-		if formData["id"] == "" || formData["name"] == "" || formData["numberPhone"] == "" || formData["position"] == "" {
+		isEmpty := helpers.IsEmpty(c, formData, "id", "name", "numberPhone", "position")
+		if isEmpty {
 			// Jika kosong `Empty` kirim response `bad request`
 			return c.JSON(fiber.Map{
-				"error":  "Form is Empty",
+				"error":  "Form is Empty!",
 				"status": fiber.StatusBadRequest,
 			})
 		}
@@ -133,8 +136,9 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		if err != nil {
 			panic(err)
 		}
+
 		// Data yang diterima tadi langsung dieksekusi oleh basis data
-		newEmpResult, err := employee.NewEmployee(
+		newEmpResult, err := employee.NewEmployeeGorm(
 			idToInt,
 			formData["name"].(string),
 			formData["address"].(string),
@@ -148,6 +152,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+
+		time.Sleep(1 * time.Second)
 		// Berhasil, kirimkan response 200 ke client
 		return c.JSON(fiber.Map{
 			"error":  nil,

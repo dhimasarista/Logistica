@@ -26,7 +26,7 @@ type Product struct {
 }
 
 func (p *Product) GetById(id int) error {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -72,7 +72,7 @@ func (p *Product) GetById(id int) error {
 }
 
 func (p *Product) FindAll() ([]map[string]interface{}, error) {
-	db := config.ConnectDB()
+	db := config.ConnectSQLDB()
 	defer db.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -149,7 +149,7 @@ func (p *Product) NewProduct(id int, name, serialNumber string, manufacturer, st
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	// Kode ini adalah pernyataan SQL untuk menyisipkan data baru ke dalam tabel 'products'.
@@ -173,7 +173,7 @@ func (p *Product) UpdateProduct(id int, name, serialNumber string, manufacturer,
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ?;"
@@ -194,7 +194,7 @@ func (p *Product) DeleteProduct(id int) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var query string = "DELETE FROM products WHERE id = ?"
@@ -211,7 +211,7 @@ func (p *Product) DeleteProduct(id int) error {
 	return nil
 }
 func (p *Product) CheckStock(id int) (int, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var totalStocks int
@@ -225,7 +225,7 @@ func (p *Product) CheckStock(id int) (int, error) {
 }
 
 func (p *Product) Count() (int, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var totalProducts int
@@ -239,7 +239,7 @@ func (p *Product) Count() (int, error) {
 }
 
 func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	query := "UPDATE products SET stocks = ? WHERE id = ?"
@@ -258,7 +258,7 @@ func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
 }
 
 func (p *Product) LastStocks(id int) (int, error) {
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var lastStock int
@@ -275,7 +275,7 @@ func (p *Product) LastId() (int, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectDB()
+	var db = config.ConnectSQLDB()
 	defer db.Close()
 
 	var lastId int
