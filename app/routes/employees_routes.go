@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"log"
 	"logistica/app/controllers"
 	"logistica/app/helpers"
@@ -47,65 +48,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"status":    c.Response().StatusCode(),
 		})
 	})
-	// Memeriksa ketersedian ID
-	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
-		var id string = c.Params("id")     // Mendapatkan id dari paramater path
-		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
-		if err != nil {
-			log.Println(err)
-		}
-		// Mengambil ID dari basis data
-		employee.GetById(int64(idInteger))
-		// Menentukan status ketersedian id
-		var isIdExists bool = false
-		if employee.ID.Int64 == int64(idInteger) {
-			isIdExists = true
-		}
-		// Mengirimnya dalam bentuk JSON
-		return c.JSON(fiber.Map{
-			"is_exists": isIdExists,
-			"status":    c.Response().StatusCode(), // 200 OK
-		})
-	})
-	// Menghapus employee berdasarkan id
-	app.Delete("/employee/delete/:id", func(c *fiber.Ctx) error {
-		var id string = c.Params("id")     // Mengambil id Dari parameter
-		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
-		if err != nil {
-			log.Println(err)
-		}
-		// Kemudian meneruskan ke basis data
-		err = employee.DeleteEmployee(idInteger)
-		if err != nil {
-			log.Println(err)
-			return c.JSON(fiber.Map{
-				"error":  err.Error(),
-				"status": 500,
-			})
-		}
-		// Jika berhasil, kirim response
-		return c.JSON(fiber.Map{
-			"status":  c.Response().StatusCode(), // 200 OK
-			"message": "Employee Deleted!",
-		})
-
-	})
-	// Mengirim ID baru
-	app.Get("/employee/new-id", func(c *fiber.Ctx) error {
-		lastId, err := employee.LastId() // Mengambil Max ID dari basis data
-		if err != nil {
-			log.Println(err)
-			InternalServerError(c, err.Error())
-		}
-		if lastId <= 100020 {
-			lastId = 100020
-		}
-		// Berhasil, kirim id terakhir yang diminta
-		return c.JSON(fiber.Map{
-			"newId":  lastId + 1,
-			"status": c.Response().StatusCode(),
-		})
-	})
+	// Mengambil data employee berdasarkan id
 	app.Get("/employee/:id", func(c *fiber.Ctx) error {
 		idStr := c.Params("id")
 		idInteger, _ := strconv.Atoi(idStr)
@@ -181,6 +124,113 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"status": c.Response().StatusCode(),
 			"data":   formData,
 			"result": newEmpResult,
+		})
+	})
+	// Memperbarui data employee
+	app.Put("/employee", func(c *fiber.Ctx) error {
+		var formData map[string]interface{} // Variabel untuk menyimpan data yang diterima dari client-side
+		body := c.Body()
+		err := json.Unmarshal(body, &formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		isEmpty := helpers.IsEmpty(c, formData, "id", "name", "numberPhone", "position")
+		if isEmpty {
+			// Jika kosong `Empty` kirim response `bad request`
+			return c.JSON(fiber.Map{
+				"error":  "Form is Empty!",
+				"status": fiber.StatusBadRequest,
+			})
+		}
+		idToInt, err := strconv.Atoi(formData["id"].(string))
+		if err != nil {
+			panic(err)
+		}
+		positionToInt, err := strconv.Atoi(formData["position"].(string))
+		if err != nil {
+			panic(err)
+		}
+		err = employee.UpdateEmployee(
+			idToInt,
+			positionToInt,
+			formData["name"].(string),
+			formData["address"].(string),
+			formData["numberPhone"].(string),
+		)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"data":    formData,
+			"message": "Sukses Update Employe!",
+			"status":  c.Response().StatusCode(),
+		})
+	})
+	// Menghapus employee berdasarkan id
+	app.Delete("/employee", func(c *fiber.Ctx) error {
+		var id string = c.Params("id")     // Mengambil id Dari parameter
+		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
+		if err != nil {
+			log.Println(err)
+		}
+		// Kemudian meneruskan ke basis data
+		err = employee.DeleteEmployee(idInteger)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
+		// Jika berhasil, kirim response
+		return c.JSON(fiber.Map{
+			"status":  c.Response().StatusCode(), // 200 OK
+			"message": "Employee Deleted!",
+		})
+
+	})
+	// Memeriksa ketersedian ID
+	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
+		var id string = c.Params("id")     // Mendapatkan id dari paramater path
+		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
+		if err != nil {
+			log.Println(err)
+		}
+		// Mengambil ID dari basis data
+		employee.GetById(int64(idInteger))
+		// Menentukan status ketersedian id
+		var isIdExists bool = false
+		if employee.ID.Int64 == int64(idInteger) {
+			isIdExists = true
+		}
+		// Mengirimnya dalam bentuk JSON
+		return c.JSON(fiber.Map{
+			"is_exists": isIdExists,
+			"status":    c.Response().StatusCode(), // 200 OK
+		})
+	})
+	// Mengirim ID baru
+	app.Get("/employee/new-id", func(c *fiber.Ctx) error {
+		lastId, err := employee.LastId() // Mengambil Max ID dari basis data
+		if err != nil {
+			log.Println(err)
+			InternalServerError(c, err.Error())
+		}
+		if lastId <= 100020 {
+			lastId = 100020
+		}
+		// Berhasil, kirim id terakhir yang diminta
+		return c.JSON(fiber.Map{
+			"newId":  lastId + 1,
+			"status": c.Response().StatusCode(),
 		})
 	})
 	// Menambah position baru: Not Used and Fixed

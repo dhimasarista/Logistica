@@ -331,7 +331,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="id-product-edit">
+        <div class="modal-body" id="id-employee-edit">
           <form>
             <div class="row">
                 <div class="col-md-6">
@@ -373,12 +373,13 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Update</button>
+          <button type="button" class="btn btn-primary" onclick="UpdateEmployee()">Update</button>
         </div>
       </div>
     </div>
 </div>
 <script>
+    const employeeIdEdit = document.getElementById("id-employee-edit");
     const employeeNameEdit = document.getElementById("employee-name-edit");
     const numberPhoneEdit = document.getElementById("number-phone-edit");
     const positionEdit = document.getElementById("position-name-edit");
@@ -396,6 +397,7 @@
         })
         .then(results => {
             console.log(results);
+            employeeIdEdit.setAttribute("data-id-employee", results.data.id.Int64);
             employeeNameEdit.value = results.data.name.String;
             employeeNameEdit.removeAttribute("disabled");
 
@@ -411,6 +413,69 @@
 
             addressEdit.value = results.data.address.String
             addressEdit.removeAttribute("disabled");
+        })
+    }
+    function UpdateEmployee() {
+        const data = {
+            id: document.getElementById("id-employee-edit").dataset.idEmployee,
+            name: employeeNameEdit.value,
+            numberPhone: numberPhoneEdit.value,
+            position: positionEdit.value,
+            address: addressEdit.value
+        }
+        Swal.fire({
+            title: "Update Product?",
+            text: "Make sure the data is correct!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Loading!',
+                    html: 'Please wait...',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                fetch(`/employee`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(results => {
+                    console.log(results);
+                    Swal.close(); // Close the loading alert after some time
+                    if (results.status !== 200) {
+                        Swal.fire({
+                            icon: "error",
+                            title: results.error,
+                        })
+                        return 0;
+                    } else {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success",
+                            text: results.message,
+                        })
+                        .then((result2) => {
+                            // Mereload halaman setelah tombol OK diklik
+                            if (result2.isConfirmed || result2.isDismissed) {
+                                window.location.reload();
+                            }
+                            return 0;
+                        });
+                    }
+                })
+            }
         })
     }
     function clearEditForm() {
@@ -460,7 +525,7 @@
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {   
             if (result.isConfirmed) {
-                fetch(`/employee/delete/${id}`, {
+                fetch(`/employee/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json"

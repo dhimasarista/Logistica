@@ -100,6 +100,27 @@ func (e *Employee) NewEmployee(id int, name, address, numberPhone string, positi
 	return result, nil
 }
 
+func (e *Employee) UpdateEmployee(id, position int, name, address, numberPhone string) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectSQLDB()
+	defer db.Close()
+
+	var query string = "UPDATE employees SET name = ?, address = ?, number_phone = ?, position_id = ? WHERE id = ?;"
+	_, err := db.Exec(query, name, address, numberPhone, position, id)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return errors.New("race condition, id has been taken")
+			}
+		}
+		return err
+	}
+
+	return nil
+}
+
 // Soft Delete
 func (e *Employee) DeleteEmployee(id int) error {
 	mutex.Lock()
