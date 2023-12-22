@@ -45,7 +45,7 @@ func (e *Employee) GetById(id int64) error {
 		&e.Name,
 		&e.Address,
 		&e.NumberPhone,
-		&e.Position,
+		&e.PositionID,
 		&e.IsUser,
 		&e.IsSuperuser,
 	)

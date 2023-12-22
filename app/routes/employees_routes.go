@@ -106,6 +106,24 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			"status": c.Response().StatusCode(),
 		})
 	})
+	app.Get("/employee/:id", func(c *fiber.Ctx) error {
+		idStr := c.Params("id")
+		idInteger, _ := strconv.Atoi(idStr)
+
+		err := employee.GetById(int64(idInteger))
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": 500,
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"data":   *employee,
+			"status": c.Response().StatusCode(),
+		})
+	})
 	// Membuat data employee baru
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
 		// variabel untuk menyimpan data yang diterima dari client-side
