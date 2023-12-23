@@ -18,12 +18,12 @@ var mutex sync.Mutex
 
 type Employee struct {
 	// gorm.Model
-	ID          sql.NullInt64  `gorm:"primaryKey;column:id" json:"id"`
-	Name        sql.NullString `gorm:"column:name" json:"name"`
-	Address     sql.NullString `gorm:"column:address" json:"address"`
-	NumberPhone sql.NullString `gorm:"column:number_phone" json:"number_phone"`
-	IsUser      sql.NullBool   `gorm:"column:is_user" json:"is_user"`
-	IsSuperuser sql.NullBool   `gorm:"column:is_superuser" json:"is_superuser"`
+	ID          sql.NullInt64  `json:"id" gorm:"primaryKey;column:id"`
+	Name        sql.NullString `json:"name" gorm:"column:name"`
+	Address     sql.NullString `json:"address" gorm:"column:address"`
+	NumberPhone sql.NullString `json:"number_phone" gorm:"column:number_phone"`
+	IsUser      sql.NullBool   `json:"is_user" gorm:"column:is_user"`
+	IsSuperuser sql.NullBool   `json:"is_superuser" gorm:"column:is_superuser"`
 
 	// Foreign key, memiliki relasi dengan Position model
 	Position   Position      `gorm:"foreignKey:PositionID" json:"position"`

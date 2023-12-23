@@ -14,12 +14,12 @@ import (
 
 func TestGetEmployeeById(t *testing.T) {
 	var data = models.Employee{}
-	err := data.GetById(100011)
+	err := data.GetById(100022)
 	if err != nil {
 		log.Println(err)
 	}
 	assert.Nil(t, err)
-	assert.Equal(t, 100011, int(data.ID.Int64))
+	assert.Equal(t, 100022, int(data.ID.Int64))
 }
 
 func TestFindAllEmployee(t *testing.T) {
