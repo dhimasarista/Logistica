@@ -33,7 +33,7 @@ func generateDSN(config DBConfig) string {
 
 // ReadDBConfig membaca konfigurasi database dari Viper
 func readDBConfig() DBConfig {
-	viper.SetConfigFile("app/config/config.json")
+	viper.SetConfigFile("./app/config/config.json")
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Error reading config file: %s", err)
 	}
@@ -51,7 +51,6 @@ var dbConfig DBConfig = readDBConfig()
 // ConnectSQLDB membuat koneksi *sql.DB dan mengembalikannya
 func ConnectSQLDB() *sql.DB {
 	dsn := generateDSN(dbConfig)
-	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Println(err)
@@ -83,7 +82,7 @@ func ConnectGormDB() *gorm.DB {
 // 	return db
 // }
 
-// // ConnectGormDB membuat koneksi *gorm.DB dan mengembalikkannya
+// ConnectGormDB membuat koneksi *gorm.DB dan mengembalikkannya
 // func ConnectGormDB() *gorm.DB {
 // 	dsn := "user_dev:vancouver@tcp(localhost:3306)/logistica?parseTime=true"
 // 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

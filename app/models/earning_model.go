@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"logistica/app/config"
 	"time"
 
@@ -21,9 +20,6 @@ type Earning struct {
 
 func (e *Earning) TotalEarnings() (int, error) {
 	var db = config.ConnectGormDB()
-	if db == nil {
-		return 0, errors.New("failed to initialize database connection")
-	}
 
 	var query = "SELECT SUM(amount_received) FROM earnings;"
 	var total int
