@@ -175,7 +175,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 	// Menghapus employee berdasarkan id
-	app.Delete("/employee", func(c *fiber.Ctx) error {
+	app.Delete("/employee/:id", func(c *fiber.Ctx) error {
 		var id string = c.Params("id")     // Mengambil id Dari parameter
 		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
 		if err != nil {
@@ -218,12 +218,13 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		})
 	})
 	// Mengirim ID baru
-	app.Get("/employee/new-id", func(c *fiber.Ctx) error {
+	app.Get("/employee/new/id", func(c *fiber.Ctx) error {
 		lastId, err := employee.LastId() // Mengambil Max ID dari basis data
 		if err != nil {
 			log.Println(err)
 			InternalServerError(c, err.Error())
 		}
+
 		if lastId <= 100020 {
 			lastId = 100020
 		}

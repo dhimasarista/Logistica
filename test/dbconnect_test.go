@@ -1,7 +1,7 @@
 package test
 
 import (
-	"logistica/app/config"
+	"logistica/config"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

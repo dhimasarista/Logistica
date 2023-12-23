@@ -21,7 +21,7 @@ type Earning struct {
 func (e *Earning) TotalEarnings() (int, error) {
 	var db = config.ConnectGormDB()
 
-	var query = "SELECT SUM(amount_received) FROM earnings;"
+	var query = "SELECT COALESCE(SUM(amount_received), 0) FROM earnings;"
 	var total int
 	result := db.Raw(query).Scan(&total)
 	if result.Error != nil {
