@@ -27,19 +27,36 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Price</th>
                                         <th>Total Order</th>
+                                        <th>Price</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Ryzen 5 5000X</td>
-                                        <td>3.900.000</td>
                                         <td>3</td>
+                                        <td>3.900.000</td>
                                         <td><h6 class="badge badge-danger">Fail</h6></td>
-                                        <td><a href="#">Update</a></td>
+                                        <td class="text-center">
+                                            <div class="dropdown">
+                                                <!-- editEmployeeModal -->
+                                                <!-- <a href="javascript:void(0);" data-toggle="modal" data-target="#editEmployeeModal" onclick="GetDataByID(parseInt('{{id}}'))">
+                                                    update
+                                                </a> -->
+                                                <a href="javascript:void(0);" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20"><g fill="currentColor"><circle cx="10" cy="15" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="10" cy="5" r="2"/></g></svg>
+                                                </a>
+                                        
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <a class="dropdown-item" href="javascript:void(0);">Update</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="javascript:void(0);">Detail</a>
+                                                    <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -53,146 +70,6 @@
             </div>
         </div>
     </div>
-    
- 
-
-    <script>
-        const products = [{
-            "id": 10002,
-            "name": "Intel i5 5600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.640.600",
-            "weight": 240,
-            "category": "Processor",
-            "stock": 64,
-        },{
-            "id": 10004,
-            "name": "Intel i7 7600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "1.890.600",
-            "weight": 239,
-            "category": "Processor",
-            "stock": 48,
-        },{
-            "id": 10003,
-            "name": "Intel i9 9600U",
-            "serial_number": "S320482057454534",
-            "manufacturer": "Intel Corporation",
-            "price": "2.640.600",
-            "weight": 238,
-            "category": "Processor",
-            "stock": 12,
-        }];
-        function checkNewProduct() {
-              const productSelect = document.getElementById('product-name');
-              const existingProduct = document.getElementById('existing-product');
-              const newProductInput = document.getElementById('new-product-input');
-
-              const serialNumberForm = document.getElementById('serial_number_form');
-              const manufacturerForm = document.getElementById('manufacturer_form');
-              const priceForm = document.getElementById("price-form");
-              const weightForm = document.getElementById("weight-form");
-              const stockAmountForm = document.getElementById("stock-amount-form");
-
-            if (productSelect.value === 'newProduct') {
-                existingProduct.style.display = 'none';
-                newProductInput.style.display = 'block';
-
-                serialNumberForm.value = null;
-                manufacturerForm.value = null;
-                priceForm.value = null;
-                weightForm.value = null;
-                stockAmountForm.value = null;
-
-                serialNumberForm.removeAttribute("disabled");
-                manufacturerForm.removeAttribute("disabled");
-                priceForm.removeAttribute("disabled");
-                weightForm.removeAttribute("disabled");
-            } else {
-                existingProduct.style.display = 'block';
-                newProductInput.style.display = 'none';
-
-                for (let index = 0; index < products.length; index++) {
-                    if (products[index]["id"] == parseInt(productSelect.value)) {
-                        // Menampilkan data produk yang sudah ada
-                        const serialNumber = products[index]["serial_number"];  // Ganti dengan data yang sesuai
-                        const manufacturer = products[index]["manufacturer"];   // Ganti dengan data yang sesuai
-
-                        serialNumberForm.value = serialNumber;
-                        serialNumberForm.setAttribute("disabled", true);
-                        manufacturerForm.value = manufacturer;
-                        manufacturerForm.setAttribute("disabled", true);
-                        priceForm.value = products[index]["price"];
-                        priceForm.setAttribute("disabled", true);
-                        weightForm.value = products[index]["weight"];
-                        weightForm.setAttribute("disabled", true);
-                    }
-                }
-                
-            }
-        }
-
-        function cancelNewProduct() {
-            const productSelect = document.getElementById('product-name');
-            const existingProduct = document.getElementById('existing-product');
-            const newProductInput = document.getElementById('new-product-input');
-
-            const serialNumberForm = document.getElementById('serial_number_form');
-            const manufacturerForm = document.getElementById('manufacturer_form');
-            const priceForm = document.getElementById("price-form");
-            const weightForm = document.getElementById("weight-form");
-            const stockAmountForm = document.getElementById("stock-amount-form");
-
-            serialNumberForm.value = null;
-            manufacturerForm.value = null;
-            priceForm.value = null;
-            weightForm.value = null;
-            stockAmountForm.value = null;
-
-            existingProduct.style.display = 'block';
-            newProductInput.style.display = 'none';   
-            productSelect.selectedIndex = 0;
-        }
-
-        function newCategoryEvent() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-            if (categorySelect.value === "newCategory") {
-                existingCategory.style.display = "none";
-                newCategory.style.display = "block";
-            } else {
-                existingCategory.style.display = "block";
-                newCategory.style.display = "none";
-            }
-        }
-
-        function cancelNewCategory() {
-            const categorySelect = document.getElementById("category-name");
-            const existingCategory = document.getElementById("existing-category");
-            const newCategory = document.getElementById("new-category");
-
-            categorySelect.selectedIndex = 0;
-            existingCategory.style.display = "block";
-            newCategory.style.display = "none";
-        }
-
-        // document.getElementById('productForm').addEventListener('submit', function(event) {
-        // event.preventDefault();
-
-        // var productName = document.getElementById('productName').value;
-        // var newProductName = document.getElementById('newProductName').value;
-
-        // // Lakukan sesuatu dengan data formulir (misalnya, kirim ke server, tampilkan di halaman, dll.)
-        // if (productName === 'newProduct' && newProductName.trim() !== '') {
-        //     alert('Menambahkan produk baru: ' + newProductName);
-        // } else {
-        //     alert('Memilih produk: ' + productName);
-        // }
-        // });
-    </script>
     <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
             <div class="card-header py-3">
@@ -205,102 +82,48 @@
                             <div class="col-md-12">
                             <div id="existing-product">
                                     <div class="form-group">
-                                        <label id="judul-surat-label" for="product_name">Product Name</label>
-                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onchange="checkNewProduct()" onfocus="this.size=1;" onchange='this.size=1;'>
+                                        <label id="product-label" for="product_name">Product Name</label>
+                                        <select class="form-control scrollable-menu" id="product-name" name="productName" onfocus="this.size=1;" onchange='this.size=1;'>
                                             <option value="" selected disabled>Select Product</option>
-                                            <option value="newProduct">New Product</option>
-                                            <option value="10002">Intel i5 5600U | stocks: 320</option>
-                                            <option value="10004">Intel i7 7600U</option>
-                                            <option value="10003">Intel i9 9600U</option>
+                                            {{#products}}
+                                                <option value="{{id}}" data-price="{{price}}">{{name}} | stocks: {{stocks}}</option>
+                                            {{/products}}
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="new-product-input" style="display: none;">
-                            <div class="col-md-12">
-                                <label id="nomor-surat-label" for="nomor-surat">Product Name</label>
-                                <div class="input-group mb-3">
-                                    <input type="email" name="nomor-surat" id="nomor-surat" placeholder="EX: Intel i5 5600U" class="form-control" required>
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" id="button-cancel-new-product" onclick="cancelNewProduct()">cancel</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row">
-                            
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="serial_number_label" for="serialNumber">Serial Number</label>
-                                    <input type="email" name="serialNumber" id="serial_number_form" placeholder="EX: S23864872548" class="form-control" required>
+                                    <label id="buyer-label" for="buyer">Buyer</label>
+                                    <input type="pengirim" name="buyer" id="buyer-form" class="form-control" placeholder="Ex: Anto"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="manufacturer_label" for="manufacturer">Manufacturer</label>
-                                    <input type="pengirim" name="manufacturer" id="manufacturer_form" class="form-control" placeholder="Ex: Google Inc"/>
+                                    <label id="pieces_label" for="Pieces">Order Quantity</label>
+                                    <input type="number" name="Pieces" id="pieces-form" placeholder="EX: 100" class="form-control">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="pengirim-label" for="stock">Stock Amount</label>
-                                    <input type="stock" name="stock" id="stock-amount-form" class="form-control" placeholder="Ex: 1024"/>
+                                    <label id="pengirim-label" for="stock">Number Phone</label>
+                                    <input type="stock" name="stock" id="number-phone-buyer" class="form-control" placeholder="Ex: 1024"/>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label id="price_label" for="pengirim">Price</label>
-                                    <input type="pengirim" name="price" id="price-form" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
+                                    <label id="address_label" for="pengirim">Address</label>
+                                    <input type="pengirim" name="address" id="address-buyer" class="form-control" placeholder="Ex: 2.240.000 (IDR)"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label id="pengirim-label" for="weight">Weight</label>
-                                    <input type="pengirim" name="weight" id="weight-form" class="form-control" placeholder="Ex: 1024 (Gram)"/>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="existing-category">
-                                    <div class="form-group">
-                                        <label id="judul-surat-label" for="product_name">Product Category</label>
-                                        <select class="form-control scrollable-menu" id="category-name" name="productName" onchange="newCategoryEvent()" onfocus="this.size=1;" onchange='this.size=1;'>
-                                            <option value="" selected disabled>Select Category</option>
-                                            <option value="newCategory">New Category</option>
-                                            <option value="product1">Produk 1</option>
-                                            <option value="product2">Produk 2</option>
-                                            <option value="product3">Produk 3</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group" id="new-category" style="display: none;">
-                                    <label id="pengirim-label" for="weight">New Category</label>
-                                    <div class="input-group mb-3">
-                                    <input type="pengirim" name="pengirim" id="pengirim" class="form-control" placeholder="Ex: Processor"/>
-                                    <div class="input-group-append">
-                                        <a href="#" class="input-group-text" id="button-cancel-new-category" onclick="cancelNewCategory()">cancel</a>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Notes <small>(optional)</small></label>
-                                    <textarea  id="comments" class="form-control" name="comment" placeholder="Write somethings..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="submit" id="submit" class="btn btn-primary btn-block">Upload</button>
+                                <button id="submit-order" class="btn btn-primary btn-block">Order</button>
                             </div>
                         </div>
 
@@ -310,31 +133,91 @@
         </div>
         
     </div>
-
-        <!-- <script>
-            function showTab(tabId) {
-                // Sembunyikan semua card body
-                var cardBodies = document.getElementsByClassName('card-body');
-                for (var i = 0; i < cardBodies.length; i++) {
-                    cardBodies[i].style.display = 'none';
-                }
-        
-                // Hapus kelas "active" dari semua tautan
-                var navLinks = document.getElementsByClassName('nav-link');
-                for (var j = 0; j < navLinks.length; j++) {
-                    navLinks[j].classList.remove('active');
-                }
-        
-                // Tampilkan card body dengan id yang sesuai
-                document.getElementById(tabId).style.display = 'block';
-        
-                // Tambahkan kelas "active" pada tautan yang diklik
-                var clickedLink = event.currentTarget;
-                clickedLink.classList.add('active');
-            }
-        </script>       -->
-
 </div>
+<!-- Modal Order -->
+<div class="modal fade" id="confirm-order-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-order-modalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 50%; top: 70px" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title placeholder col-6" id="confirm-order-modalLabel">Order Detail</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="id-employee-edit">
+            <h6>Product : <span id="order-product-name"></span></h6>
+            <h6>Price  : <span id="order-product-price"></span></h6>
+            <h5>Total <span id="total-order"></span></h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    const productName = document.getElementById("product-name");
+    const buyerForm = document.getElementById("buyer-form");
+    const piecesForm = document.getElementById("pieces-form");
+    const numberPhoneBuyer = document.getElementById("number-phone-buyer")
+    const addressBuyer = document.getElementById("address-buyer");
+    
+    const orderProductName = document.getElementById("order-product-name");
+    const orderProductPrice = document.getElementById("order-product-price");
+    const totalOrder = document.getElementById("total-order");
+
+    document.getElementById("submit-order").addEventListener("click", (e) => {
+        e.preventDefault();
+        const isFormEmpty = buyerForm.value === "" || piecesForm.value === "" || numberPhoneBuyer.value === "" || addressBuyer.value === ""
+        if (isFormEmpty) {
+            ErrorNotif("Form is Empty!");
+            return 0;
+        }
+        Swal.fire({
+            title: 'Loading!',
+            html: 'Please wait...',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        const data = {
+            idProduct: productName.value,
+            quantity: piecesForm.value
+        }
+
+        fetch("/order/calculate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(results => {
+            console.log(results);
+            if (results.status != 200) {
+                ErrorNotif(results.error);
+                Swal.close();
+                return 0;
+            }
+            else {
+                Swal.close();
+                $('#confirm-order-modal').modal('show');
+                orderProductName.innerText = results.data.name; 
+                orderProductPrice.innerText = results.data.price;
+                totalOrder.innerText = `${piecesForm.value} x ${results.data.price} = ${results.data.payment}`;
+            }
+        })
+        .error(error => {
+            console.error(error);
+            Swal.close();
+        })
+    })
+</script>
 <script>
     const cardProducts = document.getElementById("card-products");
     const cardAddStocks = document.getElementById("card-add-stocks");

@@ -3,45 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SweetAlert Loading</title>
-
-    <!-- Include SweetAlert2 CSS and JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-
+    <title>Bootstrap Dropdown with Search and Create New Item</title>
     <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-    <!-- Include Font Awesome CSS (for loading icon) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <div class="container mt-5">
-        <button onclick="showLoadingAlert()" class="btn btn-primary">Show Loading Alert</button>
+<div class="container mt-5">
+    <div class="form-group">
+        <label for="dropdown">Select an item:</label>
+        <div class="input-group">
+            <select id="dropdown" class="form-control">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+                <!-- Add more options as needed -->
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" data-toggle="dropdown">
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <input class="form-control" type="text" id="searchInput" placeholder="Search...">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" id="createNewItem">Create New Item</a>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Include Bootstrap JS (make sure it's included after SweetAlert2) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
-        function showLoadingAlert() {
-            Swal.fire({
-                title: "Please Wait!",
-                // html: "I will close in <b></b> milliseconds.",
-                didOpen: () => {
-                    Swal.showLoading();
-                },
+<script>
+    $(document).ready(function () {
+        // Dropdown search functionality
+        $("#searchInput").on("input", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#dropdown option").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
             });
+        });
 
-            // Simulate an asynchronous operation (e.g., AJAX call)
-            setTimeout(() => {
-                Swal.close(); // Close the loading alert after some time
-            }, 3000);
-        }
-    </script>
+        // Handle "Create New Item" click
+        $("#createNewItem").click(function () {
+            var newItem = prompt("Enter the name of the new item:");
+            if (newItem) {
+                // Add the new item to the dropdown
+                $("#dropdown").append('<option value="' + newItem + '">' + newItem + '</option>');
+                // Select the new item
+                $("#dropdown").val(newItem);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

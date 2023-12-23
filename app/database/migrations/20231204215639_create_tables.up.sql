@@ -97,12 +97,14 @@ CREATE TABLE stock_records (
 CREATE TABLE order_detail (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     buyer VARCHAR(255),
+    number_phone_buyer VARCHAR(255),
     receiver VARCHAR(255),
-    shipper VARCHAR(255),
+    shipping_address VARCHAR(255),
     documentation LONGBLOB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
+    FOREIGN KEY (shipments_detail) REFERENCES shipments_detail(id)
 );
 
 CREATE TABLE orders (
@@ -117,18 +119,6 @@ CREATE TABLE orders (
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (status_id) REFERENCES order_status(id),
     FOREIGN KEY (detail_id) REFERENCES order_detail(id)
-);
-
-CREATE TABLE shipment (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    order_id INT,
-    delivery_number VARCHAR(255),
-    shipping_address VARCHAR(255),
-    coordinate VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
 CREATE TABLE earnings (

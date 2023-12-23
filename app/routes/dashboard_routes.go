@@ -14,6 +14,7 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 	employee := models.Employee{}
 	product := models.Product{}
 	earning := models.Earning{}
+	order := models.Order{}
 
 	app.Get("/dashboard", func(c *fiber.Ctx) error {
 		var path string = c.Path()
@@ -37,6 +38,12 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 			return InternalServerError(c, err.Error())
 		}
 
+		totalOrders, err := order.TotalOrders()
+		if err != nil {
+			log.Println(err)
+			return InternalServerError(c, err.Error())
+		}
+
 		// Mengirimkan halaman HTML yang dihasilkan ke browser
 		return c.Render("dashboard", fiber.Map{
 			"path":            path,
@@ -44,6 +51,7 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 			"total_employees": totalEmployees,
 			"total_products":  totalProducts,
 			"earnings":        utility.RupiahFormat(int64(totalEarnings)),
+			"total_orders":    totalOrders,
 		})
 	},
 	)

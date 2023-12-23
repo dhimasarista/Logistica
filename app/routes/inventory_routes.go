@@ -16,6 +16,7 @@ import (
 )
 
 func InventoryRoutes(app *fiber.App, store *session.Store) {
+	time.Sleep(1 * time.Second)
 	var productModel *models.Product = &models.Product{}
 	var manufacturerModel *models.Manufacturer = &models.Manufacturer{}
 	categoryModel := &models.Category{}
@@ -51,7 +52,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error":  err.Error(),
 			})
 		}
-		time.Sleep(1 * time.Second)
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
 			"error":   nil,
@@ -61,6 +61,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Put("/product/update", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)
 		var formData map[string]string // Variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()
 		err := json.Unmarshal(body, &formData)
@@ -137,8 +138,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error": err.Error(),
 			})
 		}
-
-		time.Sleep(1 * time.Second)
 
 		// Mengembalikan respons JSON setelah menambahkan produk baru
 		return c.JSON(fiber.Map{

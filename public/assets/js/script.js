@@ -49,3 +49,11 @@ function ServerStatusOke(msg) {
         message: msg,
     })
 }
+
+function ErrorNotif(error) {
+    notyf.open({
+        type: "info",
+        background: "blue",   
+        message: error, 
+    });
+}
