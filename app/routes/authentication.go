@@ -81,7 +81,7 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 			return err
 		}
 
-		log.Println("Login:", usernameSession)
+		log.Println("Login:", usernameSession, c.IP())
 		return c.Redirect("/dashboard")
 	})
 }

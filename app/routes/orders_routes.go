@@ -6,7 +6,6 @@ import (
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -32,7 +31,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/calculate", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second)
 		var formData map[string]string
 		// Mengambil data dari body yang dikirim oleh client
 		err := c.BodyParser(&formData)

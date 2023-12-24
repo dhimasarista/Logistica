@@ -6,25 +6,26 @@
 </head>
 
 <body id="page-top">
-
+    
     <!-- Page Wrapper -->
     <div id="wrapper">
-
+        
         <!-- Sidebar -->
         {{> views/partials/sidebar.mustache}}
         <!-- End of Sidebar -->
-
+        
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
+            
             <!-- Main Content -->
             <div id="content">
-
+                
                 <!-- Topbar -->
                 {{> views/partials/topbar.mustache}}
                 <!-- End of Topbar -->
-
+                
                 <!-- Begin Page Content -->
+                <script src="./assets/js/script.js"></script>
                 {{> views/contents/orders_content.mustache}}
                 <!-- /.container-fluid -->
 
@@ -47,10 +48,5 @@
     </a>
 
     {{> views//partials/logout_modal.mustache}}
-
-    {{! Scripts }}
-    {{> views//partials/scripts.mustache}}
-
 </body>
-
 </html>

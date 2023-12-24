@@ -50,10 +50,10 @@ function ServerStatusOke(msg) {
     })
 }
 
-function ErrorNotif(error) {
+function LoadingNotif(msg) {
     notyf.open({
         type: "info",
         background: "blue",   
-        message: error, 
+        message: msg, 
     });
 }
