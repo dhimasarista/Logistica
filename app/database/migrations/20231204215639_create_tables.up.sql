@@ -63,16 +63,6 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES product_category(id)
 );
 
-CREATE TABLE add_stock (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    amount_added BIGINT NOT NULL,
-    product_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
-
 CREATE TABLE order_status (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255),
@@ -88,6 +78,7 @@ CREATE TABLE stock_records (
     after_record INT NOT NULL,
     product_id INT,
     description TEXT,
+    is_addition TINYINT(1) DEFAULT 1, -- 1 untuk penambahan, 0 untuk yang lain
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
@@ -104,7 +95,6 @@ CREATE TABLE order_detail (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
-    FOREIGN KEY (shipments_detail) REFERENCES shipments_detail(id)
 );
 
 CREATE TABLE orders (
@@ -131,3 +121,18 @@ CREATE TABLE earnings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
+
+-- Default Employee untuk default user
+INSERT INTO employees VALUES(1, "administrator", "0", "0", NULL, 1, 1, NOW(), NOW(), NULL);
+-- Default User as administrator
+INSERT INTO users(id, username, password, employee_id) VALUES(1, "0x0002", "$2a$12$jb.qLEDHWmvFptryo8J/e.LnxhxNu9N5mmH.IEmHkjMvNYbb9f.iq", 1, NOW(), NOW(), NULL);
+-- Positions
+INSERT INTO positions VALUES(2222, "software engineer", NOW(), NOW(), NULL);
+INSERT INTO positions VALUES(2223, "human resource", NOW(), NOW(), NULL);
+INSERT INTO positions VALUES(2224, "admin staff", NOW(), NOW(), NULL);
+
+INSERT INTO order_status VALUES(0, "cancelled", NOW(), NOW(), NULL);
+INSERT INTO order_status VALUES(1, "on delivery", NOW(), NOW(), NULL);
+INSERT INTO order_status VALUES(2, "received", NOW(), NOW(), NULL);
+INSERT INTO order_status VALUES(3, "returned", NOW(), NOW(), NULL);
+INSERT INTO order_status VALUES(4, "fail", NOW(), NOW(), NULL);

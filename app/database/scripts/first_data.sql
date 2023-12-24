@@ -13,6 +13,3 @@ INSERT INTO order_status VALUES(2, "received", NOW(), NOW(), NULL);
 INSERT INTO order_status VALUES(3, "returned", NOW(), NOW(), NULL);
 INSERT INTO order_status VALUES(4, "fail", NOW(), NOW(), NULL);
 
-
-INSERT INTO orders VALUES(100, 3, 1021, 1, 100, NOW(), NOW(), NULL);
-
