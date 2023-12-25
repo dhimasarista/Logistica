@@ -36,15 +36,15 @@ func (od *OrderDetail) GetByID(id int) error {
 	return nil
 }
 
-func (od *OrderDetail) NewOrder(buyer, numberPhone, address string) (sql.Result, error) {
+func (od *OrderDetail) NewOrder(id int, buyer, numberPhone, address string) (sql.Result, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "INSERT INTO order_detail(buyer, number_phone_buyer, shipping_address) VALUES(?, ?, ?);"
-	result, err := db.Exec(query, buyer, numberPhone, address)
+	var query string = "INSERT INTO order_detail(id, buyer, number_phone_buyer, shipping_address) VALUES(?, ?, ?, ?);"
+	result, err := db.Exec(query, id, buyer, numberPhone, address)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			if mysqlErr.Number == 1062 {
@@ -55,4 +55,24 @@ func (od *OrderDetail) NewOrder(buyer, numberPhone, address string) (sql.Result,
 	}
 
 	return result, nil
+}
+
+func (o *OrderDetail) LastId() (int, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var db = config.ConnectSQLDB()
+	defer db.Close()
+
+	var lastId int
+	var query string = "SELECT COALESCE(MAX(id), 1000) FROM orders;"
+	err := db.QueryRow(query).Scan(
+		&lastId,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
 }

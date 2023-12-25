@@ -3,63 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Dropdown with Search and Create New Item</title>
-    <!-- Include Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .offcanvas {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #fff; /* Mengubah warna latar belakang menjadi putih */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Menambahkan bayangan */
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .offcanvas a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .offcanvas a:hover {
+            color: #f1f1f1;
+        }
+
+        .offcanvas .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-right: 50px;
+        }
+
+        #main {
+            transition: margin-right 0.5s;
+            padding: 16px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <div class="form-group">
-        <label for="dropdown">Select an item:</label>
-        <div class="input-group">
-            <select id="dropdown" class="form-control">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                <!-- Add more options as needed -->
-            </select>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" data-toggle="dropdown">
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-menu">
-                    <input class="form-control" type="text" id="searchInput" placeholder="Search...">
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" id="createNewItem">Create New Item</a>
-                </div>
-            </div>
-        </div>
+    <div id="myOffcanvas" class="offcanvas">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeOffcanvas()">×</a>
+        <a href="#">Detail Item 1</a>
+        <a href="#">Detail Item 2</a>
+        <a href="#">Detail Item 3</a>
+        <!-- Tambahkan detail sesuai kebutuhan -->
     </div>
-</div>
 
-<!-- Include Bootstrap JS and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div id="main">
+        <span style="font-size:30px;cursor:pointer" onclick="openOffcanvas()">☰ Open</span>
+    </div>
 
-<script>
-    $(document).ready(function () {
-        // Dropdown search functionality
-        $("#searchInput").on("input", function () {
-            var searchText = $(this).val().toLowerCase();
-            $("#dropdown option").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
-            });
-        });
+    <script>
+        function openOffcanvas() {
+            document.getElementById("myOffcanvas").style.width = "250px";
+            document.getElementById("main").style.marginRight = "250px";
+        }
 
-        // Handle "Create New Item" click
-        $("#createNewItem").click(function () {
-            var newItem = prompt("Enter the name of the new item:");
-            if (newItem) {
-                // Add the new item to the dropdown
-                $("#dropdown").append('<option value="' + newItem + '">' + newItem + '</option>');
-                // Select the new item
-                $("#dropdown").val(newItem);
-            }
-        });
-    });
-</script>
+        function closeOffcanvas() {
+            document.getElementById("myOffcanvas").style.width = "0";
+            document.getElementById("main").style.marginRight = "0";
+        }
+    </script>
 
 </body>
 </html>

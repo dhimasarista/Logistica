@@ -14,3 +14,10 @@ func TestTotalOrders(t *testing.T) {
 	assert.Equal(t, 0, total)
 	assert.Nil(t, err)
 }
+
+func TestNewOrders(t *testing.T) {
+	var order = models.Order{}
+	err := order.NewOrder(2, 2, 1021, 2, 1)
+
+	assert.Nil(t, err)
+}

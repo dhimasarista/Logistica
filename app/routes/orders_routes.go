@@ -12,7 +12,10 @@ import (
 )
 
 func OrdersRoutes(app *fiber.App, store *session.Store) {
-	var product = models.Product{}
+	var product = &models.Product{}
+	var order = &models.Order{}
+	var orderDetail = &models.OrderDetail{}
+
 	app.Get("/orders", func(c *fiber.Ctx) error {
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
@@ -23,10 +26,17 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			return InternalServerError(c, err.Error())
 		}
 
+		orders, err := order.FindAll()
+		if err != nil {
+			log.Println(err)
+			return InternalServerError(c, err.Error())
+		}
+
 		return c.Render("orders_page", fiber.Map{
 			"path":     path,
 			"user":     username,
 			"products": products,
+			"orders":   orders,
 		})
 	})
 
@@ -77,6 +87,69 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			"error":  nil,
 			"status": c.Response().StatusCode(),
 			"data":   data,
+		})
+	})
+
+	app.Post("/order/new", func(c *fiber.Ctx) error {
+		var formData map[string]string
+		err := c.BodyParser(&formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		// Mengambil Last ID untuk Orders dan Order Detail
+		// Dengan patokan dari last ID order_detail
+		lastIdOrderDetail, err := orderDetail.LastId()
+		newOrderID := lastIdOrderDetail + 1
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		// OrderData
+		idProduct, _ := strconv.Atoi(formData["idProduct"])
+		buyer := formData["buyer"]
+		numberPhone := formData["numberPhone"]
+		address := formData["address"]
+		quantity, _ := strconv.Atoi(formData["quantity"])
+		orderStatusID := 1
+
+		// Create data order detail terlebih dahulu
+		_, err = orderDetail.NewOrder(newOrderID, buyer, numberPhone, address)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+		// Jika tidak error, lanjut ke Order
+		err = order.NewOrder(int64(newOrderID), int64(quantity), int64(idProduct), int64(orderStatusID), int64(newOrderID))
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		// Ketika order masuk maka stok akan dikurangin
+		// Mengambil stok terakhir terlebih dahulu
+		lastStock, _ := product.LastStocks(idProduct)
+		product.UpdateStocks(idProduct, lastStock-quantity)
+
+		return c.JSON(fiber.Map{
+			"error":   nil,
+			"status":  c.Response().StatusCode(),
+			"data":    formData,
+			"message": "Success Add Order",
 		})
 	})
 }
