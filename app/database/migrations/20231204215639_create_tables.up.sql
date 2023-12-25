@@ -100,6 +100,7 @@ CREATE TABLE order_detail (
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     pieces INT NOT NULL,
+    total_price INT NOT NULL,
     product_id INT,
     status_id INT,
     detail_id INT,
