@@ -357,6 +357,7 @@ blockquote{
     const confirmOrder = document.getElementById("confirm-order");
 
     confirmOrder.addEventListener("click", () => {
+        confirmOrder.setAttribute("disabled", true)
         const data = {
             idProduct: productName.value,
             quantity: piecesForm.value,
@@ -374,6 +375,7 @@ blockquote{
         .then(response => response.json())
         .then(results => {
             console.log(results);
+            confirmOrder.removeAttribute("disabled");
             if (results.status !== 200) {
                 Swal.fire({
                     icon: "error",
@@ -396,6 +398,7 @@ blockquote{
         })
         .catch(error => {
             console.error(error);
+            confirmOrder.removeAttribute("disabled");
         })
     })
 </script>
