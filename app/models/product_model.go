@@ -51,9 +51,9 @@ func (p *Product) GetById(id int) error {
 	FROM 
 		products p 
 	JOIN 
-		manufacturer m ON p.manufacturer_id = m.id 
+		manufacturers m ON p.manufacturer_id = m.id 
 	JOIN 
-		product_category c ON p.category_id = c.id
+		product_categories c ON p.category_id = c.id
 	WHERE p.id = ?;
 	`
 	err := db.QueryRowContext(ctx, query, id).Scan(
@@ -98,9 +98,9 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	FROM 
 		products p 
 	JOIN 
-		manufacturer m ON p.manufacturer_id = m.id 
+		manufacturers m ON p.manufacturer_id = m.id 
 	JOIN 
-		product_category c ON p.category_id = c.id
+		product_categories c ON p.category_id = c.id
 	WHERE p.deleted_at IS NULL;
 	`
 
