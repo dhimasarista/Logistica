@@ -24,6 +24,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	// app.Put("/product/id")
 
 	app.Delete("/product/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID produk dari parameter URL
 		productID := c.Params("id")
 
@@ -149,6 +150,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/product/new", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		var lastId int
 		// Mendapatkan ID terakhir dari produk
 		lastId, err := productModel.LastId()
@@ -242,8 +244,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		time.Sleep(1 * time.Second)
-
 		// Mengembalikan respons JSON setelah menambahkan produk baru
 		return c.JSON(fiber.Map{
 			"error":   nil,
@@ -254,6 +254,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Get("/inventory", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan path dari URL
 		var path string = c.Path()
 
@@ -292,6 +293,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Endpoint untuk mendapatkan detail produk berdasarkan ID
 	app.Get("/product/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID produk dari parameter URL
 		productID := c.Params("id")
 
@@ -335,6 +337,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 	// Endpoint untuk memeriksa keberadaan ID dalam database
 	app.Get("/inventory/check/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID dari parameter URL
 		idString := c.Params("id")
 		idInteger, err := strconv.Atoi(idString)
@@ -376,6 +379,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 	// Endpoint untuk memperbarui stok produk berdasarkan ID
 	app.Post("/inventory/stocks/update", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendeklarasikan variabel untuk menyimpan data yang diterima dari client-side
 		var formData map[string]interface{}
 

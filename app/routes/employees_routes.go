@@ -24,6 +24,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 	// Merender halaman employees_page
 	app.Get("/employees", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
+
 		// Mendapatkan path dan username dari sesi
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
@@ -50,6 +52,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Mengambil data employee berdasarkan id
 	app.Get("/employee/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
 		idStr := c.Params("id")
 		idInteger, _ := strconv.Atoi(idStr)
 
@@ -69,6 +72,8 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Membuat data employee baru
 	app.Post("/employee/new", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second) // Simulasi latensi
+
 		// variabel untuk menyimpan data yang diterima dari client-side
 		var formData map[string]interface{}
 		err := c.BodyParser(&formData)
@@ -117,7 +122,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		time.Sleep(1 * time.Second)
 		// Berhasil, kirimkan response 200 ke client
 		return c.JSON(fiber.Map{
 			"error":  nil,
@@ -128,6 +132,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Memperbarui data employee
 	app.Put("/employee", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)         // Simulasi latensi
 		var formData map[string]interface{} // Variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()
 		err := json.Unmarshal(body, &formData)
@@ -176,6 +181,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Menghapus employee berdasarkan id
 	app.Delete("/employee/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)        // Simulasi latensi
 		var id string = c.Params("id")     // Mengambil id Dari parameter
 		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
 		if err != nil {
@@ -199,6 +205,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Memeriksa ketersedian ID
 	app.Get("/employee/check/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)        // Simulasi latensi
 		var id string = c.Params("id")     // Mendapatkan id dari paramater path
 		idInteger, err := strconv.Atoi(id) // Konversi string ke integer
 		if err != nil {
@@ -219,6 +226,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Mengirim ID baru
 	app.Get("/employee/new/id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)      // Simulasi latensi
 		lastId, err := employee.LastId() // Mengambil Max ID dari basis data
 		if err != nil {
 			log.Println(err)
