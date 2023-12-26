@@ -27,7 +27,7 @@ type OrderDetail struct {
 func (od *OrderDetail) GetByID(id int) error {
 	var db = config.ConnectGormDB()
 
-	query := "SELECT * FROM order_detail WHERE id = ?"
+	query := "SELECT * FROM order_details WHERE id = ?"
 	result := db.Raw(query, id).Scan(&od)
 	if result.Error != nil {
 		return result.Error
@@ -40,7 +40,7 @@ func (od *OrderDetail) NewOrder(tx *sql.Tx, id int, buyer, numberPhone, address 
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var query string = "INSERT INTO order_detail(id, buyer, number_phone_buyer, shipping_address) VALUES(?, ?, ?, ?);"
+	var query string = "INSERT INTO order_details(id, buyer, number_phone_buyer, shipping_address) VALUES(?, ?, ?, ?);"
 	result, err := tx.Exec(query, id, buyer, numberPhone, address)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
