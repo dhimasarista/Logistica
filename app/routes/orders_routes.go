@@ -18,6 +18,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
 	var orderDetail = &models.OrderDetail{}
+	var earning = &models.Earning{}
 	var db *sql.DB
 
 	app.Get("/orders", func(c *fiber.Ctx) error {
@@ -174,6 +175,18 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+
+		// Kemudian memasukkan pendapatan ke tabel earnings
+		err = earning.NewOrder(tx, newOrderID, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
+		if err != nil {
+			log.Println(err)
+			tx.Rollback()
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
 		// Commit transaksi jika semua operasi berhasil
 		tx.Commit()
 

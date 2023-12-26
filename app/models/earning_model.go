@@ -31,4 +31,15 @@ func (e *Earning) TotalEarnings() (int, error) {
 	return total, nil
 }
 
+func (e *Earning) NewOrder(tx *sql.Tx, id, amountReceived int, productName string, pieces, price int) error {
+
+	var query = "INSERT INTO earnings(id, amount_received, product_name, pieces, price) VALUES(?,?,?,?,?);"
+	_, err := tx.Exec(query, id, amountReceived, productName, pieces, price)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // INSERT INTO earnings(amount_received, product_name, pieces, price) VALUES(3740000, 'Ryzen 3200G', 2, 1870000);

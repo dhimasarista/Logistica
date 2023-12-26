@@ -620,16 +620,18 @@
     });
 
 
-
+    const submitEmployeeButton = document.getElementById("submit-new-employee");
     // Submit New Employee
-    document.getElementById("submit-new-employee").addEventListener("click", (e) => {
+    submitEmployeeButton.addEventListener("click", (e) => {
         // if (!(/^[0-9]+$/.test(idEmployeeForm.value))) {
         //     return 0;
         // }
         e.preventDefault();
+        submitEmployeeButton.setAttribute("disabled", true);
         fetch(`/employee/check/${idEmployeeForm.value}`)
         .then(response => response.json())
         .then(results => {
+            submitEmployeeButton.removeAttribute("disabled");
             if (results.is_exists) {
                 Swal.fire({
                     icon: "error",
@@ -704,6 +706,7 @@
         .catch(error => {
             console.error(error);
             ErrorNotif(error);
+            submitEmployeeButton.removeAttribute("disabled");
         })
     });
 </script>
