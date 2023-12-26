@@ -100,7 +100,9 @@ func (p *Product) FindAll() ([]map[string]interface{}, error) {
 	JOIN 
 		manufacturer m ON p.manufacturer_id = m.id 
 	JOIN 
-		product_category c ON p.category_id = c.id;`
+		product_category c ON p.category_id = c.id
+	WHERE p.deleted_at IS NULL;
+	`
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
@@ -195,6 +197,7 @@ func (p *Product) UpdateProduct(id int, name, serialNumber string, manufacturer,
 	return result, nil
 }
 
+// Soft Delete
 func (p *Product) DeleteProduct(id int) error {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -202,7 +205,7 @@ func (p *Product) DeleteProduct(id int) error {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "DELETE FROM products WHERE id = ?"
+	var query string = "UPDATE products SET deleted_at = NOW() where id = ?;"
 	_, err := db.Exec(query, id)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {

@@ -6,6 +6,7 @@ import (
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -41,6 +42,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/calculate", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)
 		var formData map[string]string
 		// Mengambil data dari body yang dikirim oleh client
 		err := c.BodyParser(&formData)
@@ -91,6 +93,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/new", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)
 		var formData map[string]string
 		err := c.BodyParser(&formData)
 		if err != nil {
@@ -120,6 +123,18 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		address := formData["address"]
 		quantity, _ := strconv.Atoi(formData["quantity"])
 		orderStatusID := 1
+
+		if quantity == 0 {
+			return c.JSON(fiber.Map{
+				"error":  "Quantity is Zero",
+				"status": fiber.StatusInternalServerError,
+			})
+		} else if quantity < 0 {
+			return c.JSON(fiber.Map{
+				"error":  "Bad Request",
+				"status": fiber.StatusInternalServerError,
+			})
+		}
 
 		// Create data order detail terlebih dahulu
 		_, err = orderDetail.NewOrder(newOrderID, buyer, numberPhone, address)
