@@ -22,7 +22,7 @@ func (m *Manufacturer) FindAll() ([]map[string]interface{}, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	query := "SELECT id, name FROM manufacturer"
+	query := "SELECT id, name FROM manufacturers;"
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
@@ -59,7 +59,7 @@ func (m *Manufacturer) NewManufacturer(id int, name string) (sql.Result, error) 
 	if id <= 9100 {
 		id = 9000 // sebagai nilai set otomatis jika row belum ada
 	}
-	var query string = "INSERT INTO manufacturer VALUES(?, ?, NOW(), NOW(), NULL)"
+	var query string = "INSERT INTO manufacturers VALUES(?, ?, NOW(), NOW(), NULL)"
 	result, err := db.Exec(query, id, name)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
@@ -81,7 +81,7 @@ func (m *Manufacturer) LastId() (int, error) {
 	defer db.Close()
 
 	var lastId int
-	var query string = "SELECT COALESCE(MAX(id), 9100) FROM manufacturer;"
+	var query string = "SELECT COALESCE(MAX(id), 9100) FROM manufacturers;"
 	err := db.QueryRow(query).Scan(
 		&lastId,
 	)

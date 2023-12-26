@@ -22,7 +22,7 @@ func (c *Category) FindAll() ([]map[string]interface{}, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	query := "SELECT id, name FROM product_category;"
+	query := "SELECT id, name FROM product_categories;"
 
 	rows, err := db.QueryContext(ctx, query)
 	if err != nil {
@@ -59,7 +59,7 @@ func (c *Category) NewCategory(id int, name string) (sql.Result, error) {
 	if id <= 889 {
 		id = 890 // sebagai nilai set otomatis jika row belum ada
 	}
-	var query string = "INSERT INTO product_category VALUES(?, ?, NOW(), NOW(), NULL)"
+	var query string = "INSERT INTO product_categories VALUES(?, ?, NOW(), NOW(), NULL)"
 	result, err := db.Exec(query, id, name)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
@@ -80,7 +80,7 @@ func (c *Category) LastId() (int, error) {
 	defer db.Close()
 
 	var lastId int
-	var query string = "SELECT COALESCE(MAX(id), 890) FROM product_category;"
+	var query string = "SELECT COALESCE(MAX(id), 890) FROM product_categories;"
 	err := db.QueryRow(query).Scan(
 		&lastId,
 	)

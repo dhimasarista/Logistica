@@ -24,8 +24,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 
 	// Merender halaman employees_page
 	app.Get("/employees", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
-
 		// Mendapatkan path dan username dari sesi
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)

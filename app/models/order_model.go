@@ -3,15 +3,18 @@ package models
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"logistica/app/config"
 	"time"
 
+	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
 type Order struct {
-	ID     sql.NullInt64 `gorm:"primaryKey;column:id" json:"id"`
-	Pieces sql.NullInt64 `gorm:"column:pieces" json:"pieces"`
+	ID         sql.NullInt64 `gorm:"primaryKey;column:id" json:"id"`
+	Pieces     sql.NullInt64 `gorm:"column:pieces" json:"pieces"`
+	TotalPrice sql.NullInt64 `gorm:"column:total_price" json:"total_price"`
 	// Foreign Key
 	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
 	StatusID  sql.NullInt64 `gorm:"column:status_id" json:"status_id"`
@@ -35,12 +38,19 @@ func (o *Order) TotalOrders() (int, error) {
 	return total, nil
 }
 
-func (o *Order) NewOrder(id, pieces, productID, statusID, detailID int64) error {
-	var db = config.ConnectGormDB()
+func (o *Order) NewOrder(tx *sql.Tx, id, pieces, totalPrice, productID, statusID, detailID int64) error {
+	mutex.Lock()
+	defer mutex.Unlock()
 
-	results := db.Exec("INSERT INTO orders(id, pieces, product_id, status_id, detail_id) VALUES(?, ?, ?, ?, ?);", id, pieces, productID, statusID, detailID)
-	if results.Error != nil {
-		return results.Error
+	var query string = "INSERT INTO orders(id, pieces, total_price, product_id, status_id, detail_id) VALUES(?, ?, ?, ?, ?, ?);"
+	_, err := tx.Exec(query, id, pieces, totalPrice, productID, statusID, detailID)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return errors.New("race condition, id has been taken")
+			}
+		}
+		return err
 	}
 
 	return nil

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"log"
+	"logistica/app/config"
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"logistica/app/utility"
@@ -16,6 +17,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
 	var orderDetail = &models.OrderDetail{}
+	var db = config.ConnectSQLDB()
+	defer db.Close()
 
 	app.Get("/orders", func(c *fiber.Ctx) error {
 		var path string = c.Path()
@@ -93,9 +96,17 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/new", func(c *fiber.Ctx) error {
+		tx, err := db.Begin()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
 		time.Sleep(1 * time.Second)
 		var formData map[string]string
-		err := c.BodyParser(&formData)
+		err = c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -124,6 +135,11 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		quantity, _ := strconv.Atoi(formData["quantity"])
 		orderStatusID := 1
 
+		var totalPrice int                                         // Variabel untuk menampung total price
+		product.GetById(idProduct)                                 // Mengambil data price ke database
+		totalPriceCalculate := &totalPrice                         // Nembak memory-address totalPrice
+		*totalPriceCalculate = quantity * int(product.Price.Int64) // hasil disimpan di totalPrice
+
 		if quantity == 0 {
 			return c.JSON(fiber.Map{
 				"error":  "Quantity is Zero",
@@ -137,18 +153,20 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Create data order detail terlebih dahulu
-		_, err = orderDetail.NewOrder(newOrderID, buyer, numberPhone, address)
+		_, err = orderDetail.NewOrder(tx, newOrderID, buyer, numberPhone, address)
 		if err != nil {
 			log.Println(err)
+			tx.Rollback()
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
 				"status": fiber.StatusInternalServerError,
 			})
 		}
 		// Jika tidak error, lanjut ke Order
-		err = order.NewOrder(int64(newOrderID), int64(quantity), int64(idProduct), int64(orderStatusID), int64(newOrderID))
+		err = order.NewOrder(tx, int64(newOrderID), int64(quantity), int64(totalPrice), int64(idProduct), int64(orderStatusID), int64(newOrderID))
 		if err != nil {
 			log.Println(err)
+			tx.Rollback()
 			return c.JSON(fiber.Map{
 				"error":  err.Error(),
 				"status": fiber.StatusInternalServerError,
@@ -159,6 +177,9 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		// Mengambil stok terakhir terlebih dahulu
 		lastStock, _ := product.LastStocks(idProduct)
 		product.UpdateStocks(idProduct, lastStock-quantity)
+
+		// Commit transaksi jika semua operasi berhasil
+		tx.Commit()
 
 		return c.JSON(fiber.Map{
 			"error":   nil,

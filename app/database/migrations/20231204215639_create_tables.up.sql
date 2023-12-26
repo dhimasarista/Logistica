@@ -20,7 +20,7 @@ CREATE TABLE employees(
     FOREIGN KEY (position_id) REFERENCES positions(id)
 );
 
-CREATE TABLE product_category (
+CREATE TABLE product_categories (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -28,7 +28,7 @@ CREATE TABLE product_category (
     deleted_at TIMESTAMP NULL
 );
 
-CREATE TABLE manufacturer (
+CREATE TABLE manufacturers (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -59,11 +59,11 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    FOREIGN KEY (manufacturer_id) REFERENCES manufacturer(id),
-    FOREIGN KEY (category_id) REFERENCES product_category(id)
+    FOREIGN KEY (manufacturer_id) REFERENCES manufacturers(id),
+    FOREIGN KEY (category_id) REFERENCES product_categories(id)
 );
 
-CREATE TABLE order_status (
+CREATE TABLE order_statuses (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -85,7 +85,7 @@ CREATE TABLE stock_records (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-CREATE TABLE order_detail (
+CREATE TABLE order_details (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     buyer VARCHAR(255),
     number_phone_buyer VARCHAR(255),
@@ -108,8 +108,8 @@ CREATE TABLE orders (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
     FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (status_id) REFERENCES order_status(id),
-    FOREIGN KEY (detail_id) REFERENCES order_detail(id)
+    FOREIGN KEY (status_id) REFERENCES order_statuses(id),
+    FOREIGN KEY (detail_id) REFERENCES order_details(id)
 );
 
 CREATE TABLE earnings (

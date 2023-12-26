@@ -16,7 +16,6 @@ import (
 )
 
 func InventoryRoutes(app *fiber.App, store *session.Store) {
-	time.Sleep(1 * time.Second)
 	var productModel *models.Product = &models.Product{}
 	var manufacturerModel *models.Manufacturer = &models.Manufacturer{}
 	categoryModel := &models.Category{}
@@ -254,7 +253,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Get("/inventory", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan path dari URL
 		var path string = c.Path()
 

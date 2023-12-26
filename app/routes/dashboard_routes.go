@@ -5,7 +5,6 @@ import (
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"logistica/app/utility"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -18,7 +17,6 @@ func DashboardRoutes(app *fiber.App, store *session.Store) {
 	order := models.Order{}
 
 	app.Get("/dashboard", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		var path string = c.Path()
 		var username string = controllers.GetSessionUsername(c, store)
 
