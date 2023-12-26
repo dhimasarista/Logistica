@@ -12,6 +12,7 @@ CREATE TABLE employees(
     address VARCHAR(255) NOT NULL,
     number_phone VARCHAR(32) NOT NULL,
     position_id INT,
+    identity_card LONGBLOB,
     is_user TINYINT(1) NOT NULL,
     is_superuser TINYINT(1) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
