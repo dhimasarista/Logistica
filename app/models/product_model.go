@@ -183,7 +183,7 @@ func (p *Product) UpdateProduct(id int, name, serialNumber string, manufacturer,
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ?;"
+	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ? AND p.deleted_at IS NULL;"
 	result, err := db.Exec(query, name, serialNumber, manufacturer, price, weight, category, id)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
@@ -247,19 +247,35 @@ func (p *Product) Count() (int, error) {
 }
 
 func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
+	// Gunakan mutex yang sama jika diperlukan
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	query := "UPDATE products SET stocks = ? WHERE id = ?"
+	// Periksa apakah produk dengan ID yang diberikan ada dan belum dihapus
+	var checkQuery = "SELECT id FROM products WHERE id = ? AND deleted_at IS NULL"
+	err := db.QueryRow(checkQuery, id).Scan(new(int)) // Scan ke variabel baru untuk memeriksa keberadaan produk
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// Produk tidak ditemukan atau sudah dihapus
+			return nil, errors.New("product not found or deleted")
+		}
+		return nil, err
+	}
+
+	query := "UPDATE products SET stocks = ? WHERE id = ? AND deleted_at IS NULL;"
 
 	result, err := db.Exec(query, stocks, id)
 	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return nil, errors.New("race condition, id has been taken")
-			}
-		}
 		return nil, err
+	}
+
+	// Periksa apakah result tidak nil
+	if result == nil {
+		return nil, errors.New("update operation failed")
 	}
 
 	return result, nil
