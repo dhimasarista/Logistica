@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"database/sql"
 	"log"
 	"logistica/app/config"
 	"logistica/app/controllers"
@@ -17,8 +18,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
 	var orderDetail = &models.OrderDetail{}
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	var db *sql.DB
 
 	app.Get("/orders", func(c *fiber.Ctx) error {
 		var path string = c.Path()
@@ -96,6 +96,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/new", func(c *fiber.Ctx) error {
+		db = config.ConnectSQLDB()
+		defer db.Close()
 		tx, err := db.Begin()
 		if err != nil {
 			log.Println(err)
@@ -172,14 +174,13 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+		// Commit transaksi jika semua operasi berhasil
+		tx.Commit()
 
 		// Ketika order masuk maka stok akan dikurangin
 		// Mengambil stok terakhir terlebih dahulu
 		lastStock, _ := product.LastStocks(idProduct)
 		product.UpdateStocks(idProduct, lastStock-quantity)
-
-		// Commit transaksi jika semua operasi berhasil
-		tx.Commit()
 
 		return c.JSON(fiber.Map{
 			"error":   nil,
