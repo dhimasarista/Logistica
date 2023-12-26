@@ -1,10 +1,7 @@
 package routes
 
 import (
-	"fmt"
-	"log"
 	"logistica/app/controllers"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -29,11 +26,4 @@ func ErrorRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/418", func(c *fiber.Ctx) error {
 		return c.Redirect("/error?code=418&title=I`am+a+Teapot&message=hahahahahahhahahahahahahhahaha...")
 	})
-}
-
-func InternalServerError(c *fiber.Ctx, message string) error {
-	log.Println(message)
-	var messageFormatted = strings.Replace(message, " ", "+", -1)
-	var path = fmt.Sprintf("/error?code=500&title=Internal+Server+Error&message=%s", messageFormatted)
-	return c.Redirect(path)
 }

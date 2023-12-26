@@ -257,7 +257,6 @@ func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
 	// Periksa apakah produk dengan ID yang diberikan ada dan belum dihapus
 	var checkQuery = "SELECT id FROM products WHERE id = ? AND deleted_at IS NULL"
 	err := db.QueryRow(checkQuery, id).Scan(new(int)) // Scan ke variabel baru untuk memeriksa keberadaan produk
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			// Produk tidak ditemukan atau sudah dihapus
