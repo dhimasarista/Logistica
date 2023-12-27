@@ -450,7 +450,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			Amount:      sql.NullInt64{Int64: int64(stock)},
 			Before:      sql.NullInt64{Int64: int64(lastStocks)},
 			After:       sql.NullInt64{Int64: int64(lastStocks + stock)},
-			IsAddition:  sql.NullInt16{Int16: 1},
+			IsAddition:  sql.NullBool{Bool: true},
 			ProductID:   sql.NullInt64{Int64: int64(id)},
 			Description: sql.NullString{String: formData["description"].(string)},
 		}

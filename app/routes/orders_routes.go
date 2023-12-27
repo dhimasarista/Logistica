@@ -18,6 +18,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
 	var earning = &models.Earning{}
+	var stockRecord = &models.StockRecord{}
 	var db *sql.DB
 
 	app.Get("/orders", func(c *fiber.Ctx) error {
@@ -171,6 +172,24 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		// Mengambil stok terakhir terlebih dahulu
 		lastStock, _ := product.LastStocks(idProduct)
 		product.UpdateStocks(idProduct, lastStock-quantity)
+
+		// Mengirim data ke stockRecord
+		stockRecord = &models.StockRecord{
+			Amount:      sql.NullInt64{Int64: int64(quantity)},
+			Before:      sql.NullInt64{Int64: int64(lastStock)},
+			After:       sql.NullInt64{Int64: int64(lastStock - quantity)},
+			IsAddition:  sql.NullBool{Bool: false},
+			ProductID:   sql.NullInt64{Int64: int64(idProduct)},
+			Description: sql.NullString{String: "Order by" + buyer},
+		}
+		err = stockRecord.NewRecord()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
 
 		return c.JSON(fiber.Map{
 			"error":   nil,

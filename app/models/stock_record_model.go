@@ -14,7 +14,7 @@ type StockRecord struct {
 	Before      sql.NullInt64  `gorm:"column:before_record" json:"before_record"`
 	After       sql.NullInt64  `gorm:"column:after_record" json:"after_record"`
 	Description sql.NullString `gorm:"column:description" json:"description"`
-	IsAddition  sql.NullInt16  `gorm:"column:is_addition" json:"is_addition"`
+	IsAddition  sql.NullBool   `gorm:"column:is_addition" json:"is_addition"`
 	// Foreign Key
 	Product   Product       `gorm:"foreignKey:ProductID" json:"product"`
 	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
@@ -42,7 +42,7 @@ func (sr *StockRecord) NewRecord() error {
 
 	result := db.Exec(
 		`INSERT INTO stock_records(amount, before_record, after_record, description, is_addition, product_id) VALUES(?, ?, ?, ?, ?, ?);`,
-		sr.Amount.Int64, sr.Before.Int64, sr.After.Int64, sr.Description.String, sr.IsAddition.Int16, sr.ProductID.Int64,
+		sr.Amount.Int64, sr.Before.Int64, sr.After.Int64, sr.Description.String, sr.IsAddition.Bool, sr.ProductID.Int64,
 	)
 	if result.Error != nil {
 		return result.Error
