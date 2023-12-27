@@ -126,7 +126,7 @@ blockquote{
                             <table class="table table-bordered table-hover table-striped" id="orderGoingTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
+                                        <th>Product Name</th>
                                         <th>Total Order</th>
                                         <th>Price</th>
                                         <th>Status</th>
@@ -136,7 +136,7 @@ blockquote{
                                 <tbody>
                                     {{#orders}}
                                     <tr>
-                                        <td>{{id}}</td>
+                                        <td>{{product_name}}</td>
                                         <td>{{pieces}}</td>
                                         <td>{{total_price}}</td>
                                         <td><h6 class="badge badge-info">{{status_id}}</h6></td>

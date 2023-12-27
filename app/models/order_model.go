@@ -23,9 +23,9 @@ type Order struct {
 	TotalPrice       sql.NullInt64  `gorm:"column:total_price" json:"total_price"`
 
 	// Foreign Key
+	Product   Product       `gorm:"foreignKey:ProductID" json:"product"`
 	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
 	StatusID  sql.NullInt64 `gorm:"column:status_id" json:"status_id"`
-
 	// Timestamp
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
@@ -66,7 +66,24 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "SELECT id, buyer, number_phone_buyer, receiver, shipping_address, documentation, pieces, total_price, product_id, status_id FROM orders"
+	var query string = `
+	SELECT 
+		o.id, 
+		o.buyer, 
+		o.number_phone_buyer, 
+		o.receiver, 
+		o.shipping_address, 
+		o.documentation, 
+		o.pieces, 
+		o.total_price, 
+		o.product_id, 
+		o.status_id AS orders,
+		p.name AS product_name
+	FROM 
+		orders o
+	JOIN 
+		products p ON o.product_id = p.id;
+	`
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -90,6 +107,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			&order.TotalPrice,
 			&order.ProductID,
 			&order.StatusID,
+			&order.Product.Name,
 		)
 
 		if err != nil {
@@ -105,7 +123,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			"documentation":      order.Documentation,
 			"pieces":             order.Pieces.Int64,
 			"total_price":        utility.RupiahFormat(order.TotalPrice.Int64),
-			"product_id":         order.ProductID.Int64,
+			"product_name":       utility.CapitalizeAll(order.Product.Name.String),
 			"status_id":          order.StatusID.Int64,
 		}
 

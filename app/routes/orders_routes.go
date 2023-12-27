@@ -2,6 +2,7 @@ package routes
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"logistica/app/config"
 	"logistica/app/controllers"
@@ -180,7 +181,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			After:       sql.NullInt64{Int64: int64(lastStock - quantity)},
 			IsAddition:  sql.NullBool{Bool: false},
 			ProductID:   sql.NullInt64{Int64: int64(idProduct)},
-			Description: sql.NullString{String: "Order by" + buyer},
+			Description: sql.NullString{String: fmt.Sprintf("Order by %s", buyer)},
 		}
 		err = stockRecord.NewRecord()
 		if err != nil {
