@@ -66,7 +66,7 @@ func (o *Order) NewOrder(tx *sql.Tx, buyer, numberPhone, address string, pieces,
 func (o *Order) FindAll() ([]map[string]interface{}, error) {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
-
+	// Kueri untuk melakukan JOIN TABLES
 	var query string = `
 	SELECT 
 		o.id, 

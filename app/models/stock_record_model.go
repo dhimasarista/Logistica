@@ -28,8 +28,8 @@ func (sr *StockRecord) FindAll() ([]StockRecord, error) {
 	var stockRecords []StockRecord
 	var db = config.ConnectGormDB()
 
-	query := "SELECT * FROM stock_records;"
-	results := db.Raw(query).Scan(&stockRecords)
+	// Menggunakan Preload untuk melakukan join dengan tabel products
+	results := db.Preload("Product").Find(&stockRecords)
 	if results.Error != nil {
 		return nil, results.Error
 	}
