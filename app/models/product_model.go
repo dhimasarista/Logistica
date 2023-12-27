@@ -183,7 +183,7 @@ func (p *Product) UpdateProduct(id int, name, serialNumber string, manufacturer,
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ? AND p.deleted_at IS NULL;"
+	var query string = "UPDATE products SET name = ?, serial_number = ?, manufacturer_id = ?, price = ?, weight = ?, category_id = ? WHERE id = ?;"
 	result, err := db.Exec(query, name, serialNumber, manufacturer, price, weight, category, id)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
