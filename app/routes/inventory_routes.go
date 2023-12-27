@@ -222,6 +222,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 		// Mengkonversi string ke integer untuk beberapa atribut
 		stocksStrToInt, _ := strconv.Atoi(formData["stockAmount"])
+		// Input Negasi jika dibawah 0
+		if stocksStrToInt < 0 {
+			return c.JSON(fiber.Map{
+				"error":  "Not Valid Number!",
+				"status": fiber.StatusBadRequest,
+			})
+		}
 		priceStrToInt, _ := strconv.Atoi(formData["price"])
 		weightStrToint, _ := strconv.Atoi(formData["weight"])
 
@@ -415,9 +422,10 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		// Mengambil jumlah stok yang akan ditambahkan dari formData dan mengonversinya ke dalam tipe data integer
 		stockStr := formData["amountStocks"].(string)
 		stock, _ := strconv.Atoi(stockStr)
+		// Menjegal Input Negatif
 		if stock < 0 {
 			return c.JSON(fiber.Map{
-				"error":  "Cannot be a Negative Number!",
+				"error":  "Not Valid Number!",
 				"status": fiber.StatusBadRequest,
 			})
 		}
