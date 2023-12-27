@@ -12,7 +12,7 @@ CREATE TABLE employees(
     address VARCHAR(255) NOT NULL,
     number_phone VARCHAR(32) NOT NULL,
     position_id INT,
-    identity_card LONGBLOB,
+    identity_card LONGBLOB NULL,
     is_user TINYINT(1) NOT NULL,
     is_superuser TINYINT(1) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -64,14 +64,6 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES product_categories(id)
 );
 
-CREATE TABLE order_statuses (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    name VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL
-);
-
 CREATE TABLE stock_records (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     amount INT NOT NULL,
@@ -86,13 +78,9 @@ CREATE TABLE stock_records (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-CREATE TABLE order_details (
+CREATE TABLE order_statuses (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    buyer VARCHAR(255),
-    number_phone_buyer VARCHAR(255),
-    receiver VARCHAR(255),
-    shipping_address VARCHAR(255),
-    documentation LONGBLOB,
+    name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
@@ -100,17 +88,20 @@ CREATE TABLE order_details (
 
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    buyer VARCHAR(255),
+    number_phone_buyer VARCHAR(255),
+    receiver VARCHAR(255),
+    shipping_address VARCHAR(255),
+    documentation LONGBLOB,
     pieces INT NOT NULL,
     total_price INT NOT NULL,
     product_id INT,
     status_id INT,
-    detail_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
     FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (status_id) REFERENCES order_statuses(id),
-    FOREIGN KEY (detail_id) REFERENCES order_details(id)
+    FOREIGN KEY (status_id) REFERENCES order_statuses(id)
 );
 
 CREATE TABLE earnings (

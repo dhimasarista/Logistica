@@ -12,13 +12,18 @@ import (
 )
 
 type Order struct {
-	ID         sql.NullInt64 `gorm:"primaryKey;column:id" json:"id"`
-	Pieces     sql.NullInt64 `gorm:"column:pieces" json:"pieces"`
-	TotalPrice sql.NullInt64 `gorm:"column:total_price" json:"total_price"`
+	ID               uint   `gorm:"primaryKey" json:"id"`
+	Buyer            string `gorm:"column:buyer" json:"buyer"`
+	NumberPhoneBuyer string `gorm:"column:number_phone_buyer" json:"number_phone_buyer"`
+	Receiver         string `gorm:"column:receiver" json:"receiver"`
+	ShippingAddress  string `gorm:"column:shipping_address" json:"shipping_address"`
+	Documentation    []byte `gorm:"column:documentation" json:"documentation"`
+	Pieces           int    `gorm:"column:pieces" json:"pieces"`
+	TotalPrice       int    `gorm:"column:total_price" json:"total_price"`
+
 	// Foreign Key
-	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
-	StatusID  sql.NullInt64 `gorm:"column:status_id" json:"status_id"`
-	DetailID  sql.NullInt64 `gorm:"column:detail_id" json:"detail_id"`
+	ProductID uint `gorm:"column:product_id" json:"product_id"`
+	StatusID  uint `gorm:"column:status_id" json:"status_id"`
 
 	// Timestamp
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
@@ -55,12 +60,11 @@ func (o *Order) NewOrder(tx *sql.Tx, id, pieces, totalPrice, productID, statusID
 
 	return nil
 }
-
-func (o *Order) FindAll() ([]map[string]any, error) {
+func (o *Order) FindAll() ([]map[string]interface{}, error) {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "SELECT id, pieces, product_id, status_id, detail_id FROM orders"
+	var query string = "SELECT id, buyer, number_phone_buyer, receiver, shipping_address, documentation, pieces, total_price, product_id, status_id FROM orders"
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -70,29 +74,40 @@ func (o *Order) FindAll() ([]map[string]any, error) {
 		return nil, err
 	}
 
-	var orders []map[string]any
+	var orders []map[string]interface{}
 	for rows.Next() {
+		var order Order
 		err := rows.Scan(
-			&o.ID.Int64,
-			&o.Pieces.Int64,
-			&o.ProductID.Int64,
-			&o.StatusID.Int64,
-			&o.DetailID.Int64,
+			&order.ID,
+			&order.Buyer,
+			&order.NumberPhoneBuyer,
+			&order.Receiver,
+			&order.ShippingAddress,
+			&order.Documentation,
+			&order.Pieces,
+			&order.TotalPrice,
+			&order.ProductID,
+			&order.StatusID,
 		)
 
 		if err != nil {
 			return nil, err
 		}
 
-		order := map[string]interface{}{
-			"id":        o.ID.Int64,
-			"pieces":    o.Pieces.Int64,
-			"productId": o.ProductID.Int64,
-			"statusId":  o.StatusID.Int64,
-			"detailId":  o.ProductID.Int64,
+		orderMap := map[string]interface{}{
+			"id":                 order.ID,
+			"buyer":              order.Buyer,
+			"number_phone_buyer": order.NumberPhoneBuyer,
+			"receiver":           order.Receiver,
+			"shipping_address":   order.ShippingAddress,
+			"documentation":      order.Documentation,
+			"pieces":             order.Pieces,
+			"total_price":        order.TotalPrice,
+			"product_id":         order.ProductID,
+			"status_id":          order.StatusID,
 		}
 
-		orders = append(orders, order)
+		orders = append(orders, orderMap)
 	}
 
 	return orders, nil
