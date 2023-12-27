@@ -25,6 +25,7 @@ type Order struct {
 	// Foreign Key
 	Product   Product       `gorm:"foreignKey:ProductID" json:"product"`
 	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
+	Status    OrderStatus   `gorm:"foreignKey:StatusID" json:"order_status"`
 	StatusID  sql.NullInt64 `gorm:"column:status_id" json:"status_id"`
 	// Timestamp
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
@@ -78,11 +79,14 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 		o.total_price, 
 		o.product_id, 
 		o.status_id AS orders,
-		p.name AS product_name
+		p.name AS product_name,
+		os.name AS status_name
 	FROM 
 		orders o
 	JOIN 
-		products p ON o.product_id = p.id;
+		products p ON o.product_id = p.id
+	JOIN
+		order_statuses os ON o.status_id = os.id;
 	`
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -108,6 +112,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			&order.ProductID,
 			&order.StatusID,
 			&order.Product.Name,
+			&order.Status.Name,
 		)
 
 		if err != nil {
@@ -124,7 +129,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			"pieces":             order.Pieces.Int64,
 			"total_price":        utility.RupiahFormat(order.TotalPrice.Int64),
 			"product_name":       utility.CapitalizeAll(order.Product.Name.String),
-			"status_id":          order.StatusID.Int64,
+			"order_status":       order.Status.Name.String,
 		}
 
 		orders = append(orders, orderMap)

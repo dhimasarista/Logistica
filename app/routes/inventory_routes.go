@@ -27,8 +27,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		// Mendapatkan path dari URL
 		var path string = c.Path()
 
-		fmt.Println(*stockRecord)
-
 		// Mendapatkan nama pengguna dari sesi
 		var username string = controllers.GetSessionUsername(c, store)
 

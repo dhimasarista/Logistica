@@ -139,7 +139,7 @@ blockquote{
                                         <td>{{product_name}}</td>
                                         <td>{{pieces}}</td>
                                         <td>{{total_price}}</td>
-                                        <td><h6 class="badge badge-info">{{status_id}}</h6></td>
+                                        <td><h6 class="badge order-status">{{order_status}}</h6></td>
                                         <td class="text-center">
                                             <a href="javascript:void(0);" onclick="openOffcanvas()">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M19 19V5H5v14zm0-16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-8 4h2v4h4v2h-4v4h-2v-4H7v-2h4z"/></svg>
@@ -149,6 +149,34 @@ blockquote{
                                     {{/orders}}
                                 </tbody>
                             </table>
+                            <script>
+                                const orderStatusBadges = document.querySelectorAll(".order-status")
+                                orderStatusBadges.forEach(badge => {
+                                    const orderStatusText = badge.innerText.toLowerCase(); // Ambil dan ubah teks menjadi huruf kecil
+
+                                    // Tambahkan kelas sesuai dengan nilai teks
+                                    switch (orderStatusText) {
+                                        case "on process":
+                                            badge.classList.add("badge-light");
+                                            break;
+                                        case "on delivery":
+                                            badge.classList.add("badge-info");
+                                            break;
+                                        case "received":
+                                            badge.classList.add("badge-success");
+                                            break;
+                                        case "returned":
+                                            badge.classList.add("badge-warning");
+                                            break;
+                                        case "cancelled":
+                                            badge.classList.add("badge-red");
+                                            break;
+                                        default:
+                                            badge.classList.add("badge-secondary");
+                                            break;
+                                    }
+                                });
+                            </script>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="finished-button">
