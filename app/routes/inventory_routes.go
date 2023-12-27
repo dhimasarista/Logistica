@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -18,9 +19,49 @@ import (
 func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var productModel *models.Product = &models.Product{}
 	var manufacturerModel *models.Manufacturer = &models.Manufacturer{}
-	categoryModel := &models.Category{}
+	var categoryModel = &models.Category{}
+	var stockRecord = &models.StockRecord{}
 
-	// app.Put("/product/id")
+	// Render Halaman Inventory
+	app.Get("/inventory", func(c *fiber.Ctx) error {
+		// Mendapatkan path dari URL
+		var path string = c.Path()
+
+		fmt.Println(*stockRecord)
+
+		// Mendapatkan nama pengguna dari sesi
+		var username string = controllers.GetSessionUsername(c, store)
+
+		// Mengambil semua produk dari model
+		products, err := productModel.FindAll()
+		if err != nil {
+			log.Println(err)
+			InternalServerError(c, err.Error())
+		}
+
+		// Mengambil semua manufaktur dari model
+		manufacturers, err := manufacturerModel.FindAll()
+		if err != nil {
+			log.Println(err)
+			InternalServerError(c, err.Error())
+		}
+
+		// Mengambil semua kategori dari model
+		categories, err := categoryModel.FindAll()
+		if err != nil {
+			log.Println(err)
+			InternalServerError(c, err.Error())
+		}
+
+		// Merender halaman "inventory_page" dengan data yang diperlukan
+		return c.Render("inventory_page", fiber.Map{
+			"path":          path,
+			"user":          username,
+			"products":      products,
+			"manufacturers": manufacturers,
+			"categories":    categories,
+		})
+	})
 
 	app.Delete("/product/:id", func(c *fiber.Ctx) error {
 		time.Sleep(1 * time.Second) // Simulasi latensi
@@ -258,44 +299,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"result":  results,
 		})
 	})
-
-	app.Get("/inventory", func(c *fiber.Ctx) error {
-		// Mendapatkan path dari URL
-		var path string = c.Path()
-
-		// Mendapatkan nama pengguna dari sesi
-		var username string = controllers.GetSessionUsername(c, store)
-
-		// Mengambil semua produk dari model
-		products, err := productModel.FindAll()
-		if err != nil {
-			log.Println(err)
-			InternalServerError(c, err.Error())
-		}
-
-		// Mengambil semua manufaktur dari model
-		manufacturers, err := manufacturerModel.FindAll()
-		if err != nil {
-			log.Println(err)
-			InternalServerError(c, err.Error())
-		}
-
-		// Mengambil semua kategori dari model
-		categories, err := categoryModel.FindAll()
-		if err != nil {
-			log.Println(err)
-			InternalServerError(c, err.Error())
-		}
-
-		// Merender halaman "inventory_page" dengan data yang diperlukan
-		return c.Render("inventory_page", fiber.Map{
-			"path":          path,
-			"user":          username,
-			"products":      products,
-			"manufacturers": manufacturers,
-			"categories":    categories,
-		})
-	})
 	// Endpoint untuk mendapatkan detail produk berdasarkan ID
 	app.Get("/product/:id", func(c *fiber.Ctx) error {
 		time.Sleep(1 * time.Second) // Simulasi latensi
@@ -432,6 +435,26 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 		// Memperbarui stok produk
 		results, err := productModel.UpdateStocks(id, lastStocks+stock)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		fmt.Println(formData["description"].(string))
+
+		// Mengirim data ke stockRecord
+		stockRecord = &models.StockRecord{
+			Amount:      sql.NullInt64{Int64: int64(stock)},
+			Before:      sql.NullInt64{Int64: int64(lastStocks)},
+			After:       sql.NullInt64{Int64: int64(lastStocks + stock)},
+			IsAddition:  sql.NullInt16{Int16: 1},
+			ProductID:   sql.NullInt64{Int64: int64(id)},
+			Description: sql.NullString{String: formData["description"].(string)},
+		}
+		err = stockRecord.NewRecord()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
