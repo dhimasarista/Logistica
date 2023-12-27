@@ -31,10 +31,10 @@ func (e *Earning) TotalEarnings() (int, error) {
 	return total, nil
 }
 
-func (e *Earning) NewOrder(tx *sql.Tx, id, amountReceived int, productName string, pieces, price int) error {
+func (e *Earning) NewOrder(tx *sql.Tx, amountReceived int, productName string, pieces, price int) error {
 
-	var query = "INSERT INTO earnings(id, amount_received, product_name, pieces, price) VALUES(?,?,?,?,?);"
-	_, err := tx.Exec(query, id, amountReceived, productName, pieces, price)
+	var query = "INSERT INTO earnings(amount_received, product_name, pieces, price) VALUES(?,?,?,?);"
+	_, err := tx.Exec(query, amountReceived, productName, pieces, price)
 	if err != nil {
 		return err
 	}

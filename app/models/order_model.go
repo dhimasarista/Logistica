@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"logistica/app/config"
+	"logistica/app/utility"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -12,18 +13,18 @@ import (
 )
 
 type Order struct {
-	ID               uint   `gorm:"primaryKey" json:"id"`
-	Buyer            string `gorm:"column:buyer" json:"buyer"`
-	NumberPhoneBuyer string `gorm:"column:number_phone_buyer" json:"number_phone_buyer"`
-	Receiver         string `gorm:"column:receiver" json:"receiver"`
-	ShippingAddress  string `gorm:"column:shipping_address" json:"shipping_address"`
-	Documentation    []byte `gorm:"column:documentation" json:"documentation"`
-	Pieces           int    `gorm:"column:pieces" json:"pieces"`
-	TotalPrice       int    `gorm:"column:total_price" json:"total_price"`
+	ID               sql.NullInt64  `gorm:"primaryKey" json:"id"`
+	Buyer            sql.NullString `gorm:"column:buyer" json:"buyer"`
+	NumberPhoneBuyer sql.NullString `gorm:"column:number_phone_buyer" json:"number_phone_buyer"`
+	Receiver         sql.NullString `gorm:"column:receiver" json:"receiver"`
+	ShippingAddress  sql.NullString `gorm:"column:shipping_address" json:"shipping_address"`
+	Documentation    sql.NullByte   `gorm:"column:documentation" json:"documentation"`
+	Pieces           sql.NullInt64  `gorm:"column:pieces" json:"pieces"`
+	TotalPrice       sql.NullInt64  `gorm:"column:total_price" json:"total_price"`
 
 	// Foreign Key
-	ProductID uint `gorm:"column:product_id" json:"product_id"`
-	StatusID  uint `gorm:"column:status_id" json:"status_id"`
+	ProductID sql.NullInt64 `gorm:"column:product_id" json:"product_id"`
+	StatusID  sql.NullInt64 `gorm:"column:status_id" json:"status_id"`
 
 	// Timestamp
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
@@ -43,12 +44,12 @@ func (o *Order) TotalOrders() (int, error) {
 	return total, nil
 }
 
-func (o *Order) NewOrder(tx *sql.Tx, id, pieces, totalPrice, productID, statusID, detailID int64) error {
+func (o *Order) NewOrder(tx *sql.Tx, buyer, numberPhone, address string, pieces, totalPrice, productID, statusID int64) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var query string = "INSERT INTO orders(id, pieces, total_price, product_id, status_id, detail_id) VALUES(?, ?, ?, ?, ?, ?);"
-	_, err := tx.Exec(query, id, pieces, totalPrice, productID, statusID, detailID)
+	var query string = "INSERT INTO orders(buyer, number_phone_buyer, shipping_address, pieces, total_price, product_id, status_id) VALUES(?, ?, ?, ?, ?, ?, ?);"
+	_, err := tx.Exec(query, buyer, numberPhone, address, pieces, totalPrice, productID, statusID)
 	if err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			if mysqlErr.Number == 1062 {
@@ -60,6 +61,7 @@ func (o *Order) NewOrder(tx *sql.Tx, id, pieces, totalPrice, productID, statusID
 
 	return nil
 }
+
 func (o *Order) FindAll() ([]map[string]interface{}, error) {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
@@ -95,16 +97,16 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 		}
 
 		orderMap := map[string]interface{}{
-			"id":                 order.ID,
-			"buyer":              order.Buyer,
-			"number_phone_buyer": order.NumberPhoneBuyer,
-			"receiver":           order.Receiver,
-			"shipping_address":   order.ShippingAddress,
+			"id":                 order.ID.Int64,
+			"buyer":              order.Buyer.String,
+			"number_phone_buyer": order.NumberPhoneBuyer.String,
+			"receiver":           order.Receiver.String,
+			"shipping_address":   order.ShippingAddress.String,
 			"documentation":      order.Documentation,
-			"pieces":             order.Pieces,
-			"total_price":        order.TotalPrice,
-			"product_id":         order.ProductID,
-			"status_id":          order.StatusID,
+			"pieces":             order.Pieces.Int64,
+			"total_price":        utility.RupiahFormat(order.TotalPrice.Int64),
+			"product_id":         order.ProductID.Int64,
+			"status_id":          order.StatusID.Int64,
 		}
 
 		orders = append(orders, orderMap)

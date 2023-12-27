@@ -90,7 +90,7 @@ CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     buyer VARCHAR(255),
     number_phone_buyer VARCHAR(255),
-    receiver VARCHAR(255),
+    receiver VARCHAR(255) NULL,
     shipping_address VARCHAR(255),
     documentation LONGBLOB,
     pieces INT NOT NULL,

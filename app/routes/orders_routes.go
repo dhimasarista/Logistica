@@ -17,7 +17,6 @@ import (
 func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
-	var orderDetail = &models.OrderDetail{}
 	var earning = &models.Earning{}
 	var db *sql.DB
 
@@ -118,18 +117,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		// Mengambil Last ID untuk Orders dan Order Detail
-		// Dengan patokan dari last ID order_detail
-		lastIdOrderDetail, err := orderDetail.LastId()
-		newOrderID := lastIdOrderDetail + 1
-		if err != nil {
-			log.Println(err)
-			return c.JSON(fiber.Map{
-				"error":  err.Error(),
-				"status": fiber.StatusInternalServerError,
-			})
-		}
-
 		// OrderData
 		idProduct, _ := strconv.Atoi(formData["idProduct"])
 		buyer := formData["buyer"]
@@ -155,18 +142,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		// Create data order detail terlebih dahulu
-		_, err = orderDetail.NewOrder(tx, newOrderID, buyer, numberPhone, address)
-		if err != nil {
-			log.Println(err)
-			tx.Rollback()
-			return c.JSON(fiber.Map{
-				"error":  err.Error(),
-				"status": fiber.StatusInternalServerError,
-			})
-		}
 		// Jika tidak error, lanjut ke Order
-		err = order.NewOrder(tx, int64(newOrderID), int64(quantity), int64(totalPrice), int64(idProduct), int64(orderStatusID), int64(newOrderID))
+		err = order.NewOrder(tx, buyer, numberPhone, address, int64(quantity), int64(totalPrice), int64(idProduct), int64(orderStatusID))
 		if err != nil {
 			log.Println(err)
 			tx.Rollback()
@@ -177,7 +154,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Kemudian memasukkan pendapatan ke tabel earnings
-		err = earning.NewOrder(tx, newOrderID, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
+		err = earning.NewOrder(tx, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
 		if err != nil {
 			log.Println(err)
 			tx.Rollback()
