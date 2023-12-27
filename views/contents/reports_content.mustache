@@ -60,7 +60,7 @@
                             <script>
                                 const productName = document.querySelectorAll(".product-name");
                                 productName.forEach(product => {
-                                    product.innerText.toUpperCase();
+                                    product.innerText = product.innerText.toUpperCase();
                                 })
                                 function showDescription(params) {
                                     Swal.fire({
