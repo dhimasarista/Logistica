@@ -53,7 +53,7 @@ CREATE TABLE products (
     name VARCHAR(255) NOT NULL,
     serial_number VARCHAR(255),
     manufacturer_id INT,
-    stocks BIGINT,
+    stocks BIGINT UNSIGNED,
     price INT,
     weight INT,
     category_id INT,
