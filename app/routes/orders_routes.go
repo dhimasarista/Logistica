@@ -18,7 +18,7 @@ import (
 func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
-	// var earning = &models.Earning{}
+	var earning = &models.Earning{}
 	var stockRecord = &models.StockRecord{}
 	var db *sql.DB
 
@@ -49,8 +49,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	app.Get("/order/detail/:id", func(c *fiber.Ctx) error {
 		var id = c.Params("id")
 		idAtoi, _ := strconv.Atoi(id)
-
-		fmt.Println(idAtoi)
 
 		err := order.GetByID(idAtoi)
 		if err != nil {
@@ -86,8 +84,18 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/next", func(c *fiber.Ctx) error {
+		db = config.ConnectSQLDB()
+		defer db.Close()
+		tx, err := db.Begin()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
 		var formData map[string]string
-		err := c.BodyParser(&formData)
+		err = c.BodyParser(&formData)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -96,17 +104,29 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		productId, _ := strconv.Atoi(formData["product_id"])
+		orderId, _ := strconv.Atoi(formData["order_id"])
 
 		if utility.ValidateTextHashed(formData["status"], "on process") {
-			err = order.UpdateOrder(productId, 2)
+			err = order.UpdateOrder(orderId, 2)
 			if err != nil {
 				log.Println(err)
 				return c.JSON(fiber.Map{
 					"error":  err.Error(),
 					"status": fiber.StatusInternalServerError,
 				})
+				// Kemudian memasukkan pendapatan ke tabel earnings
 			}
+			order.GetByID(orderId)
+			err = earning.NewOrder(tx, int(order.TotalPrice.Int64), order.Product.Name.String, int(order.Pieces.Int64), int(order.Product.Price.Int64))
+			if err != nil {
+				log.Println(err)
+				tx.Rollback()
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			tx.Commit()
 			return c.JSON(fiber.Map{
 				"error":   nil,
 				"status":  c.Response().StatusCode(),
@@ -230,17 +250,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
-		// Kemudian memasukkan pendapatan ke tabel earnings
-		// err = earning.NewOrder(tx, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
-		// if err != nil {
-		// 	log.Println(err)
-		// 	tx.Rollback()
-		// 	return c.JSON(fiber.Map{
-		// 		"error":  err.Error(),
-		// 		"status": fiber.StatusInternalServerError,
-		// 	})
-		// }
 
 		// Commit transaksi jika semua operasi berhasil
 		tx.Commit()
