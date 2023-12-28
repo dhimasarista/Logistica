@@ -1,7 +1,6 @@
 package models
 
 import (
-	"context"
 	"database/sql"
 	"errors"
 	"logistica/app/config"
@@ -16,15 +15,10 @@ type Category struct {
 }
 
 func (c *Category) FindAll() ([]map[string]interface{}, error) {
-	db := config.ConnectSQLDB()
-	defer db.Close()
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+	db := config.ConnectGormDB()
 	query := "SELECT id, name FROM product_categories;"
 
-	rows, err := db.QueryContext(ctx, query)
+	rows, err := db.Raw(query).Rows()
 	if err != nil {
 		return nil, err
 	}

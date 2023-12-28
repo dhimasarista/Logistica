@@ -93,8 +93,8 @@ blockquote{
         <div>Quantity = 2</div>
         <div>Total = 3.800.000</div>
         <br>
-        <button type="button" class="btn btn-success">Finish</button>
-        <button type="button" class="btn btn-secondary">Others</button>
+        <button type="button" class="btn btn-success">Send</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
     </div>
     <!-- Tambahkan detail sesuai kebutuhan -->
 </div>
@@ -157,7 +157,7 @@ blockquote{
                                     // Tambahkan kelas sesuai dengan nilai teks
                                     switch (orderStatusText) {
                                         case "on process":
-                                            badge.classList.add("badge-light");
+                                            badge.classList.add("badge-dark");
                                             break;
                                         case "on delivery":
                                             badge.classList.add("badge-info");
