@@ -18,7 +18,7 @@ import (
 func OrdersRoutes(app *fiber.App, store *session.Store) {
 	var product = &models.Product{}
 	var order = &models.Order{}
-	var earning = &models.Earning{}
+	// var earning = &models.Earning{}
 	var stockRecord = &models.StockRecord{}
 	var db *sql.DB
 
@@ -43,6 +43,80 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			"user":     username,
 			"products": products,
 			"orders":   orders,
+		})
+	})
+
+	app.Get("/order/detail/:id", func(c *fiber.Ctx) error {
+		var id = c.Params("id")
+		idAtoi, _ := strconv.Atoi(id)
+
+		fmt.Println(idAtoi)
+
+		err := order.GetByID(idAtoi)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+		var buttonDetail string
+		var buttonHashedCode string
+		var buttonCancelHashed string
+		if order.Status.Name.String == "on process" {
+			onProcess, _ := utility.GenerateHash("on process")
+			buttonHashedCode = onProcess
+			cancelOrder, _ := utility.GenerateHash("cancelled")
+			buttonCancelHashed = cancelOrder
+			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-primary" onclick="processOrder('%d' ,'%s')">Ship</button>
+			<button type="button" class="btn btn-danger" onclick="processOrder('%d', '%s')">Cancel</button>`, idAtoi, buttonHashedCode, idAtoi, buttonCancelHashed)
+		} else if order.Status.Name.String == "on delivery" {
+			result, _ := utility.GenerateHash("on delivery")
+			buttonHashedCode = result
+			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-success" processOrder('%d', '%s')>Finish</button>
+			<button type="button" class="btn btn-danger">Others</button>`, idAtoi, buttonHashedCode)
+		}
+
+		return c.JSON(fiber.Map{
+			"error":         nil,
+			"status":        c.Response().StatusCode(),
+			"data":          order,
+			"button_detail": buttonDetail,
+		})
+	})
+
+	app.Post("/order/next", func(c *fiber.Ctx) error {
+		var formData map[string]string
+		err := c.BodyParser(&formData)
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
+			})
+		}
+
+		productId, _ := strconv.Atoi(formData["product_id"])
+
+		if utility.ValidateTextHashed(formData["status"], "on process") {
+			err = order.UpdateOrder(productId, 2)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			return c.JSON(fiber.Map{
+				"error":   nil,
+				"status":  c.Response().StatusCode(),
+				"message": "Order on Delivery",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"error":  "Internal Server Error",
+			"status": fiber.StatusInternalServerError,
 		})
 	})
 
@@ -96,6 +170,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			"data":   data,
 		})
 	})
+
+	// app.Post("/order/update
 
 	app.Post("/order/new", func(c *fiber.Ctx) error {
 		db = config.ConnectSQLDB()
@@ -156,15 +232,15 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Kemudian memasukkan pendapatan ke tabel earnings
-		err = earning.NewOrder(tx, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
-		if err != nil {
-			log.Println(err)
-			tx.Rollback()
-			return c.JSON(fiber.Map{
-				"error":  err.Error(),
-				"status": fiber.StatusInternalServerError,
-			})
-		}
+		// err = earning.NewOrder(tx, totalPrice, product.ManufacturerName.String+" "+product.Name.String, quantity, int(product.Price.Int64))
+		// if err != nil {
+		// 	log.Println(err)
+		// 	tx.Rollback()
+		// 	return c.JSON(fiber.Map{
+		// 		"error":  err.Error(),
+		// 		"status": fiber.StatusInternalServerError,
+		// 	})
+		// }
 
 		// Commit transaksi jika semua operasi berhasil
 		tx.Commit()

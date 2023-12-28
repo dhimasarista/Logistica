@@ -386,6 +386,16 @@
     const addressEdit = document.getElementById("address-edit");
     function GetDataByID(id){
         clearEditForm();
+        Swal.fire({
+            title: 'Loading!',
+            html: 'Please wait...',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         fetch(`/employee/${id}`, {
             method: "GET",
             headers: {
@@ -396,6 +406,7 @@
             return response.json();
         })
         .then(results => {
+            Swal.close(); // Close the loading alert after some time
             console.log(results);
             employeeIdEdit.setAttribute("data-id-employee", results.data.id.Int64);
             employeeNameEdit.value = results.data.name.String;

@@ -33,6 +33,19 @@ type Order struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
+func (o *Order) GetByID(id int) error {
+	var db = config.ConnectGormDB()
+	var result Order
+	results := db.Preload("Product").Preload("Status").
+		Where("id = ? AND deleted_at IS NULL", id).
+		First(&result)
+	if results.Error != nil {
+		return results.Error
+	}
+	*o = result // Salin hasil query ke o
+	return nil
+}
+
 func (o *Order) TotalOrders() (int, error) {
 	var db = config.ConnectGormDB()
 
@@ -60,6 +73,17 @@ func (o *Order) NewOrder(tx *sql.Tx, buyer, numberPhone, address string, pieces,
 		return err
 	}
 
+	return nil
+}
+
+func (o *Order) UpdateOrder(idProduct, idStatus int) error {
+	var db = config.ConnectGormDB()
+	var query = "UPDATE orders SET status_id = ? WHERE id = ?;"
+
+	results := db.Exec(query, idStatus, idProduct)
+	if results.Error != nil {
+		return results.Error
+	}
 	return nil
 }
 

@@ -19,6 +19,22 @@ function checkFileType(file, expectedTypes, errorMsg, toDelete) {
         return 0;
     }
 }
+
+// Mengubah Integer to Rupiah
+function formatRupiah(amount) {
+    // Lakukan validasi untuk memastikan amount adalah tipe data numerik
+    if (typeof amount !== 'number') {
+        return 'Invalid input';
+    }
+
+    // Gunakan fungsi toLocaleString untuk memformat angka ke dalam format mata uang Rupiah
+    return amount.toLocaleString('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    });
+}
+
 // Pustaka notifikasi
 let notyf = new Notyf({
     duration: 4000,
@@ -57,3 +73,17 @@ function LoadingNotif(msg) {
         message: msg, 
     });
 }
+
+function clearCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    }
+}
+
+// Contoh penggunaan
+clearCookies();

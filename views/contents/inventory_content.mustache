@@ -687,13 +687,15 @@
     function GetIdFromDataset() {
         return document.getElementById("id-product-edit").dataset.idProduct;
     }
+
+    const submitInventoryButton = document.getElementById("submit-inventory");
     // Send data to server
-    document.getElementById("submit-inventory").addEventListener("click", (e) => {
+    submitInventoryButton.addEventListener("click", (e) => {
         e.preventDefault();
         const stockAmountInput = document.getElementById("stock-amount-form");
         const amountStocks = stockAmountInput.value === "" ? "0" : stockAmountInput.value;
         const description = document.getElementById("description-form");
-
+        
         const data = {
             id: document.getElementById('product-name').value,
             amountStocks: amountStocks,
@@ -706,6 +708,8 @@
             })
             return 0;
         }
+
+        submitInventoryButton.setAttribute("disabled", true);
 
         fetch(`/inventory/check/${data.id}`, {
             method: "GET",
@@ -721,6 +725,7 @@
         })
         .then(results => {
             console.log(results);
+            submitInventoryButton.removeAttribute("disabled");
             if (results.new_product) {
                 const serialNumberForm = document.getElementById('serial-number-form');
                 const manufacturerForm = document.getElementById('manufacturer-form');
@@ -794,6 +799,7 @@
                         .catch(error => {
                             console.log(error);
                             ErrorNotif(error)
+                            submitInventoryButton.removeAttribute("disabled");
                         });
                     }
                 });

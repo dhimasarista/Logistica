@@ -38,9 +38,53 @@ blockquote{
 }
 </style>
 <script>
-    function openOffcanvas() {
-        document.getElementById("myOffcanvas").style.width = "350px";
-        document.getElementById("order-main-content").style.marginRight = "350px";
+    function openOffcanvas(id) {
+        const odProductName = document.getElementById("order-detail-product-name");
+        const odProductPrice = document.getElementById("order-detail-product-price");
+        const odBuyer = document.getElementById("order-detail-buyer");
+        const odNumberPhone = document.getElementById("order-detail-number-phone");
+        const odAddress = document.getElementById("order-detail-address");
+        const odStatus = document.getElementById("order-detail-status");
+        const odQuantity = document.getElementById("order-detail-quantity");
+        const odTotalPrice = document.getElementById("order-detail-total-price");
+
+        const buttonDetail = document.getElementById("button-detail");
+
+        Swal.fire({
+            title: 'Loading!',
+            html: 'Please wait...',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        fetch(`/order/detail/${id}`)
+        .then(response => response.json())
+        .then(results => {
+            Swal.close(); // Close the loading alert after some time
+            console.log(results);   
+            if (results.status !== 200) {
+                InternalServerError(results.error)
+                return 0;    
+            }
+            document.getElementById("myOffcanvas").style.width = "350px";
+            document.getElementById("order-main-content").style.marginRight = "350px";
+            odProductName.innerHTML = results.data.product.name.String.toUpperCase();
+            odProductPrice.innerHTML = formatRupiah(results.data.product.price.Int64);
+            odBuyer.innerHTML = results.data.buyer.String.toUpperCase();
+            odNumberPhone.innerHTML = results.data.number_phone_buyer.String;
+            odAddress.innerHTML = results.data.shipping_address.String;
+            odStatus.innerHTML = results.data.order_status.name.String;
+            odQuantity.innerHTML = `Quantity = ${results.data.pieces.Int64}`;
+            odTotalPrice.innerHTML = `Total Price = ${formatRupiah(results.data.total_price.Int64)}`;
+            buttonDetail.innerHTML = results.button_detail;
+        })
+        .catch(error => {
+            Swal.close(); // Close the loading alert after some time
+            ErrorNotif(error);
+        })
     }
 
     function closeOffcanvas() {
@@ -56,11 +100,11 @@ blockquote{
             <tbody>
                 <tr>
                     <td>Name</td>
-                    <td>AMD Ryzen 3200G</td>
+                    <td id="order-detail-product-name"></td>
                 </tr>
                 <tr>
                     <td>Price</td>
-                    <td>IDR 1.900.000</td>
+                    <td id="order-detail-product-price"></td>
                 </tr>
             </tbody>
         </table>
@@ -73,30 +117,96 @@ blockquote{
             <tbody>
                 <tr>
                     <td>Buyer</td>
-                    <td>Anto Selang</td>
+                    <td id="order-detail-buyer"></td>
                 </tr>
                 <tr>
                     <td>No. Phone</td>
-                    <td>082283772387</td>
+                    <td id="order-detail-number-phone"></td>
                 </tr>
                 <tr>
                     <td>Address</td>
-                    <td>Jl. Kenangan No. 02</td>
+                    <td id="order-detail-address"></td>
                 </tr>
                 <tr>
                     <td>Status</td>
-                    <td><h6 class="badge badge-info">On Delivery</h6></td>
+                    <td id="order-detail-status" class="alert alert-primary" role="alert"></td>
                 </tr>
             </tbody>
         </table>
         <h5>Payment</h5>
-        <div>Quantity = 2</div>
-        <div>Total = 3.800.000</div>
+        <div id="order-detail-quantity"></div>
+        <div id="order-detail-total-price"></div>
         <br>
-        <button type="button" class="btn btn-success">Send</button>
-        <button type="button" class="btn btn-danger">Cancel</button>
+        <div id="button-detail"></div>
     </div>
-    <!-- Tambahkan detail sesuai kebutuhan -->
+    <script>
+        function processOrder(id, status) {
+            Swal.fire({
+                title: "Next Process?",
+                text: "Make sure the data is correct!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Loading!',
+                        html: 'Please wait...',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    const data = {
+                        product_id: id,
+                        status: status,
+                    }
+                    fetch(`/order/next`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(results => {
+                        Swal.close();
+                        if (results.status !== 200) {
+                            Swal.fire({
+                                icon: "error",
+                                title: results.error,
+                            })
+                            return 0;
+                        } else {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: results.message,
+                            })
+                            .then((result2) => {
+                                // Mereload halaman setelah tombol OK diklik
+                                if (result2.isConfirmed || result2.isDismissed) {
+                                    window.location.reload();
+                                }
+                                return 0;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.close();
+                        Swal.fire({
+                            icon: "error",
+                            title: results.error,
+                        })
+                    })
+                }
+            })
+        }
+    </script>
 </div>
 <div class="container-fluid" id="order-main-content">
     <!-- Page Heading -->
@@ -141,7 +251,7 @@ blockquote{
                                         <td>{{total_price}}</td>
                                         <td><h6 class="badge order-status">{{order_status}}</h6></td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0);" onclick="openOffcanvas()">
+                                            <a href="javascript:void(0);" onclick="openOffcanvas('{{id}}')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M19 19V5H5v14zm0-16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-8 4h2v4h4v2h-4v4h-2v-4H7v-2h4z"/></svg>
                                             </a>
                                         </td>
