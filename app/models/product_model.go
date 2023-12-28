@@ -14,16 +14,16 @@ import (
 )
 
 type Product struct {
-	ID               sql.NullInt64  `json:"id"`
-	Name             sql.NullString `json:"name"`
-	SerialNumber     sql.NullString `json:"serial_number"`
-	ManufacturerID   sql.NullInt64  `json:"manufacturer_id"`
-	ManufacturerName sql.NullString `json:"manufacturer_name"`
-	Stocks           sql.NullInt64  `json:"stocks"`
-	Price            sql.NullInt64  `json:"price"`
-	Weight           sql.NullInt64  `json:"weight"`
-	CategoryID       sql.NullInt64  `json:"category_id"`
-	CategoryName     sql.NullString `json:"category_name"`
+	ID               sql.NullInt64  `gorm:"primaryKey" json:"id"`
+	Name             sql.NullString `gorm:"column:name" json:"name"`
+	SerialNumber     sql.NullString `gorm:"column:serial_number" json:"serial_number"`
+	ManufacturerID   sql.NullInt64  `gorm:"column:manufacturer_id" json:"manufacturer_id"`
+	ManufacturerName sql.NullString `gorm:"column:manufacturer_name" json:"manufacturer_name"`
+	Stocks           sql.NullInt64  `gorm:"column:stocks" json:"stocks"`
+	Price            sql.NullInt64  `gorm:"column:price" json:"price"`
+	Weight           sql.NullInt64  `gorm:"column:weight" json:"weight"`
+	CategoryID       sql.NullInt64  `gorm:"column:category_id" json:"category_id"`
+	CategoryName     sql.NullString `gorm:"column:category_id" json:"category_name"`
 
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`

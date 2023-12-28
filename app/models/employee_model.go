@@ -39,8 +39,10 @@ func (e *Employee) GetById(id int64) error {
 	var db = config.ConnectSQLDB()
 	defer db.Close()
 
-	var query string = "SELECT id, name, address, number_phone, position_id, is_user, is_superuser FROM employees WHERE id = ?"
-	err := db.QueryRow(query, id).Scan(
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	var query string = "SELECT id, name, address, number_phone, position_id, is_user, is_superuser FROM employees WHERE id = ?;"
+	err := db.QueryRowContext(ctx, query, id).Scan(
 		&e.ID,
 		&e.Name,
 		&e.Address,
