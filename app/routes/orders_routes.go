@@ -62,15 +62,15 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		var buttonHashedCode string
 		var buttonCancelHashed string
 		if order.Status.Name.String == "on process" {
-			onProcess, _ := utility.GenerateHash("on process")
-			buttonHashedCode = onProcess
+			onDelivery, _ := utility.GenerateHash("on delivery")
+			buttonHashedCode = onDelivery
 			cancelOrder, _ := utility.GenerateHash("cancelled")
 			buttonCancelHashed = cancelOrder
 			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-primary" onclick="processOrder('%d' ,'%s')">Ship</button>
 			<button type="button" class="btn btn-danger" onclick="processOrder('%d', '%s')">Cancel</button>`, idAtoi, buttonHashedCode, idAtoi, buttonCancelHashed)
 		} else if order.Status.Name.String == "on delivery" {
-			result, _ := utility.GenerateHash("on delivery")
-			buttonHashedCode = result
+			received, _ := utility.GenerateHash("received")
+			buttonHashedCode = received
 			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-success" processOrder('%d', '%s')>Finish</button>
 			<button type="button" class="btn btn-danger">Others</button>`, idAtoi, buttonHashedCode)
 		}
@@ -106,7 +106,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 
 		orderId, _ := strconv.Atoi(formData["order_id"])
 
-		if utility.ValidateTextHashed(formData["status"], "on process") {
+		if utility.ValidateTextHashed(formData["status"], "on delivery") {
 			err = order.UpdateOrder(orderId, 2)
 			if err != nil {
 				log.Println(err)
