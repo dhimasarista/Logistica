@@ -7,8 +7,9 @@ INSERT INTO positions VALUES(2222, "software engineer", NOW(), NOW(), NULL);
 INSERT INTO positions VALUES(2223, "human resource", NOW(), NOW(), NULL);
 INSERT INTO positions VALUES(2224, "admin staff", NOW(), NOW(), NULL);
 
-INSERT INTO order_statuses VALUES(1, "on delivery", NOW(), NOW(), NULL);
-INSERT INTO order_statuses VALUES(2, "received", NOW(), NOW(), NULL);
-INSERT INTO order_statuses VALUES(3, "returned", NOW(), NOW(), NULL);
-INSERT INTO order_statuses VALUES(4, "fail", NOW(), NOW(), NULL);
-INSERT INTO order_statuses VALUES(5, "cancelled", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(1, "on process", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(2, "on delivery", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(3, "received", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(4, "returned", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(5, "fail", NOW(), NOW(), NULL);
+INSERT INTO order_statuses VALUES(6, "cancelled", NOW(), NOW(), NULL);

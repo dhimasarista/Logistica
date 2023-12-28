@@ -1,19 +1,18 @@
 package models
 
+import "database/sql"
+
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID       sql.NullInt64  `json:"id" gorm:"primaryKey;column:id"`
+	Username sql.NullString `json:"username" gorm:"column:username"`
+	Password sql.NullString `json:"password" gorm:"column:password"`
 }
 
 func (u *User) FindAll() []User {
 	var users = []User{
 		{
-			Username: "dhimasarista",
-			Password: "01052002",
-		},
-		{
-			Username: "alexanto",
-			Password: "2219770213",
+			Username: sql.NullString{String: "dhimasarista"},
+			Password: sql.NullString{String: "01052002"},
 		},
 	}
 	return users

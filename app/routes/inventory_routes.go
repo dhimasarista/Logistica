@@ -22,6 +22,8 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	var categoryModel = &models.Category{}
 	var stockRecord = &models.StockRecord{}
 
+	// var mutex *sync.Mutex
+
 	// Render Halaman Inventory
 	app.Get("/inventory", func(c *fiber.Ctx) error {
 		// Mendapatkan path dari URL
@@ -209,6 +211,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"error": err.Error(),
 			})
 		}
+
 		fmt.Println(formData)
 
 		// Memeriksa apakah data penting seperti 'manufacturer' dan 'name' kosong
@@ -286,6 +289,23 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			log.Println(err)
 			return c.JSON(fiber.Map{
 				"error": err.Error(),
+			})
+		}
+		// Mengirim data ke stockRecord
+		stockRecord = &models.StockRecord{
+			Amount:      sql.NullInt64{Int64: int64(stocksStrToInt)},
+			Before:      sql.NullInt64{Int64: int64(0)},
+			After:       sql.NullInt64{Int64: int64(stocksStrToInt)},
+			IsAddition:  sql.NullBool{Bool: true},
+			ProductID:   sql.NullInt64{Int64: int64(lastId + 1)},
+			Description: sql.NullString{String: string(formData["description"])},
+		}
+		err = stockRecord.NewRecord()
+		if err != nil {
+			log.Println(err)
+			return c.JSON(fiber.Map{
+				"error":  err.Error(),
+				"status": fiber.StatusInternalServerError,
 			})
 		}
 
@@ -440,8 +460,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
-		fmt.Println(formData["description"].(string))
 
 		// Mengirim data ke stockRecord
 		stockRecord = &models.StockRecord{

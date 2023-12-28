@@ -48,12 +48,12 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 		users := models.User{}
 		user := users.FindAll()[0]
 
-		if user.Username != username {
+		if user.Username.String != username {
 			log.Println("Username Not Found")
 			return c.Render("login", fiber.Map{
 				"error": "Username Not Found.",
 			})
-		} else if user.Password != password {
+		} else if user.Password.String != password {
 			log.Println("Password Incorrect")
 			return c.Render("login", fiber.Map{
 				"error": "Password Incorrect.",
@@ -69,8 +69,8 @@ func AuthenticationRoutes(app *fiber.App, store *session.Store) {
 			loggedIn = true
 		}
 
-		session.Set("username", user.Username)
-		session.Set("user_id", user.Password)
+		session.Set("username", user.Username.String)
+		session.Set("user_id", user.Password.String)
 		session.Set("logged_in", loggedIn)
 		store.CookieHTTPOnly = true
 		store.CookieSecure = true
