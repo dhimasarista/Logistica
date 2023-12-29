@@ -33,7 +33,7 @@ func generateDSN(config DBConfig) string {
 
 // ReadDBConfig membaca konfigurasi database dari Viper
 func readDBConfig() DBConfig {
-	viper.SetConfigFile("../app/config/config.json")
+	viper.SetConfigFile("./app/config/config.json")
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Error reading config file: %s", err)
 	}
