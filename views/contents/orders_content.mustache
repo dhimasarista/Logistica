@@ -174,6 +174,7 @@ blockquote{
                     })
                     .then(response => response.json())
                     .then(results => {
+                        console.log(results);
                         Swal.close();
                         if (results.status !== 200) {
                             Swal.fire({
@@ -278,8 +279,8 @@ blockquote{
                                         case "returned":
                                             badge.classList.add("badge-warning");
                                             break;
-                                        case "cancelled":
-                                            badge.classList.add("badge-red");
+                                        case "fail":
+                                            badge.classList.add("badge-danger");
                                             break;
                                         default:
                                             badge.classList.add("badge-secondary");

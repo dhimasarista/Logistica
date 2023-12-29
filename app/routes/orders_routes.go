@@ -47,6 +47,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Get("/order/detail/:id", func(c *fiber.Ctx) error {
+		time.Sleep(1 * time.Second)
 		var id = c.Params("id")
 		idAtoi, _ := strconv.Atoi(id)
 
@@ -183,8 +184,9 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 					"error":  err.Error(),
 					"status": fiber.StatusInternalServerError,
 				})
-				// Kemudian memasukkan pendapatan ke tabel earnings
 			}
+			order.GetByID(orderId)
+			// Membuat pendapatan kurang untuk kalkulasi
 			err = earning.NewOrder(tx, int(-order.TotalPrice.Int64), order.Product.Name.String, int(order.Pieces.Int64), int(order.Product.Price.Int64))
 			if err != nil {
 				log.Println(err)
@@ -195,15 +197,28 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				})
 			}
 			tx.Commit()
-
-			_, err = product.UpdateStocks(int(order.ProductID.Int64), int(order.Pieces.Int64))
+			err = order.GetByID(orderId)
 			if err != nil {
 				return c.JSON(fiber.Map{
 					"error":  err.Error(),
 					"status": fiber.StatusInternalServerError,
 				})
 			}
-			lastStock, _ := product.LastStocks(int(order.ProductID.Int64))
+			lastStock, err := product.LastStocks(int(order.ProductID.Int64))
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			_, err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+
 			stockRecord = &models.StockRecord{
 				Amount:      sql.NullInt64{Int64: order.Pieces.Int64},
 				Before:      sql.NullInt64{Int64: int64(lastStock)},
@@ -240,12 +255,41 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"message": "Delivery is Fail, it's can't changed!",
 			})
 		} else if utility.ValidateTextHashed(formData["status"], "cancelled") {
-			lastStock, _ := product.LastStocks(int(order.ProductID.Int64))
+			err = order.UpdateOrder(orderId, 6)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			err = order.GetByID(orderId)
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			lastStock, err := product.LastStocks(int(order.ProductID.Int64))
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			_, err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+
 			stockRecord = &models.StockRecord{
 				Amount:      sql.NullInt64{Int64: order.Pieces.Int64},
 				Before:      sql.NullInt64{Int64: int64(lastStock)},
 				After:       sql.NullInt64{Int64: int64(lastStock) + order.Pieces.Int64},
-				Description: sql.NullString{String: "Product Returned"},
+				Description: sql.NullString{String: "Product Cancelled"},
 				IsAddition:  sql.NullBool{Bool: true},
 				ProductID:   sql.NullInt64{Int64: order.ProductID.Int64},
 			}
