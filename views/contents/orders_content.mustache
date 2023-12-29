@@ -237,6 +237,7 @@ blockquote{
                             <table class="table table-bordered table-hover table-striped" id="orderGoingTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th>Date</th>
                                         <th>Product Name</th>
                                         <th>Total Order</th>
                                         <th>Price</th>
@@ -247,6 +248,7 @@ blockquote{
                                 <tbody>
                                     {{#orders}}
                                     <tr>
+                                        <td>{{updated_at}}</td>
                                         <td>{{product_name}}</td>
                                         <td>{{pieces}}</td>
                                         <td>{{total_price}}</td>
@@ -539,8 +541,10 @@ blockquote{
     $(document).ready(function() {
         $('#orderFinishTable').DataTable();
     });
-    $(document).ready(function() {
-        $('#orderGoingTable').DataTable();
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderGoingTable = $('#orderGoingTable').DataTable({
+            "order": [[0, 'asc']] // Mengurutkan berdasarkan kolom pertama secara menaik
+        });
     });
 </script>
 <script>

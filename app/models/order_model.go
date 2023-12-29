@@ -102,6 +102,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 		o.pieces, 
 		o.total_price, 
 		o.product_id, 
+		o.updated_at,
 		o.status_id AS orders,
 		p.name AS product_name,
 		os.name AS status_name
@@ -134,6 +135,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			&order.Pieces,
 			&order.TotalPrice,
 			&order.ProductID,
+			&order.UpdatedAt,
 			&order.StatusID,
 			&order.Product.Name,
 			&order.Status.Name,
@@ -154,6 +156,7 @@ func (o *Order) FindAll() ([]map[string]interface{}, error) {
 			"total_price":        utility.RupiahFormat(order.TotalPrice.Int64),
 			"product_name":       utility.CapitalizeAll(order.Product.Name.String),
 			"order_status":       order.Status.Name.String,
+			"updated_at":         order.UpdatedAt,
 		}
 
 		orders = append(orders, orderMap)
