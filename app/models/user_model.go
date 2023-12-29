@@ -1,11 +1,25 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+	"logistica/app/config"
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	ID       sql.NullInt64  `json:"id" gorm:"primaryKey;column:id"`
 	Username sql.NullString `json:"username" gorm:"column:username"`
 	Password sql.NullString `json:"password" gorm:"column:password"`
+
+	// Employee   Employee      `gorm:"foreignKey:EmployeeeID" json:"employees"`
+	// EmployeeID sql.NullInt64 `gorm:"column:employee_id" json:"employee_id"`
+
+	// Timestamp
+	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 func (u *User) FindAll() []User {
@@ -16,4 +30,15 @@ func (u *User) FindAll() []User {
 		},
 	}
 	return users
+}
+
+func (u *User) GetByID(id int) error {
+	var db = config.ConnectGormDB()
+
+	result := db.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
