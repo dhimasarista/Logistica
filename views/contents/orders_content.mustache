@@ -48,7 +48,7 @@ blockquote{
         const odQuantity = document.getElementById("order-detail-quantity");
         const odTotalPrice = document.getElementById("order-detail-total-price");
 
-        const buttonDetail = document.getElementById("button-detail");
+        const actionDetail = document.getElementById("action-detail");
 
         Swal.fire({
             title: 'Loading!',
@@ -79,7 +79,7 @@ blockquote{
             odStatus.innerHTML = results.data.order_status.name.String;
             odQuantity.innerHTML = `Quantity = ${results.data.pieces.Int64}`;
             odTotalPrice.innerHTML = `Total Price = ${formatRupiah(results.data.total_price.Int64)}`;
-            buttonDetail.innerHTML = results.button_detail;
+            actionDetail.innerHTML = results.action_detail;
         })
         .catch(error => {
             Swal.close(); // Close the loading alert after some time
@@ -137,7 +137,7 @@ blockquote{
         <div id="order-detail-quantity"></div>
         <div id="order-detail-total-price"></div>
         <br>
-        <div id="button-detail"></div>
+        <div id="action-detail"></div>
     </div>
     <script>
         function processOrder(id, status) {

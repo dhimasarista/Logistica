@@ -58,28 +58,56 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-		var buttonDetail string
-		var buttonHashedCode string
-		var buttonCancelHashed string
+		var action string
+		var actionHashedCode string
+		var actionCancelHashed string
+		var actionFailHashed string
+		var actionReturnHashed string
 		if order.Status.Name.String == "on process" {
 			onDelivery, _ := utility.GenerateHash("on delivery")
-			buttonHashedCode = onDelivery
+			actionHashedCode = onDelivery
 			cancelOrder, _ := utility.GenerateHash("cancelled")
-			buttonCancelHashed = cancelOrder
-			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-primary" onclick="processOrder('%d' ,'%s')">Ship</button>
-			<button type="button" class="btn btn-danger" onclick="processOrder('%d', '%s')">Cancel</button>`, idAtoi, buttonHashedCode, idAtoi, buttonCancelHashed)
+			actionCancelHashed = cancelOrder
+			action = fmt.Sprintf(`<button type="button" class="btn btn-primary" onclick="processOrder('%d' ,'%s')">Ship</button>
+			<button type="button" class="btn btn-danger" onclick="processOrder('%d', '%s')">Cancel</button>`, idAtoi, actionHashedCode, idAtoi, actionCancelHashed)
 		} else if order.Status.Name.String == "on delivery" {
 			received, _ := utility.GenerateHash("received")
-			buttonHashedCode = received
-			buttonDetail = fmt.Sprintf(`<button type="button" class="btn btn-success" processOrder('%d', '%s')>Finish</button>
-			<button type="button" class="btn btn-danger">Others</button>`, idAtoi, buttonHashedCode)
+			actionHashedCode = received
+			fail, _ := utility.GenerateHash("fail")
+			actionFailHashed = fail
+			returning, _ := utility.GenerateHash("returned")
+			actionReturnHashed = returning
+			action = fmt.Sprintf(`<button type="button" class="btn btn-success" onclick="processOrder('%d' ,'%s')">Finish</button>
+			<button type="button" class="btn btn-warning" onclick="processOrder('%d' ,'%s')">Return</button>
+			<button type="button" class="btn btn-danger" onclick="processOrder('%d' ,'%s')">Fail</button>`,
+				idAtoi, actionHashedCode, idAtoi, actionReturnHashed, idAtoi, actionFailHashed)
+		} else if order.Status.Name.String == "received" {
+			action = `
+			<div class="alert alert-success" role="alert">
+				Received
+			</div>`
+		} else if order.Status.Name.String == "fail" {
+			action = `
+			<div class="alert alert-danger" role="alert">
+				Fail
+			</div>`
+		} else if order.Status.Name.String == "returned" {
+			action = `
+			<div class="alert alert-warning" role="alert">
+				Returned
+			</div>`
+		} else if order.Status.Name.String == "cancelled" {
+			action = `
+			<div class="alert alert-dark" role="alert">
+				Cancelled
+			</div>`
 		}
 
 		return c.JSON(fiber.Map{
 			"error":         nil,
 			"status":        c.Response().StatusCode(),
 			"data":          order,
-			"button_detail": buttonDetail,
+			"action_detail": action,
 		})
 	})
 
@@ -114,8 +142,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 					"error":  err.Error(),
 					"status": fiber.StatusInternalServerError,
 				})
-				// Kemudian memasukkan pendapatan ke tabel earnings
 			}
+			// Kemudian memasukkan pendapatan ke tabel earnings
 			order.GetByID(orderId)
 			err = earning.NewOrder(tx, int(order.TotalPrice.Int64), order.Product.Name.String, int(order.Pieces.Int64), int(order.Product.Price.Int64))
 			if err != nil {
@@ -131,6 +159,107 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"error":   nil,
 				"status":  c.Response().StatusCode(),
 				"message": "Order on Delivery",
+			})
+		} else if utility.ValidateTextHashed(formData["status"], "received") {
+			err = order.UpdateOrder(orderId, 3)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+				// Kemudian memasukkan pendapatan ke tabel earnings
+			}
+			return c.JSON(fiber.Map{
+				"error":   nil,
+				"status":  c.Response().StatusCode(),
+				"message": "Product Received",
+			})
+		} else if utility.ValidateTextHashed(formData["status"], "returned") {
+			err = order.UpdateOrder(orderId, 4)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+				// Kemudian memasukkan pendapatan ke tabel earnings
+			}
+			err = earning.NewOrder(tx, int(-order.TotalPrice.Int64), order.Product.Name.String, int(order.Pieces.Int64), int(order.Product.Price.Int64))
+			if err != nil {
+				log.Println(err)
+				tx.Rollback()
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			tx.Commit()
+
+			_, err = product.UpdateStocks(int(order.ProductID.Int64), int(order.Pieces.Int64))
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			lastStock, _ := product.LastStocks(int(order.ProductID.Int64))
+			stockRecord = &models.StockRecord{
+				Amount:      sql.NullInt64{Int64: order.Pieces.Int64},
+				Before:      sql.NullInt64{Int64: int64(lastStock)},
+				After:       sql.NullInt64{Int64: int64(lastStock) + order.Pieces.Int64},
+				Description: sql.NullString{String: "Product Returned"},
+				IsAddition:  sql.NullBool{Bool: true},
+				ProductID:   sql.NullInt64{Int64: order.ProductID.Int64},
+			}
+			err = stockRecord.NewRecord()
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			return c.JSON(fiber.Map{
+				"error":   nil,
+				"status":  c.Response().StatusCode(),
+				"message": "Product Returned",
+			})
+		} else if utility.ValidateTextHashed(formData["status"], "fail") {
+			err = order.UpdateOrder(orderId, 5)
+			if err != nil {
+				log.Println(err)
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+				// Kemudian memasukkan pendapatan ke tabel earnings
+			}
+			return c.JSON(fiber.Map{
+				"error":   nil,
+				"status":  c.Response().StatusCode(),
+				"message": "Delivery is Fail, it's can't changed!",
+			})
+		} else if utility.ValidateTextHashed(formData["status"], "cancelled") {
+			lastStock, _ := product.LastStocks(int(order.ProductID.Int64))
+			stockRecord = &models.StockRecord{
+				Amount:      sql.NullInt64{Int64: order.Pieces.Int64},
+				Before:      sql.NullInt64{Int64: int64(lastStock)},
+				After:       sql.NullInt64{Int64: int64(lastStock) + order.Pieces.Int64},
+				Description: sql.NullString{String: "Product Returned"},
+				IsAddition:  sql.NullBool{Bool: true},
+				ProductID:   sql.NullInt64{Int64: order.ProductID.Int64},
+			}
+			err = stockRecord.NewRecord()
+			if err != nil {
+				return c.JSON(fiber.Map{
+					"error":  err.Error(),
+					"status": fiber.StatusInternalServerError,
+				})
+			}
+			return c.JSON(fiber.Map{
+				"error":   nil,
+				"status":  c.Response().StatusCode(),
+				"message": "Order Cancelled",
 			})
 		}
 
