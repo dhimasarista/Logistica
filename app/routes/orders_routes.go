@@ -9,7 +9,6 @@ import (
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -47,7 +46,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Get("/order/detail/:id", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second)
 		var id = c.Params("id")
 		idAtoi, _ := strconv.Atoi(id)
 
@@ -314,7 +312,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/order/calculate", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second)
 		var formData map[string]string
 		// Mengambil data dari body yang dikirim oleh client
 		err := c.BodyParser(&formData)
@@ -377,7 +374,6 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-		time.Sleep(1 * time.Second)
 		var formData map[string]string
 		err = c.BodyParser(&formData)
 		if err != nil {

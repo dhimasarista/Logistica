@@ -8,7 +8,6 @@ import (
 	"logistica/app/controllers"
 	"logistica/app/models"
 	"logistica/app/utility"
-	"time"
 
 	"strconv"
 
@@ -64,7 +63,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Delete("/product/:id", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID produk dari parameter URL
 		productID := c.Params("id")
 
@@ -102,7 +100,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Put("/product/update", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second)
 		var formData map[string]string // Variabel untuk menyimpan data yang diterima dari client-side
 		body := c.Body()
 		err := json.Unmarshal(body, &formData)
@@ -190,7 +187,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 
 	app.Post("/product/new", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		var lastId int
 		// Mendapatkan ID terakhir dari produk
 		lastId, err := productModel.LastId()
@@ -319,7 +315,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Endpoint untuk mendapatkan detail produk berdasarkan ID
 	app.Get("/product/:id", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID produk dari parameter URL
 		productID := c.Params("id")
 
@@ -354,7 +349,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"stocks":         productModel.Stocks.Int64,
 			"weight":         productModel.Weight.Int64,
 		}
-		time.Sleep(1 * time.Second)
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
 			"data": data,
@@ -363,7 +357,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 	// Endpoint untuk memeriksa keberadaan ID dalam database
 	app.Get("/inventory/check/:id", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendapatkan ID dari parameter URL
 		idString := c.Params("id")
 		idInteger, err := strconv.Atoi(idString)
@@ -405,7 +398,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 
 	// Endpoint untuk memperbarui stok produk berdasarkan ID
 	app.Post("/inventory/stocks/update", func(c *fiber.Ctx) error {
-		time.Sleep(1 * time.Second) // Simulasi latensi
 		// Mendeklarasikan variabel untuk menyimpan data yang diterima dari client-side
 		var formData map[string]interface{}
 
