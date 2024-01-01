@@ -157,7 +157,7 @@
                                     imageSpinner.setAttribute('hidden', true);
                                     deleteIdCardForm.style.display = "none";
                                     idCardForm.style.display = "block";
-                                    idCardFilename.textContent = null;
+                                    idCardFilename.textContent = idCardForm[""];
                                     idCardForm.value = "";
                                 }
                                 function clearIdCardForm() {
@@ -179,7 +179,6 @@
                                     })
                                     .then(response => response.json())
                                     .then(results => {
-                                        console.log(results);
                                         if (results.status !== 200) {
                                             InternalServerError(results.error);
                                         }
@@ -190,7 +189,7 @@
                                         imageSpinner.setAttribute('hidden', true);
                                     })
                                     .catch(error => {
-                                        console.log(error);
+                                        console.error(error);
                                         ErrorNotif(error);
                                         showFormIDCard(); // Menampilkan Form ID Card
                                         return 0;
@@ -206,7 +205,6 @@
                                     })
                                     .then(response => response.json())
                                     .then(results => {
-                                        console.log(results);
                                         if (results.status !== 200) {
                                             InternalServerError(results.error);
                                             return 0;
@@ -415,7 +413,6 @@
         })
         .then(results => {
             Swal.close(); // Close the loading alert after some time
-            console.log(results);
             employeeIdEdit.setAttribute("data-id-employee", results.data.id.Int64);
             employeeNameEdit.value = results.data.name.String;
             employeeNameEdit.removeAttribute("disabled");
@@ -471,7 +468,6 @@
                 })
                 .then(response => response.json())
                 .then(results => {
-                    console.log(results);
                     Swal.close(); // Close the loading alert after some time
                     if (results.status !== 200) {
                         Swal.fire({
@@ -694,7 +690,6 @@
                         })
                         .then(response => response.json())
                         .then(results => {
-                            console.log(results);
                             Swal.close(); // Close the loading alert after some time
                             if (results.status !== 200) {
                                 InternalServerError(results.error);

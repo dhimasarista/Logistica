@@ -118,13 +118,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 		// Memeriksa data manufacturer yang diterima
-		var manufacturerData int
+		var manufacturerId int
 		// Jika dikirim dalam bentuk string number
 		if utility.IsNumeric(formData["manufacturer"]) {
 			// Data yang dikirim dalam bentuk string number adalah data yang sudah ada
 			// Kemudian data dikonversi dari str ke integer
-			manufacturerStrToInt, _ := strconv.Atoi(formData["manufacturer"])
-			manufacturerData = manufacturerStrToInt
+			manufacturerAtoi, _ := strconv.Atoi(formData["manufacturer"])
+			manufacturerId = manufacturerAtoi
 		} else {
 			// Jika yang dikirim adalah string char, maka dibuat row data manufacturer baru
 			// Dengan patokan id terakhir
@@ -137,13 +137,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 					"error": err.Error(),
 				})
 			}
-			manufacturerData = newIdManufacturer
+			manufacturerId = newIdManufacturer
 		}
 
-		var categoryData int
+		var categoryId int
 		if utility.IsNumeric(formData["category"]) {
 			categoryStrToInt, _ := strconv.Atoi(formData["category"])
-			categoryData = categoryStrToInt
+			categoryId = categoryStrToInt
 		} else {
 			lastIdCategory, _ := categoryModel.LastId()
 			var newIdCategory int64 = int64(lastIdCategory) + 1
@@ -154,11 +154,11 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 					"error": err.Error(),
 				})
 			}
-			categoryData = int(newIdCategory)
+			categoryId = int(newIdCategory)
 		}
 
 		// Mengkonversi string ke integer untuk beberapa atribut
-		idProductStr, _ := strconv.Atoi(formData["id"])
+		idProduct, _ := strconv.Atoi(formData["id"])
 		priceStrToInt, _ := strconv.Atoi(formData["price"])
 		weightStrToint, _ := strconv.Atoi(formData["weight"])
 
@@ -169,7 +169,16 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		results, err := productModel.UpdateProduct(idProductStr, string(formData["name"]), string(formData["serialNumber"]), manufacturerData, priceStrToInt, weightStrToint, categoryData)
+		productModel = &models.Product{
+			ID:             sql.NullInt64{Int64: int64(idProduct)},
+			Name:           sql.NullString{String: string(formData["name"])},
+			SerialNumber:   sql.NullString{String: string(formData["serialNumber"])},
+			ManufacturerID: sql.NullInt64{Int64: int64(manufacturerId)},
+			Price:          sql.NullInt64{Int64: int64(priceStrToInt)},
+			Weight:         sql.NullInt64{Int64: int64(weightStrToint)},
+			CategoryID:     sql.NullInt64{Int64: int64(categoryId)},
+		}
+		err = productModel.UpdateProduct()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -182,7 +191,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"error":   nil,
 			"status":  fiber.StatusOK,
 			"message": "Success Update Product",
-			"result":  results,
 		})
 	})
 
@@ -219,13 +227,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Memeriksa data manufacturer yang diterima
-		var manufacturerData int
+		var manufacturerId int
 		// Jika dikirim dalam bentuk string number
 		if utility.IsNumeric(formData["manufacturer"]) {
 			// Data yang dikirim dalam bentuk string number adalah data yang sudah ada
 			// Kemudian data dikonversi dari str ke integer
-			manufacturerStrToInt, _ := strconv.Atoi(formData["manufacturer"])
-			manufacturerData = manufacturerStrToInt
+			manufacturerAtoi, _ := strconv.Atoi(formData["manufacturer"])
+			manufacturerId = manufacturerAtoi
 		} else {
 			// Jika yang dikirim adalah string char, maka dibuat row data manufacturer baru
 			// Dengan patokan id terakhir
@@ -238,13 +246,13 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 					"error": err.Error(),
 				})
 			}
-			manufacturerData = newIdManufacturer
+			manufacturerId = newIdManufacturer
 		}
 
-		var categoryData int
+		var categoryId int
 		if utility.IsNumeric(formData["category"]) {
-			categoryStrToInt, _ := strconv.Atoi(formData["category"])
-			categoryData = categoryStrToInt
+			categoryAtoi, _ := strconv.Atoi(formData["category"])
+			categoryId = categoryAtoi
 		} else {
 			lastIdCategory, _ := categoryModel.LastId()
 			var newIdCategory int64 = int64(lastIdCategory) + 1
@@ -255,7 +263,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 					"error": err.Error(),
 				})
 			}
-			categoryData = int(newIdCategory)
+			categoryId = int(newIdCategory)
 		}
 
 		// Mengkonversi string ke integer untuk beberapa atribut
@@ -270,16 +278,17 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		priceStrToInt, _ := strconv.Atoi(formData["price"])
 		weightStrToint, _ := strconv.Atoi(formData["weight"])
 
-		results, err := productModel.NewProduct(
-			lastId+1,
-			string(formData["name"]),
-			string(formData["serialNumber"]),
-			manufacturerData,
-			stocksStrToInt,
-			priceStrToInt,
-			weightStrToint,
-			categoryData,
-		)
+		productModel = &models.Product{
+			ID:             sql.NullInt64{Int64: int64(lastId + 1)},
+			Name:           sql.NullString{String: string(formData["name"])},
+			SerialNumber:   sql.NullString{String: string(formData["serialNumber"])},
+			ManufacturerID: sql.NullInt64{Int64: int64(manufacturerId)},
+			Stocks:         sql.NullInt64{Int64: int64(stocksStrToInt)},
+			Price:          sql.NullInt64{Int64: int64(priceStrToInt)},
+			Weight:         sql.NullInt64{Int64: int64(weightStrToint)},
+			CategoryID:     sql.NullInt64{Int64: int64(categoryId)},
+		}
+		err = productModel.NewProduct()
 
 		if err != nil {
 			log.Println(err)
@@ -310,7 +319,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			"error":   nil,
 			"status":  fiber.StatusOK,
 			"message": "Success Add New Product",
-			"result":  results,
 		})
 	})
 	// Endpoint untuk mendapatkan detail produk berdasarkan ID
@@ -351,7 +359,9 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 		// Mengembalikan respons JSON dengan data produk
 		return c.JSON(fiber.Map{
-			"data": data,
+			"data":   data,
+			"status": c.Response().StatusCode(),
+			"error":  nil,
 		})
 	})
 

@@ -127,6 +127,8 @@ func (e *Employee) FindAll() ([]map[string]any, error) {
 		return nil, err
 	}
 
+	defer rows.Close()
+
 	var employees []map[string]interface{}
 	for rows.Next() {
 		err = rows.Scan(

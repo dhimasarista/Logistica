@@ -261,7 +261,11 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 			return err
 		}
 
-		result, err := position.NewPosition(lastId+1, formData["name"].(string))
+		position = &models.Position{
+			ID:   sql.NullInt64{Int64: int64(lastId + 1)},
+			Name: sql.NullString{String: formData["name"].(string)},
+		}
+		err = position.NewPosition()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -273,10 +277,7 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": c.Response().StatusCode(),
-			"data":   formData,
-			"result": result,
 		})
-
 	})
 
 }

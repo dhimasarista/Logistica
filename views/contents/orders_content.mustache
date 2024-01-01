@@ -64,7 +64,6 @@ blockquote{
         .then(response => response.json())
         .then(results => {
             Swal.close(); // Close the loading alert after some time
-            console.log(results);   
             if (results.status !== 200) {
                 InternalServerError(results.error)
                 return 0;    
