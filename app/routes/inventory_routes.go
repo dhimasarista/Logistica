@@ -130,7 +130,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			// Dengan patokan id terakhir
 			lastIdManufacturer, _ := manufacturerModel.LastId()
 			var newIdManufacturer = lastIdManufacturer + 1
-			_, err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
+			err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
 			if err != nil {
 				log.Println(err)
 				return c.JSON(fiber.Map{
@@ -146,15 +146,15 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			categoryData = categoryStrToInt
 		} else {
 			lastIdCategory, _ := categoryModel.LastId()
-			var newIdCategory = lastIdCategory + 1
-			_, err := categoryModel.NewCategory(newIdCategory, formData["category"])
+			var newIdCategory int64 = int64(lastIdCategory) + 1
+			err := categoryModel.NewCategory(newIdCategory, formData["category"])
 			if err != nil {
 				log.Println(err)
 				return c.JSON(fiber.Map{
 					"error": err.Error(),
 				})
 			}
-			categoryData = newIdCategory
+			categoryData = int(newIdCategory)
 		}
 
 		// Mengkonversi string ke integer untuk beberapa atribut
@@ -231,7 +231,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			// Dengan patokan id terakhir
 			lastIdManufacturer, _ := manufacturerModel.LastId()
 			var newIdManufacturer = lastIdManufacturer + 1
-			_, err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
+			err := manufacturerModel.NewManufacturer(newIdManufacturer, formData["manufacturer"])
 			if err != nil {
 				log.Println(err)
 				return c.JSON(fiber.Map{
@@ -247,15 +247,15 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 			categoryData = categoryStrToInt
 		} else {
 			lastIdCategory, _ := categoryModel.LastId()
-			var newIdCategory = lastIdCategory + 1
-			_, err := categoryModel.NewCategory(newIdCategory, formData["category"])
+			var newIdCategory int64 = int64(lastIdCategory) + 1
+			err := categoryModel.NewCategory(newIdCategory, formData["category"])
 			if err != nil {
 				log.Println(err)
 				return c.JSON(fiber.Map{
 					"error": err.Error(),
 				})
 			}
-			categoryData = newIdCategory
+			categoryData = int(newIdCategory)
 		}
 
 		// Mengkonversi string ke integer untuk beberapa atribut

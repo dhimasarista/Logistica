@@ -1,16 +1,12 @@
 package models
 
 import (
-	"context"
 	"database/sql"
-	"errors"
-	"log"
 	"logistica/app/config"
 	"logistica/app/utility"
 	"sync"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -18,12 +14,13 @@ var mutex sync.Mutex
 
 type Employee struct {
 	// gorm.Model
-	ID          sql.NullInt64  `json:"id" gorm:"primaryKey;column:id"`
-	Name        sql.NullString `json:"name" gorm:"column:name"`
-	Address     sql.NullString `json:"address" gorm:"column:address"`
-	NumberPhone sql.NullString `json:"number_phone" gorm:"column:number_phone"`
-	IsUser      sql.NullBool   `json:"is_user" gorm:"column:is_user"`
-	IsSuperuser sql.NullBool   `json:"is_superuser" gorm:"column:is_superuser"`
+	ID           sql.NullInt64  `json:"id" gorm:"primaryKey;column:id"`
+	Name         sql.NullString `json:"name" gorm:"column:name"`
+	Address      sql.NullString `json:"address" gorm:"column:address"`
+	NumberPhone  sql.NullString `json:"number_phone" gorm:"column:number_phone"`
+	IsUser       sql.NullBool   `json:"is_user" gorm:"column:is_user"`
+	IsSuperuser  sql.NullBool   `json:"is_superuser" gorm:"column:is_superuser"`
+	IdentityCard sql.NullByte   `json:"identity_card" gorm:"column:identity_card"`
 
 	// Foreign key, memiliki relasi dengan Position model
 	Position   Position      `gorm:"foreignKey:PositionID" json:"position"`
@@ -36,112 +33,70 @@ type Employee struct {
 }
 
 func (e *Employee) GetById(id int64) error {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SElECT * FROM employees WHERE id = ?;"
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-	var query string = "SELECT id, name, address, number_phone, position_id, is_user, is_superuser FROM employees WHERE id = ?;"
-	err := db.QueryRowContext(ctx, query, id).Scan(
-		&e.ID,
-		&e.Name,
-		&e.Address,
-		&e.NumberPhone,
-		&e.PositionID,
-		&e.IsUser,
-		&e.IsSuperuser,
-	)
-	if err != nil {
-		return err
+	results := db.Raw(query, id).Scan(&e)
+	if results.Error != nil {
+		return results.Error
 	}
+
 	return nil
 }
 
-func (e *Employee) NewEmployeeGorm(id int, name, address, numberPhone string, position int) (int64, error) {
+func (e *Employee) NewEmployee() error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	newEmployee := &Employee{
-		ID:          sql.NullInt64{Int64: int64(id), Valid: true},
-		Name:        sql.NullString{String: name, Valid: true},
-		Address:     sql.NullString{String: address, Valid: true},
-		NumberPhone: sql.NullString{String: numberPhone, Valid: true},
-		PositionID:  sql.NullInt64{Int64: int64(position), Valid: true},
-		IsUser:      sql.NullBool{Bool: false, Valid: true},
-		IsSuperuser: sql.NullBool{Bool: false, Valid: true},
-	}
-	var db = config.ConnectGormDB()
+	db := config.ConnectGormDB()
+	query := "INSERT INTO employees(id, name, address, number_phone, position_id, is_user, is_superuser, created_at, updated_at, deleted_at) VALUES(?, ?, ?, ?, ?, 0, 0, NOW(), NOW(), NULL);"
 
-	db.AutoMigrate(&Employee{})
-	result := db.Create(newEmployee)
-	if result.Error != nil {
-		return -1, result.Error
+	results := db.Exec(
+		query,
+		e.ID.Int64,
+		e.Name.String,
+		e.Address.String,
+		e.NumberPhone.String,
+		e.PositionID.Int64,
+	)
+	if results.Error != nil {
+		return results.Error
 	}
 
-	return result.RowsAffected, nil
+	return nil
 }
 
-func (e *Employee) NewEmployee(id int, name, address, numberPhone string, position int) (sql.Result, error) {
+func (e *Employee) UpdateEmployee() error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "UPDATE employees SET name = ?, address = ?, number_phone = ?, position_id = ? WHERE id = ?;"
 
-	var query string = "INSERT INTO employees(id, name, address, number_phone, position_id, is_user, is_superuser, created_at, updated_at, deleted_at) VALUES(?, ?, ?, ?, ?, 0, 0, NOW(), NOW(), NULL)"
-	result, err := db.Exec(query, id, name, address, numberPhone, position)
-	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return nil, errors.New("race condition, id has been taken")
-			}
-		}
-		return result, err
-	}
-
-	return result, nil
-}
-
-func (e *Employee) UpdateEmployee(id, position int, name, address, numberPhone string) error {
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	var db = config.ConnectSQLDB()
-	defer db.Close()
-
-	var query string = "UPDATE employees SET name = ?, address = ?, number_phone = ?, position_id = ? WHERE id = ?;"
-	_, err := db.Exec(query, name, address, numberPhone, position, id)
-	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return errors.New("race condition, id has been taken")
-			}
-		}
-		return err
+	results := db.Exec(
+		query,
+		e.Name.String,
+		e.Address.String,
+		e.NumberPhone.String,
+		e.PositionID.Int64,
+		e.ID.Int64,
+	)
+	if results != nil {
+		return results.Error
 	}
 
 	return nil
 }
 
 // Soft Delete
-func (e *Employee) DeleteEmployee(id int) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+func (e *Employee) DeleteEmployee(id int64) error {
+	db := config.ConnectGormDB()
+	query := "UPDATE employees SET deleted_at = NOW() WHERE id = ?;"
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
-
-	var query string = "UPDATE employees SET deleted_at = NOW() WHERE id = ?"
-	_, err := db.Exec(query, id)
-	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return errors.New("race condition, id has been taken")
-			}
-		}
-		return err
+	results := db.Exec(query, id)
+	if results.Error != nil {
+		return results.Error
 	}
-
 	return nil
 }
 
@@ -150,89 +105,87 @@ func (e *Employee) DeleteEmployee(id int) error {
 
 // Hard Delete
 // func (e *Employee) DeleteEmployeePermanent(id int) error {}
-
 func (e *Employee) FindAll() ([]map[string]any, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := `
+		SELECT 
+			e.id, 
+			e.name as employee_name, 
+			e.address, 
+			e.number_phone, 
+			e.position_id, 
+			e.is_user, 
+			e.is_superuser, 
+			p.name AS position_name 
+		FROM 
+			employees e 
+		JOIN positions p ON e.position_id = p.id 
+		WHERE e.id > 1 AND e.deleted_at IS NULL;`
 
-	var query string = "SELECT e.id, e.name as employee_name, e.address, e.number_phone, e.position_id, e.is_user, e.is_superuser, p.name AS position_name FROM employees e JOIN positions p ON e.position_id = p.id WHERE e.id > 1 AND e.deleted_at IS NULL;"
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	rows, err := db.QueryContext(ctx, query)
+	rows, err := db.Raw(query).Rows()
 	if err != nil {
-		cancel()
-		log.Println(err)
 		return nil, err
 	}
 
-	defer rows.Close()
-
-	var employees []map[string]any
-	var positionName sql.NullString
-
+	var employees []map[string]interface{}
 	for rows.Next() {
-		err := rows.Scan(
+		err = rows.Scan(
 			&e.ID,
 			&e.Name,
 			&e.Address,
 			&e.NumberPhone,
 			&e.PositionID,
+			// &e.IdentityCard,
 			&e.IsUser,
 			&e.IsSuperuser,
-			&positionName,
+			&e.Position.Name,
+			// &e.CreatedAt,
+			// &e.UpdatedAt,
+			// &e.DeletedAt,
+
 		)
 
 		if err != nil {
-			log.Println(err)
 			return nil, err
 		}
 
 		var employee = map[string]any{
-			"id":           e.ID.Int64,
-			"name":         utility.Capitalize(e.Name.String),
-			"address":      utility.Capitalize(e.Address.String),
-			"positionName": utility.Capitalize(positionName.String),
-			"numberPhone":  utility.Capitalize(e.NumberPhone.String),
-			"isUser":       e.IsUser.Bool,
-			"isSuperuser":  e.IsSuperuser.Bool,
+			"id":            e.ID.Int64,
+			"name":          utility.Capitalize(e.Name.String),
+			"address":       utility.Capitalize(e.Address.String),
+			"position_name": utility.Capitalize(e.Position.Name.String),
+			"number_phone":  utility.Capitalize(e.NumberPhone.String),
+			"is_user":       e.IsUser.Bool,
+			"is_superuser":  e.IsSuperuser.Bool,
 		}
 
 		employees = append(employees, employee)
 	}
+
 	return employees, nil
 }
 
 func (e *Employee) LastId() (int, error) {
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SELECT COALESCE(MAX(id), 100020) FROM employees;"
 
 	var lastId int
-	var query string = "SELECT COALESCE(MAX(id), 100020) FROM employees;"
-	err := db.QueryRow(query).Scan(
-		&lastId,
-	)
-
-	if err != nil {
-		return 0, err
+	results := db.Raw(query).Scan(&lastId)
+	if results.Error != nil {
+		return -1, results.Error
 	}
 
 	return lastId, nil
 }
 
 func (e *Employee) Count() (int, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SELECT COUNT(*) AS total FROM employees WHERE id > 1;"
 
 	var totalEmployee int
-	var query = "SELECT COUNT(*) AS total FROM employees WHERE id > 1"
-	err := db.QueryRow(query).Scan(&totalEmployee)
-	if err != nil {
-		return 0, err
+	results := db.Raw(query).Scan(&totalEmployee)
+	if results.Error != nil {
+		return -1, results.Error
 	}
 
 	return totalEmployee, nil

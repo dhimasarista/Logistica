@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"logistica/app/controllers"
@@ -102,13 +103,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Data yang diterima tadi langsung dieksekusi oleh basis data
-		newEmpResult, err := employee.NewEmployeeGorm(
-			idToInt,
-			formData["name"].(string),
-			formData["address"].(string),
-			formData["numberPhone"].(string),
-			positionToInt,
-		)
+		employee = &models.Employee{
+			ID:          sql.NullInt64{Int64: int64(idToInt)},
+			Name:        sql.NullString{String: formData["name"].(string)},
+			Address:     sql.NullString{String: formData["address"].(string)},
+			NumberPhone: sql.NullString{String: formData["numberPhone"].(string)},
+			PositionID:  sql.NullInt64{Int64: int64(positionToInt)},
+		}
+		err = employee.NewEmployee()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -121,8 +123,6 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		return c.JSON(fiber.Map{
 			"error":  nil,
 			"status": c.Response().StatusCode(),
-			"data":   formData,
-			"result": newEmpResult,
 		})
 	})
 	// Memperbarui data employee
@@ -153,13 +153,14 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 		if err != nil {
 			panic(err)
 		}
-		err = employee.UpdateEmployee(
-			idToInt,
-			positionToInt,
-			formData["name"].(string),
-			formData["address"].(string),
-			formData["numberPhone"].(string),
-		)
+		employee = &models.Employee{
+			ID:          sql.NullInt64{Int64: int64(idToInt)},
+			Name:        sql.NullString{String: formData["name"].(string)},
+			Address:     sql.NullString{String: formData["address"].(string)},
+			NumberPhone: sql.NullString{String: formData["numberPhone"].(string)},
+			PositionID:  sql.NullInt64{Int64: int64(positionToInt)},
+		}
+		err = employee.UpdateEmployee()
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -175,13 +176,13 @@ func EmployeesRoutes(app *fiber.App, store *session.Store) {
 	})
 	// Menghapus employee berdasarkan id
 	app.Delete("/employee/:id", func(c *fiber.Ctx) error {
-		var id string = c.Params("id")     // Mengambil id Dari parameter
-		idInteger, err := strconv.Atoi(id) // Mengonversi dari string ke integer
+		var id string = c.Params("id")        // Mengambil id Dari parameter
+		var idInteger, err = strconv.Atoi(id) // Mengonversi dari string ke integer
 		if err != nil {
 			log.Println(err)
 		}
 		// Kemudian meneruskan ke basis data
-		err = employee.DeleteEmployee(idInteger)
+		err = employee.DeleteEmployee(int64(idInteger))
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{

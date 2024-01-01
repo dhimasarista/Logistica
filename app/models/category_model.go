@@ -2,16 +2,21 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"logistica/app/config"
 	"logistica/app/utility"
+	"time"
 
-	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 type Category struct {
-	ID   sql.NullInt64  `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   sql.NullInt64  `gorm:"primaryKey;column:id" json:"id"`
+	Name sql.NullString `gorm:"column:name" json:"name"`
+
+	// Timestamp
+	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 func (c *Category) FindAll() ([]map[string]interface{}, error) {
@@ -42,46 +47,36 @@ func (c *Category) FindAll() ([]map[string]interface{}, error) {
 	return categories, nil
 }
 
-func (c *Category) NewCategory(id int, name string) (sql.Result, error) {
+func (c *Category) NewCategory(id int64, name string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "INSERT INTO product_categories VALUES(?, ?, NOW(), NOW(), NULL)"
 
-	// Jika id yang diterima di bawah 9100
 	if id <= 889 {
-		id = 890 // sebagai nilai set otomatis jika row belum ada
-	}
-	var query string = "INSERT INTO product_categories VALUES(?, ?, NOW(), NOW(), NULL)"
-	result, err := db.Exec(query, id, name)
-	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return nil, errors.New("race condition, id has been taken")
-			}
-		}
-		return result, err
+		id = 889
 	}
 
-	return result, nil
+	results := db.Exec(query)
+	if results.Error != nil {
+		return results.Error
+	}
+
+	return nil
 }
-func (c *Category) LastId() (int, error) {
+
+func (c *Category) LastId() (int64, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SELECT COALESCE(MAX(id), 890) FROM product_categories;"
 
-	var lastId int
-	var query string = "SELECT COALESCE(MAX(id), 890) FROM product_categories;"
-	err := db.QueryRow(query).Scan(
-		&lastId,
-	)
-
-	if err != nil {
-		return 0, err
+	var lastId int64
+	resutls := db.Raw(query).Scan(&lastId)
+	if resutls.Error != nil {
+		return -1, resutls.Error
 	}
-
 	return lastId, nil
 }

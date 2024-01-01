@@ -29,8 +29,8 @@
                             <tr id="employee-{{id}}">
                                 <td>{{id}}</td>
                                 <td>{{name}}</td>
-                                <td>{{positionName}}</td>
-                                <td>{{numberPhone}}</td>
+                                <td>{{position_name}}</td>
+                                <td>{{number_phone}}</td>
                                 <td>{{address}}</td>    
                                 <td>
                                     <div class="dropdown">
@@ -704,7 +704,6 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Success",
-                                text: `New Employee: ${results.data["name"]}`,
                             })
                             .then((result) => {
                                 // Mereload halaman setelah tombol OK diklik

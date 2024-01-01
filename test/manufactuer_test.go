@@ -28,8 +28,6 @@ func TestNewManufacturer(t *testing.T) {
 	manufacturer := models.Manufacturer{}
 	lastId, _ := manufacturer.LastId()
 
-	manufacturers, err := manufacturer.NewManufacturer(lastId+1, "Hello")
-	fmt.Println(manufacturers)
-
+	err := manufacturer.NewManufacturer(lastId+1, "Hello")
 	assert.Nil(t, err)
 }
