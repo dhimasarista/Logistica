@@ -208,49 +208,42 @@ func (p *Product) Count() (int, error) {
 	return totalProducts, nil
 }
 
-func (p *Product) UpdateStocks(id int, stocks int) (sql.Result, error) {
+func (p *Product) UpdateStocks(id int, stocks int) error {
 	// Gunakan mutex yang sama jika diperlukan
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
 
 	// Periksa apakah produk dengan ID yang diberikan ada dan belum dihapus
 	var checkQuery = "SELECT id FROM products WHERE id = ? AND deleted_at IS NULL"
-	err := db.QueryRow(checkQuery, id).Scan(new(int)) // Scan ke variabel baru untuk memeriksa keberadaan produk
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			// Produk tidak ditemukan atau sudah dihapus
-			return nil, errors.New("product not found or deleted")
-		}
-		return nil, err
+	results := db.Raw(checkQuery, id).Scan(new(int)) // Scan ke variabel baru untuk memeriksa keberadaan produk
+	if results.Error != nil {
+		return results.Error
 	}
 
 	query := "UPDATE products SET stocks = ? WHERE id = ? AND deleted_at IS NULL;"
-
-	result, err := db.Exec(query, stocks, id)
-	if err != nil {
-		return nil, err
+	results = db.Exec(query, stocks, id)
+	if results.Error != nil {
+		return results.Error
 	}
 
 	// Periksa apakah result tidak nil
-	if result == nil {
-		return nil, errors.New("update operation failed")
+	if results == nil {
+		return errors.New("update operation failed")
 	}
 
-	return result, nil
+	return nil
 }
 
 func (p *Product) LastStocks(id int) (int, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
 
 	var lastStock int
 	var query string = "SELECT stocks FROM products WHERE id = ?"
-	err := db.QueryRow(query, id).Scan(&lastStock)
-	if err != nil {
-		return 0, err
+	results := db.Raw(query, id).Scan(&lastStock)
+	if results.Error != nil {
+		return 0, results.Error
 	}
 
 	return lastStock, nil
@@ -260,18 +253,17 @@ func (p *Product) LastId() (int, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
 
 	var lastId int
 	// Declare a variable named 'query' of type string.
 	var query string = "SELECT COALESCE(MAX(id), 1020) FROM products;"
-	err := db.QueryRow(query).Scan(
+	results := db.Raw(query).Scan(
 		&lastId,
 	)
 
-	if err != nil {
-		return 0, err
+	if results.Error != nil {
+		return 0, results.Error
 	}
 
 	return lastId, nil

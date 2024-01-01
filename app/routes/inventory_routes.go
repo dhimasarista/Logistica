@@ -454,7 +454,7 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		}
 
 		// Memperbarui stok produk
-		results, err := productModel.UpdateStocks(id, lastStocks+stock)
+		err = productModel.UpdateStocks(id, lastStocks+stock)
 		if err != nil {
 			log.Println(err)
 			return c.JSON(fiber.Map{
@@ -484,7 +484,6 @@ func InventoryRoutes(app *fiber.App, store *session.Store) {
 		// Mengembalikan respons JSON dengan pesan sukses dan hasil pembaruan stok
 		return c.JSON(fiber.Map{
 			"message": "Stock Updated!",
-			"results": results,
 			"status":  c.Response().StatusCode(),
 		})
 	})
