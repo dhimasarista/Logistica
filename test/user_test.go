@@ -14,3 +14,9 @@ func TestGetUserByID(t *testing.T) {
 	fmt.Println(user.ID)
 	assert.Nil(t, err)
 }
+
+func TestGetByUsername(t *testing.T) {
+	var user = &models.User{}
+	err := user.GetByUsername("administrator")
+	assert.Nil(t, err)
+}

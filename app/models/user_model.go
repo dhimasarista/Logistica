@@ -32,12 +32,23 @@ func (u *User) FindAll() []User {
 	return users
 }
 
+func (u *User) GetByUsername(username string) error {
+	var db = config.ConnectGormDB()
+
+	results := db.Raw("SELECT * FROM users WHERE username = ?", username).Scan(&u)
+	if results.Error != nil {
+		return results.Error
+	}
+
+	return nil
+}
+
 func (u *User) GetByID(id int) error {
 	var db = config.ConnectGormDB()
 
-	result := db.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&u)
-	if result.Error != nil {
-		return result.Error
+	results := db.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&u)
+	if results.Error != nil {
+		return results.Error
 	}
 
 	return nil

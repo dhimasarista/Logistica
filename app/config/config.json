@@ -1,10 +1,13 @@
 {
-    "database": {
-      "username": "user_dev",
-      "password": "vancouver",
-      "host": "localhost",
-      "port": "3306",
-      "name": "logistica",
-      "parseTime": true
-    }
+  "database": {
+    "username": "user_dev",
+    "password": "vancouver",
+    "host": "localhost",
+    "port": "3306",
+    "name": "logistica",
+    "parseTime": true
+  },
+  "server": {
+    "port": 9999
   }
+}
