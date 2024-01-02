@@ -67,7 +67,6 @@
                                                         })
                                                         .then(response => response.json())
                                                         .then(results => {
-                                                            console.log(results);
                                                             if (results.status !== 200){
                                                                 InternalServerError(results.error);
                                                                 return 0
@@ -214,7 +213,6 @@
                                         })
                                         .then(res => res.json())
                                         .then(results => {
-                                            console.log(results);
                                             Swal.close(); // Close the loading alert after some time
                                             serialNumberForm.value = results.data.serialNumber;
                                             serialNumberForm.setAttribute("disabled", true);
@@ -576,7 +574,11 @@
         .then(res => res.json())
         .then(results => {
             Swal.close(); // Close the loading alert after some time
-            console.log(results);
+            if (results.status !== 200) {
+                InternalServerError(results.error);
+                // $("#editProductModal").hidden();
+                return 0;
+            }
             const idProductEdit = document.getElementById("id-product-edit");
             const productNameEdit = document.getElementById("product-name-edit");
             const serialNumberEdit = document.getElementById("serial-number-edit");
@@ -609,7 +611,6 @@
                     categoryFormEditProduct.selectedIndex = index  ;
                 }
             }
-            
         })
         .catch(error => {
             console.error(error);
@@ -655,7 +656,6 @@
                 })
                 .then(response => response.json())
                 .then(results => {
-                    console.log(results);
                     Swal.close(); // Close the loading alert after some time
                     if (results.status !== 200) {
                         Swal.fire({
@@ -724,7 +724,6 @@
             return response.json(); // Keep parsing as JSON
         })
         .then(results => {
-            console.log(results);
             submitInventoryButton.removeAttribute("disabled");
             if (results.new_product) {
                 const serialNumberForm = document.getElementById('serial-number-form');
@@ -773,7 +772,6 @@
                         })
                         .then(response => response.json())
                         .then(results => {
-                            console.log(results);
                             Swal.close(); // Close the loading alert after some time
                             if (results.status !== 200) {
                                 Swal.fire({

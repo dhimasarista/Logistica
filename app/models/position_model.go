@@ -19,24 +19,22 @@ type Position struct {
 }
 
 func (p *Position) FindAll() ([]map[string]any, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SELECT * FROM positions;"
 
-	var query string = "SELECT id, name FROM positions"
-	rows, err := db.Query(query)
-
-	var positions []map[string]interface{}
-
+	rows, err := db.Raw(query).Rows()
 	if err != nil {
 		return nil, err
 	}
-
+	var positions = []map[string]any{}
 	for rows.Next() {
-		err := rows.Scan(
+		if err = rows.Scan(
 			&p.ID,
 			&p.Name,
-		)
-		if err != nil {
+			&p.CreatedAt,
+			&p.UpdatedAt,
+			&p.DeletedAt,
+		); err != nil {
 			return nil, err
 		}
 
@@ -46,21 +44,22 @@ func (p *Position) FindAll() ([]map[string]any, error) {
 		}
 
 		positions = append(positions, position)
+
 	}
+
 	return positions, nil
 }
 
-func (p *Position) NewPosition(id int, name string) (sql.Result, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+func (p *Position) NewPosition() error {
+	db := config.ConnectGormDB()
+	query := "INSERT INTO positions VALUES(?, ?, NOW(), NOW(), NULL);"
 
-	var query string = "INSERT INTO positions VALUES(?, ?)"
-	result, err := db.Exec(query, id, name)
-	if err != nil {
-		return nil, err
+	results := db.Exec(query, p.ID.Int64, p.Name.String)
+	if results.Error != nil {
+		return results.Error
 	}
 
-	return result, nil
+	return nil
 }
 
 func (p *Position) LastId() (int, error) {

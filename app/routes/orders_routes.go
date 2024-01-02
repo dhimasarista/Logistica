@@ -209,7 +209,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 					"status": fiber.StatusInternalServerError,
 				})
 			}
-			_, err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
+			err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
 			if err != nil {
 				return c.JSON(fiber.Map{
 					"error":  err.Error(),
@@ -275,7 +275,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 					"status": fiber.StatusInternalServerError,
 				})
 			}
-			_, err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
+			err = product.UpdateStocks(int(order.ProductID.Int64), lastStock+int(order.Pieces.Int64))
 			if err != nil {
 				return c.JSON(fiber.Map{
 					"error":  err.Error(),

@@ -1,43 +1,46 @@
 package models
 
 import (
-	"context"
 	"database/sql"
-	"errors"
 	"logistica/app/config"
 	"logistica/app/utility"
+	"time"
 
-	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 type Manufacturer struct {
-	ID   sql.NullInt64  `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   sql.NullInt64  `gorm:"primaryKey" json:"id"`
+	Name sql.NullString `gorm:"column:name" json:"name"`
+
+	// Timestamp
+	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 func (m *Manufacturer) FindAll() ([]map[string]interface{}, error) {
-	db := config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
+	query := "SELECT * FROM manufacturers"
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	query := "SELECT id, name FROM manufacturers;"
-
-	rows, err := db.QueryContext(ctx, query)
+	rows, err := db.Raw(query).Rows()
 	if err != nil {
 		return nil, err
 	}
-
-	// Map untuk menyimpan daftar manufacturer
 	var manufacturers []map[string]interface{}
-
 	for rows.Next() {
-		err := rows.Scan(&m.ID, &m.Name)
+		err = rows.Scan(
+			&m.ID,
+			&m.Name,
+			&m.UpdatedAt,
+			&m.CreatedAt,
+			&m.DeletedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
-		var manufacturer = map[string]interface{}{
+
+		var manufacturer = map[string]any{
 			"id":   m.ID.Int64,
 			"name": utility.CapitalizeAll(m.Name.String),
 		}
@@ -48,46 +51,37 @@ func (m *Manufacturer) FindAll() ([]map[string]interface{}, error) {
 	return manufacturers, nil
 }
 
-func (m *Manufacturer) NewManufacturer(id int, name string) (sql.Result, error) {
+func (m *Manufacturer) NewManufacturer(id int, name string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
-
-	// Jika id yang diterima di bawah 9100
-	if id <= 9100 {
-		id = 9000 // sebagai nilai set otomatis jika row belum ada
-	}
+	db := config.ConnectGormDB()
 	var query string = "INSERT INTO manufacturers VALUES(?, ?, NOW(), NOW(), NULL)"
-	result, err := db.Exec(query, id, name)
-	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == 1062 {
-				return nil, errors.New("race condition, id has been taken")
-			}
-		}
-		return result, err
+
+	if m.ID.Int64 <= 9100 {
+		m.ID.Int64 = 9000
+	}
+	results := db.Exec(query, m.ID.Int64, m.Name.String)
+	if results.Error != nil {
+		return results.Error
 	}
 
-	return result, nil
+	return nil
+
 }
 
 func (m *Manufacturer) LastId() (int, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var db = config.ConnectSQLDB()
-	defer db.Close()
+	db := config.ConnectGormDB()
 
 	var lastId int
 	var query string = "SELECT COALESCE(MAX(id), 9100) FROM manufacturers;"
-	err := db.QueryRow(query).Scan(
-		&lastId,
-	)
+	results := db.Raw(query).Scan(&lastId)
 
-	if err != nil {
-		return 0, err
+	if results.Error != nil {
+		return 0, results.Error
 	}
 
 	return lastId, nil

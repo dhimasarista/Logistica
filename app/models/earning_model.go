@@ -32,7 +32,6 @@ func (e *Earning) TotalEarnings() (int, error) {
 }
 
 func (e *Earning) NewOrder(tx *sql.Tx, amountReceived int, productName string, pieces, price int) error {
-
 	var query = "INSERT INTO earnings(amount_received, product_name, pieces, price) VALUES(?,?,?,?);"
 	_, err := tx.Exec(query, amountReceived, productName, pieces, price)
 	if err != nil {
@@ -41,5 +40,3 @@ func (e *Earning) NewOrder(tx *sql.Tx, amountReceived int, productName string, p
 
 	return nil
 }
-
-// INSERT INTO earnings(amount_received, product_name, pieces, price) VALUES(3740000, 'Ryzen 3200G', 2, 1870000);

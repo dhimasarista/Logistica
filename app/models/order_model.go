@@ -1,7 +1,6 @@
 package models
 
 import (
-	"context"
 	"database/sql"
 	"errors"
 	"logistica/app/config"
@@ -33,6 +32,7 @@ type Order struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
+// SLOW SQL >= 200ms
 func (o *Order) GetByID(id int) error {
 	var db = config.ConnectGormDB()
 	var result Order
@@ -44,6 +44,78 @@ func (o *Order) GetByID(id int) error {
 	}
 	*o = result // Salin hasil query ke o
 	return nil
+}
+
+func (o *Order) FindAll() ([]map[string]interface{}, error) {
+	db := config.ConnectGormDB()
+	query := `
+	SELECT 
+		o.id, 
+		o.buyer, 
+		o.number_phone_buyer, 
+		o.receiver, 
+		o.shipping_address, 
+		o.documentation, 
+		o.pieces, 
+		o.total_price, 
+		o.product_id, 
+		o.updated_at,
+		o.status_id AS orders,
+		p.name AS product_name,
+		os.name AS status_name
+	FROM 
+		orders o
+	JOIN 
+		products p ON o.product_id = p.id
+	JOIN
+		order_statuses os ON o.status_id = os.id;`
+
+	rows, err := db.Raw(query).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders = []map[string]any{}
+	for rows.Next() {
+		err = rows.Scan(
+			&o.ID,
+			&o.Buyer,
+			&o.NumberPhoneBuyer,
+			&o.Receiver,
+			&o.ShippingAddress,
+			&o.Documentation,
+			&o.Pieces,
+			&o.TotalPrice,
+			&o.ProductID,
+			&o.UpdatedAt,
+			&o.StatusID,
+			&o.Product.Name,
+			&o.Status.Name,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var order = map[string]any{
+			"id":                 o.ID.Int64,
+			"buyer":              o.Buyer.String,
+			"number_phone_buyer": o.NumberPhoneBuyer.String,
+			"receiver":           o.Receiver.String,
+			"shipping_address":   o.ShippingAddress.String,
+			"documentation":      o.Documentation,
+			"pieces":             o.Pieces.Int64,
+			"total_price":        utility.RupiahFormat(o.TotalPrice.Int64),
+			"product_name":       utility.CapitalizeAll(o.Product.Name.String),
+			"order_status":       o.Status.Name.String,
+			"updated_at":         o.UpdatedAt,
+		}
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
 }
 
 func (o *Order) TotalOrders() (int, error) {
@@ -85,82 +157,4 @@ func (o *Order) UpdateOrder(idProduct, idStatus int) error {
 		return results.Error
 	}
 	return nil
-}
-
-func (o *Order) FindAll() ([]map[string]interface{}, error) {
-	var db = config.ConnectSQLDB()
-	defer db.Close()
-	// Kueri untuk melakukan JOIN TABLES
-	var query string = `
-	SELECT 
-		o.id, 
-		o.buyer, 
-		o.number_phone_buyer, 
-		o.receiver, 
-		o.shipping_address, 
-		o.documentation, 
-		o.pieces, 
-		o.total_price, 
-		o.product_id, 
-		o.updated_at,
-		o.status_id AS orders,
-		p.name AS product_name,
-		os.name AS status_name
-	FROM 
-		orders o
-	JOIN 
-		products p ON o.product_id = p.id
-	JOIN
-		order_statuses os ON o.status_id = os.id;
-	`
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	rows, err := db.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-
-	var orders []map[string]interface{}
-	for rows.Next() {
-		var order Order
-		err := rows.Scan(
-			&order.ID,
-			&order.Buyer,
-			&order.NumberPhoneBuyer,
-			&order.Receiver,
-			&order.ShippingAddress,
-			&order.Documentation,
-			&order.Pieces,
-			&order.TotalPrice,
-			&order.ProductID,
-			&order.UpdatedAt,
-			&order.StatusID,
-			&order.Product.Name,
-			&order.Status.Name,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		orderMap := map[string]interface{}{
-			"id":                 order.ID.Int64,
-			"buyer":              order.Buyer.String,
-			"number_phone_buyer": order.NumberPhoneBuyer.String,
-			"receiver":           order.Receiver.String,
-			"shipping_address":   order.ShippingAddress.String,
-			"documentation":      order.Documentation,
-			"pieces":             order.Pieces.Int64,
-			"total_price":        utility.RupiahFormat(order.TotalPrice.Int64),
-			"product_name":       utility.CapitalizeAll(order.Product.Name.String),
-			"order_status":       order.Status.Name.String,
-			"updated_at":         order.UpdatedAt,
-		}
-
-		orders = append(orders, orderMap)
-	}
-
-	return orders, nil
 }
