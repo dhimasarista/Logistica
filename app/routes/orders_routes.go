@@ -40,6 +40,7 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		var orderOnGoing []map[string]any
 		var orderFinish []map[string]any
 		for i := 0; i < len(orders); i++ {
+			fmt.Println(orders[i]["order_status"])
 			isOnGoing := orders[i]["order_status"] == "on process" || orders[i]["order_status"] == "on delivery"
 			if isOnGoing {
 				fmt.Println(isOnGoing)

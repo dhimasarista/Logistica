@@ -261,34 +261,6 @@ blockquote{
                                     {{/order_ongoing}}
                                 </tbody>
                             </table>
-                            <script>
-                                const orderStatusBadges = document.querySelectorAll(".order-status")
-                                orderStatusBadges.forEach(badge => {
-                                    const orderStatusText = badge.innerText.toLowerCase(); // Ambil dan ubah teks menjadi huruf kecil
-
-                                    // Tambahkan kelas sesuai dengan nilai teks
-                                    switch (orderStatusText) {
-                                        case "on process":
-                                            badge.classList.add("badge-dark");
-                                            break;
-                                        case "on delivery":
-                                            badge.classList.add("badge-info");
-                                            break;
-                                        case "received":
-                                            badge.classList.add("badge-success");
-                                            break;
-                                        case "returned":
-                                            badge.classList.add("badge-warning");
-                                            break;
-                                        case "fail":
-                                            badge.classList.add("badge-danger");
-                                            break;
-                                        default:
-                                            badge.classList.add("badge-secondary");
-                                            break;
-                                    }
-                                });
-                            </script>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="finished-button">
@@ -296,7 +268,8 @@ blockquote{
                             <table class="table table-bordered table-hover table-striped" id="orderFinishTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
+                                        <th>Date</th>
+                                        <th>Product Name</th>
                                         <th>Total Order</th>
                                         <th>Price</th>
                                         <th>Status</th>
@@ -304,30 +277,20 @@ blockquote{
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{#order_finish}}
                                     <tr>
-                                        <td>Ryzen 5 5000X</td>
-                                        <td>3</td>
-                                        <td>3.900.000</td>
-                                        <td><h6 class="badge badge-info">On Delivery</h6></td>
+                                        <td>{{updated_at}}</td>
+                                        <td>{{product_name}}</td>
+                                        <td>{{pieces}}</td>
+                                        <td>{{total_price}}</td>
+                                        <td><h6 class="badge order-status">{{order_status}}</h6></td>
                                         <td class="text-center">
-                                            <div class="dropdown">
-                                                <!-- editEmployeeModal -->
-                                                <!-- <a href="javascript:void(0);" data-toggle="modal" data-target="#editEmployeeModal" onclick="GetDataByID(parseInt('{{id}}'))">
-                                                    update
-                                                </a> -->
-                                                <a href="javascript:void(0);" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20"><g fill="currentColor"><circle cx="10" cy="15" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="10" cy="5" r="2"/></g></svg>
-                                                </a>
-                                        
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                    <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">Detail</a>
-                                                    <!-- Tambahkan opsi dropdown lainnya sesuai kebutuhan -->
-                                                </div>
-                                            </div>
+                                            <a href="javascript:void(0);" onclick="openOffcanvas('{{id}}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M19 19V5H5v14zm0-16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-8 4h2v4h4v2h-4v4h-2v-4H7v-2h4z"/></svg>
+                                            </a>
                                         </td>
                                     </tr>
+                                    {{/order_finish}}
                                 </tbody>
                             </table>
                         </div>
@@ -336,6 +299,34 @@ blockquote{
             </div>
         </div>
     </div>
+    <script>
+        const orderStatusBadges = document.querySelectorAll(".order-status")
+        orderStatusBadges.forEach(badge => {
+            const orderStatusText = badge.innerText.toLowerCase(); // Ambil dan ubah teks menjadi huruf kecil
+
+            // Tambahkan kelas sesuai dengan nilai teks
+            switch (orderStatusText) {
+                case "on process":
+                    badge.classList.add("badge-dark");
+                    break;
+                case "on delivery":
+                    badge.classList.add("badge-info");
+                    break;
+                case "received":
+                    badge.classList.add("badge-success");
+                    break;
+                case "returned":
+                    badge.classList.add("badge-warning");
+                    break;
+                case "fail":
+                    badge.classList.add("badge-danger");
+                    break;
+                default:
+                    badge.classList.add("badge-secondary");
+                    break;
+            }
+        });
+    </script>
     <div class="card shadow mb-4" id="card-add-stocks" hidden>
         <div class="card">
             <div class="card-header py-3">
