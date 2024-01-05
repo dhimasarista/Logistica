@@ -37,11 +37,25 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			return InternalServerError(c, err.Error())
 		}
 
+		var orderOnGoing []map[string]any
+		var orderFinish []map[string]any
+		for i := 0; i < len(orders); i++ {
+			isOnGoing := orders[i]["order_status"] == "on process" || orders[i]["order_status"] == "on delivery"
+			if isOnGoing {
+				fmt.Println(isOnGoing)
+				orderOnGoing = append(orderOnGoing, orders[i])
+			} else {
+				fmt.Println(isOnGoing)
+				orderFinish = append(orderFinish, orders[i])
+			}
+		}
+
 		return c.Render("orders_page", fiber.Map{
-			"path":     path,
-			"user":     username,
-			"products": products,
-			"orders":   orders,
+			"path":          path,
+			"user":          username,
+			"products":      products,
+			"order_ongoing": orderOnGoing,
+			"order_finish":  orderFinish,
 		})
 	})
 

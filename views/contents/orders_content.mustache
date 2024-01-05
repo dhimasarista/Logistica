@@ -245,7 +245,7 @@ blockquote{
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#orders}}
+                                    {{#order_ongoing}}
                                     <tr>
                                         <td>{{updated_at}}</td>
                                         <td>{{product_name}}</td>
@@ -258,7 +258,7 @@ blockquote{
                                             </a>
                                         </td>
                                     </tr>
-                                    {{/orders}}
+                                    {{/order_ongoing}}
                                 </tbody>
                             </table>
                             <script>
@@ -542,7 +542,7 @@ blockquote{
     });
     document.addEventListener('DOMContentLoaded', function() {
         const orderGoingTable = $('#orderGoingTable').DataTable({
-            "order": [[0, 'asc']] // Mengurutkan berdasarkan kolom pertama secara menaik
+            "order": [[0, 'desc']] // Mengurutkan berdasarkan kolom pertama secara menaik
         });
     });
 </script>
