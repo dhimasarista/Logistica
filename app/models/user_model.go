@@ -31,21 +31,19 @@ func (u *User) FindAll() []User {
 	}
 	return users
 }
-func (u *User) FindAllConnectDB() ([]map[string]any, error) {
-	var db = config.ConnectGormDB()
 
-	var users = []map[string]interface
+// func (u *User) FindAllConnectDB() ([]map[string]any, error) {
+// 	var db = config.ConnectGormDB()
 
-	results := db.Raw("SELECT * FROM users;").Scan(&users)
-	if results.Error != nil {
-		return nil, results.Error
-	}
+// 	var users = []map[string]interface
 
-	
-	
+// 	results := db.Raw("SELECT * FROM users;").Scan(&users)
+// 	if results.Error != nil {
+// 		return nil, results.Error
+// 	}
 
-	return nil, nil
-}
+// 	return resl, nil
+// }
 
 func (u *User) GetByUsername(username string) error {
 	var db = config.ConnectGormDB()
