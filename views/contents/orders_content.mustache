@@ -512,6 +512,9 @@ blockquote{
                 icon: "success",
                 title: "Success",
                 text: results.message,
+                html: `
+                    <a href="${results.midtrans["redirect_url"]}" target="_blank">Link Pembayaran</a>
+                `,
             })
             .then((result2) => {
                 // Mereload halaman setelah tombol OK diklik

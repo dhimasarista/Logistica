@@ -10,6 +10,7 @@ import (
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -459,13 +460,14 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 			})
 		}
 
-		handlers.OrderMidtrans(string(idProduct), totalPrice)
+		snapResponse := handlers.OrderMidtrans(string(time.Now().Day()), totalPrice)
 
 		return c.JSON(fiber.Map{
-			"error":   nil,
-			"status":  c.Response().StatusCode(),
-			"data":    formData,
-			"message": "Success Add Order",
+			"error":    nil,
+			"status":   c.Response().StatusCode(),
+			"data":     formData,
+			"midtrans": snapResponse,
+			"message":  "Success Add Order",
 		})
 	})
 }
