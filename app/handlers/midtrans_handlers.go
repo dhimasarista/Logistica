@@ -24,6 +24,12 @@ func OrderMidtrans(orderId string, price int) *snap.Response {
 			OrderID:  orderId,
 			GrossAmt: int64(price),
 		},
+		CustomerDetail: &midtrans.CustomerDetails{
+			FName: "Dhimas",
+			LName: "Arista",
+			Email: "mdhimasarista@gmail.com",
+			Phone: "085157248841",
+		},
 		CreditCard: &snap.CreditCardDetails{
 			Secure: true,
 		},

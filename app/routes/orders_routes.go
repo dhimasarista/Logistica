@@ -459,8 +459,10 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
-
-		snapResponse := handlers.OrderMidtrans(string(time.Now().Day()), totalPrice)
+		// Init Waktu
+		currentDate := time.Now().Format("2006-01-02")
+		currentTime := time.Now().Format("15:04")
+		snapResponse := handlers.OrderMidtrans(currentDate+currentTime, totalPrice)
 
 		return c.JSON(fiber.Map{
 			"error":    nil,
