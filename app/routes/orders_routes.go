@@ -6,6 +6,7 @@ import (
 	"log"
 	"logistica/app/config"
 	"logistica/app/controllers"
+	"logistica/app/handlers"
 	"logistica/app/models"
 	"logistica/app/utility"
 	"strconv"
@@ -40,13 +41,10 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 		var orderOnGoing []map[string]any
 		var orderFinish []map[string]any
 		for i := 0; i < len(orders); i++ {
-			fmt.Println(orders[i]["order_status"])
 			isOnGoing := orders[i]["order_status"] == "on process" || orders[i]["order_status"] == "on delivery"
 			if isOnGoing {
-				fmt.Println(isOnGoing)
 				orderOnGoing = append(orderOnGoing, orders[i])
 			} else {
-				fmt.Println(isOnGoing)
 				orderFinish = append(orderFinish, orders[i])
 			}
 		}
@@ -460,6 +458,8 @@ func OrdersRoutes(app *fiber.App, store *session.Store) {
 				"status": fiber.StatusInternalServerError,
 			})
 		}
+
+		handlers.OrderMidtrans(string(idProduct), totalPrice)
 
 		return c.JSON(fiber.Map{
 			"error":   nil,
